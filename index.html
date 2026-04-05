@@ -825,16 +825,16 @@ const JOURNAL_PROMPTS=[
 ];
 
 const LEVELS=[
-  {level:1,name:"Seeker",desc:"The journey begins. He sees you turning toward Him.",xpReq:0,xpNext:80},
-  {level:2,name:"Awakened",desc:"Your eyes are opening. Keep going.",xpReq:80,xpNext:200},
-  {level:3,name:"Walker",desc:"You're moving. One step at a time with Him.",xpReq:200,xpNext:380},
-  {level:4,name:"Disciple",desc:"You're learning from the Master himself.",xpReq:380,xpNext:620},
-  {level:5,name:"Faithful One",desc:"Consistency is becoming a part of who you are.",xpReq:620,xpNext:950},
-  {level:6,name:"Beloved",desc:"You're resting in the fact that He loves you.",xpReq:950,xpNext:1400},
-  {level:7,name:"Covenant Keeper",desc:"You take your promises to God seriously.",xpReq:1400,xpNext:2000},
-  {level:8,name:"Friend of God",desc:"Like Abraham — He tells you His secrets.",xpReq:2000,xpNext:2800},
-  {level:9,name:"Son of Fire",desc:"You burn with the things that burn His heart.",xpReq:2800,xpNext:3800},
-  {level:10,name:"Man After His Heart",desc:"David's territory. This is rare. This is real.",xpReq:3800,xpNext:Infinity},
+  {level:1,name:"Seeker",desc:"The journey begins. He sees you turning toward Him.",xpReq:0,xpNext:1000},
+  {level:2,name:"Awakened",desc:"Your eyes are opening. Keep going.",xpReq:1000,xpNext:10000},
+  {level:3,name:"Walker",desc:"You're moving. One step at a time with Him.",xpReq:10000,xpNext:35000},
+  {level:4,name:"Disciple",desc:"You're learning from the Master himself.",xpReq:35000,xpNext:60000},
+  {level:5,name:"Faithful One",desc:"Consistency is becoming a part of who you are.",xpReq:60000,xpNext:100000},
+  {level:6,name:"Beloved",desc:"You're resting in the fact that He loves you.",xpReq:100000,xpNext:250000},
+  {level:7,name:"Covenant Keeper",desc:"You take your promises to God seriously.",xpReq:250000,xpNext:400000},
+  {level:8,name:"Friend of God",desc:"Like Abraham — He tells you His secrets.",xpReq:400000,xpNext:750000},
+  {level:9,name:"Son of Fire",desc:"You burn with the things that burn His heart.",xpReq:750000,xpNext:1000000},
+  {level:10,name:"Man After His Heart",desc:"David's territory. This is rare. This is real.",xpReq:1000000,xpNext:Infinity},
 ];
 
 const MILESTONES=[
@@ -858,8 +858,8 @@ const MILESTONES=[
   {id:"sights_30",icon:"🌟",name:"God Hunter",desc:"30 sightings — He's everywhere you look",check:s=>s.seeCount>=30},
   {id:"level_5",icon:"🌿",name:"Faithful One",desc:"Reached Level 5 — you're walking now",check:s=>s.level>=5},
   {id:"level_8",icon:"🕊️",name:"Friend of God",desc:"Level 8 — Abraham territory",check:s=>s.level>=8},
-  {id:"reps_100",icon:"💫",name:"100 Reps",desc:"100 total reps with God",check:s=>s.totalReps>=100},
-  {id:"reps_500",icon:"⭐",name:"500 Reps",desc:"500 reps — this is a lifestyle now",check:s=>s.totalReps>=500},
+  {id:"reps_100",icon:"💫",name:"2000 Reps",desc:"2000 total reps with God",check:s=>s.totalReps>=2000},
+  {id:"reps_500",icon:"⭐",name:"50,000 Reps",desc:"50,000 reps — this is a lifestyle now",check:s=>s.totalReps>=50000},
   {id:"purpose_all",icon:"🧭",name:"Seeker of Answers",desc:"Logged impressions in all 6 purpose areas",check:s=>s.purposeSectionsUsed>=6},
   {id:"games_10",icon:"🏅",name:"Warrior Trained",desc:"Completed 10 mini games",check:s=>s.gamesPlayed>=10},
   {id:"fasting_1",icon:"🌿",name:"First Fast",desc:"Completed your first fasting challenge",check:s=>s.fastingCount>=1},

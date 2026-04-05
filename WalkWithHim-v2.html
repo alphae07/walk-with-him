@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="theme-color" content="#FAFAF8"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Walk With Him"/>
+<title>Walk With Him</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF8;--bg2:#F2F1EE;--bg3:#E8E6E0;--surface:#FFF;--border:#E5E3DC;
+  --text:#1A1916;--text2:#5C5850;--text3:#9E9B92;
+  --gold:#C8922A;--gold-light:#F5E6C8;--gold-dark:#A47520;
+  --green:#2E7D52;--green-light:#D4EDDF;
+  --red:#C0392B;--red-light:#FDECEA;
+  --blue:#2563EB;--blue-light:#EEF3FF;
+  --purple:#7C3AED;--purple-light:#EDE9FE;
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 2px 16px rgba(0,0,0,.07);--shadow-lg:0 8px 40px rgba(0,0,0,.12);
+  --font-d:'Lora',Georgia,serif;--font-b:'DM Sans',system-ui,sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font-b);color:var(--text);-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;border:none;background:none;font-family:var(--font-b)}
+textarea,input,select{font-family:var(--font-b);outline:none}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes bounceIn{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes ripple{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.2);opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(46,125,82,.5)}50%{box-shadow:0 0 0 12px rgba(46,125,82,0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* REWARD OVERLAY */
+#reward-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)}
+.reward-card{background:var(--surface);border-radius:24px;padding:32px 24px;width:90%;max-width:360px;text-align:center;animation:bounceIn .5s ease}
+.reward-emoji{font-size:64px;margin-bottom:16px;animation:float 2s ease infinite}
+.reward-title{font-family:var(--font-d);font-size:24px;font-weight:600;color:var(--text);margin-bottom:8px}
+.reward-subtitle{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.reward-verses{background:var(--gold-light);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px;text-align:left}
+.reward-verse-item{margin-bottom:12px}
+.reward-verse-item:last-child{margin-bottom:0}
+.reward-verse-text{font-family:var(--font-d);font-size:14px;font-style:italic;color:var(--text);line-height:1.5;margin-bottom:3px}
+.reward-verse-ref{font-size:12px;font-weight:600;color:var(--gold-dark)}
+.reward-close-btn{width:100%;padding:14px;border-radius:50px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#fff;font-size:15px;font-weight:600}
+
+/* DEMOTION OVERLAY */
+#demotion-overlay{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;background:rgba(192,57,43,.15);backdrop-filter:blur(6px)}
+.demotion-card{background:var(--surface);border-radius:24px;padding:32px 24px;width:90%;max-width:360px;text-align:center;border:2px solid var(--red);animation:shake .4s ease}
+.demotion-emoji{font-size:56px;margin-bottom:12px}
+.demotion-title{font-family:var(--font-d);font-size:22px;font-weight:600;color:var(--red);margin-bottom:8px}
+.demotion-msg{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.demotion-close{width:100%;padding:14px;border-radius:50px;background:var(--red);color:#fff;font-size:15px;font-weight:600}
+
+/* CALL OVERLAY */
+#call-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease}
+.call-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0A1628 0%,#1A2E4A 50%,#0D2137 100%)}
+.call-container{position:relative;z-index:1;text-align:center;padding:40px 32px 48px;width:100%;max-width:380px}
+.call-ripple-wrap{position:relative;width:120px;height:120px;margin:0 auto 24px}
+.call-ripple{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(200,146,42,.3);animation:ripple 2s ease-out infinite}
+.call-ripple.r2{animation-delay:.5s}.call-ripple.r3{animation-delay:1s}
+.call-avatar{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gold),var(--gold-dark));border-radius:50%;font-size:36px;color:#fff;box-shadow:0 0 40px rgba(200,146,42,.5)}
+.call-label{color:rgba(255,255,255,.6);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.call-name{color:#fff;font-size:32px;font-family:var(--font-d);font-weight:600;margin-bottom:8px}
+.call-sub{color:rgba(255,255,255,.7);font-size:15px;margin-bottom:28px;font-style:italic}
+.call-timer-wrap{margin-bottom:40px}
+.call-timer-bar{height:3px;background:rgba(255,255,255,.15);border-radius:2px;margin-bottom:8px;overflow:hidden}
+#call-timer-fill{height:100%;width:100%;background:var(--gold);transition:width 1s linear}
+#call-timer-secs{color:rgba(255,255,255,.5);font-size:12px}
+.call-actions{display:flex;gap:32px;justify-content:center}
+.btn-decline,.btn-answer{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.btn-decline{color:rgba(255,255,255,.6)}.btn-answer{color:#fff}
+.btn-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
+.btn-decline .btn-icon{background:#C0392B}
+.btn-answer .btn-icon{background:#2E7D52;animation:pulse-green 1.5s infinite}
+
+/* IN-CALL */
+#in-call-screen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;padding:48px 20px 32px;animation:slideUp .3s ease}
+.incall-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.incall-status{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2)}
+.incall-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1s infinite}
+.incall-timer{font-size:22px;font-family:var(--font-d);font-weight:500}
+.incall-body{flex:1;overflow-y:auto}
+.incall-prompt-card{background:linear-gradient(135deg,#0A1628,#1A2E4A);border-radius:var(--radius);padding:24px;margin-bottom:20px;color:#fff}
+.incall-prompt-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px}
+.incall-prompt{font-family:var(--font-d);font-size:18px;line-height:1.6;font-style:italic}
+.incall-note-wrap label{font-size:13px;color:var(--text2);display:block;margin-bottom:8px}
+.incall-note-wrap textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:15px;resize:none;background:var(--surface);color:var(--text);line-height:1.6;min-height:120px}
+.btn-hangup{width:100%;padding:16px;border-radius:50px;background:var(--green);color:#fff;font-size:16px;font-weight:600;margin-top:20px}
+
+/* APP SHELL */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.app-title{font-family:var(--font-d);font-size:18px;font-weight:600}
+.topbar-left,.topbar-right{display:flex;align-items:center;gap:8px}
+.streak-pill{display:flex;align-items:center;gap:4px;background:var(--gold-light);color:var(--gold-dark);padding:5px 10px;border-radius:20px;font-size:14px;font-weight:600}
+.level-badge{background:var(--text);color:#fff;padding:5px 10px;border-radius:20px;font-size:13px;font-weight:600}
+.settings-btn{font-size:20px;padding:4px;color:var(--text2)}
+.main-content{flex:1;overflow-y:auto;padding:0 0 80px;-webkit-overflow-scrolling:touch}
+.tab-section{display:none;padding:16px}
+.tab-section.active{display:block}
+
+/* HOME */
+.home-greeting-card{background:linear-gradient(135deg,#0A1628 0%,#1C3455 100%);border-radius:var(--radius);padding:24px;margin-bottom:16px;color:#fff}
+.greeting-time{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:4px}
+.greeting-name{font-family:var(--font-d);font-size:24px;font-weight:600;margin-bottom:6px}
+.greeting-sub{font-size:14px;color:rgba(255,255,255,.65);font-style:italic}
+.xp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.xp-top{display:flex;justify-content:space-between;margin-bottom:16px}
+.xp-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px}
+.xp-count{font-size:26px;font-weight:700;color:var(--text);font-family:var(--font-d)}
+.xp-total{font-size:26px;font-weight:700;color:var(--gold);font-family:var(--font-d);text-align:right}
+.xp-bar{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-dark));border-radius:4px;transition:width .6s ease;width:0%}
+.xp-next{font-size:12px;color:var(--text3)}
+.section-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.section-card-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.card-icon{font-size:18px}
+.card-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.verse-text{font-family:var(--font-d);font-size:16px;line-height:1.7;font-style:italic;margin-bottom:6px}
+.verse-ref{font-size:13px;color:var(--gold);font-weight:600;margin-bottom:14px}
+.verse-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-small{padding:8px 14px;border-radius:20px;font-size:13px;font-weight:500;background:var(--green-light);color:var(--green)}
+.btn-small.btn-ghost{background:var(--bg2);color:var(--text2)}
+.activity-list{display:flex;flex-direction:column;gap:8px}
+.activity-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);padding:8px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-item .ai-icon{font-size:18px}
+.activity-item .ai-rep{margin-left:auto;font-size:12px;font-weight:600;color:var(--gold)}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.quick-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow);transition:transform .15s}
+.quick-btn:active{transform:scale(.97)}
+.qb-icon{font-size:26px}
+.quick-btn span:last-child{font-size:13px;font-weight:500;color:var(--text2)}
+
+/* ALERT BANNER */
+.alert-banner{border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;font-size:13px;line-height:1.5}
+.alert-banner.warn{background:var(--red-light);color:var(--red);border:1px solid rgba(192,57,43,.2)}
+.alert-banner.info{background:var(--blue-light);color:var(--blue);border:1px solid rgba(37,99,235,.2)}
+.alert-banner.gold{background:var(--gold-light);color:var(--gold-dark);border:1px solid rgba(200,146,42,.2)}
+.alert-banner .ab-icon{font-size:20px;flex-shrink:0}
+.alert-close{margin-left:auto;font-size:18px;opacity:.6;flex-shrink:0}
+
+/* CHALLENGE CARD */
+.challenge-card{background:linear-gradient(135deg,#1a1060,#2d1b8a);border-radius:var(--radius);padding:20px;margin-bottom:16px;color:#fff}
+.challenge-type{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.challenge-title{font-family:var(--font-d);font-size:18px;font-weight:600;margin-bottom:8px}
+.challenge-desc{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:14px}
+.challenge-footer{display:flex;align-items:center;justify-content:space-between}
+.challenge-reward{font-size:12px;color:rgba(255,255,255,.6)}
+.challenge-reward span{color:var(--gold);font-weight:700}
+.challenge-btn{background:rgba(255,255,255,.15);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.2)}
+
+/* TABS HERO */
+.tab-hero{margin-bottom:20px}
+.tab-hero h2{font-family:var(--font-d);font-size:24px;font-weight:600;margin-bottom:4px}
+.tab-hero p{font-size:14px;color:var(--text2)}
+
+/* JOURNAL */
+.journal-compose{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+.journal-prompt-row{margin-bottom:14px;padding:14px;background:var(--gold-light);border-radius:var(--radius-sm)}
+.journal-prompt-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold-dark);margin-bottom:6px}
+.journal-prompt-text{font-family:var(--font-d);font-size:15px;font-style:italic;line-height:1.5;margin-bottom:8px}
+.btn-tiny{font-size:12px;color:var(--gold-dark);font-weight:500;padding:4px 0}
+textarea.main-input,input.main-input{width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:15px;resize:none;background:var(--bg);color:var(--text);line-height:1.6;transition:border-color .2s}
+textarea.main-input:focus,input.main-input:focus{border-color:var(--gold)}
+.journal-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.rep-badge{font-size:12px;font-weight:600;color:var(--green);background:var(--green-light);padding:4px 10px;border-radius:20px}
+.btn-primary{padding:12px 22px;border-radius:50px;background:var(--text);color:#fff;font-size:14px;font-weight:600;transition:transform .15s}
+.btn-primary:active{transform:scale(.97)}
+.btn-danger{padding:12px 22px;border-radius:50px;background:var(--red);color:#fff;font-size:14px;font-weight:600}
+.entries-section{margin-top:24px}
+.entries-title{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:12px}
+.entry-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px}
+.entry-date{font-size:11px;color:var(--text3);margin-bottom:6px}
+.entry-text{font-size:14px;color:var(--text);line-height:1.6}
+.entry-tag{display:inline-block;font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-light);padding:3px 8px;border-radius:10px;margin-bottom:6px}
+
+/* SEE GOD */
+.see-compose{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px}
+.see-prompts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.see-tag{font-size:12px;font-weight:500;color:var(--text2);background:var(--bg2);padding:7px 12px;border-radius:20px;border:1.5px solid var(--border);transition:all .15s}
+.see-tag.active{background:var(--gold-light);color:var(--gold-dark);border-color:var(--gold)}
+
+/* READ */
+.read-log-card,.read-books-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.read-log-card h3,.read-books-card h3{font-size:16px;font-weight:600;margin-bottom:16px}
+.read-form{display:flex;flex-direction:column;gap:10px}
+.form-row{display:flex;gap:8px}
+.form-select,.form-input{width:100%;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px;font-size:14px;background:var(--bg);color:var(--text);transition:border-color .2s}
+.form-select:focus,.form-input:focus{border-color:var(--gold)}
+.form-select{flex:1}
+.books-grid{display:flex;flex-wrap:wrap;gap:6px}
+.book-chip{font-size:12px;font-weight:500;background:var(--green-light);color:var(--green);padding:5px 10px;border-radius:12px}
+
+/* PURPOSE */
+.purpose-categories{display:flex;flex-direction:column;gap:10px}
+.purpose-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s}
+.purpose-card:active{transform:scale(.98)}
+.pc-icon{font-size:28px;flex-shrink:0}
+.purpose-card h4{font-size:15px;font-weight:600;margin-bottom:2px}
+.purpose-card p{font-size:13px;color:var(--text2)}
+.pc-arrow{margin-left:auto;font-size:22px;color:var(--text3);flex-shrink:0}
+.purpose-detail{margin-top:8px}
+.back-btn{font-size:14px;color:var(--text2);font-weight:500;margin-bottom:16px;padding:4px 0}
+.purpose-detail h3{font-family:var(--font-d);font-size:22px;font-weight:600;margin-bottom:8px}
+.purpose-detail-prompt{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:20px;font-style:italic;padding:14px;background:var(--blue-light);border-radius:var(--radius-sm)}
+.conviction-label{font-size:15px;font-weight:600;margin-bottom:4px}
+.conviction-sub{font-size:13px;color:var(--text2);margin-bottom:12px}
+
+/* STATS */
+.stats-level-card{background:linear-gradient(135deg,#0A1628,#1C3455);border-radius:var(--radius);padding:24px;margin-bottom:16px;color:#fff}
+.level-display{display:flex;align-items:center;gap:18px}
+.level-circle{width:64px;height:64px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 0 20px rgba(200,146,42,.5)}
+.level-name{font-family:var(--font-d);font-size:20px;font-weight:600;margin-bottom:4px}
+.level-sub{font-size:13px;color:rgba(255,255,255,.6)}
+.stats-level-card .xp-bar{background:rgba(255,255,255,.2)}
+.stats-level-card .xp-next{color:rgba(255,255,255,.6)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;text-align:center;box-shadow:var(--shadow)}
+.stat-num{font-size:30px;font-weight:700;font-family:var(--font-d);color:var(--text);margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text2)}
+.milestones-list{display:flex;flex-direction:column;gap:10px}
+.milestone-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.milestone-item:last-child{border-bottom:none}
+.ms-icon{font-size:22px}
+.ms-name{font-size:14px;font-weight:600}
+.ms-desc{font-size:12px;color:var(--text3)}
+.ms-status{margin-left:auto;font-size:12px;font-weight:600}
+.ms-status.done{color:var(--green)}.ms-status.locked{color:var(--text3)}
+
+/* MINI GAMES */
+.game-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.game-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s;text-align:center}
+.game-card:active{transform:scale(.97)}
+.game-icon{font-size:32px}
+.game-name{font-size:13px;font-weight:600;color:var(--text)}
+.game-desc{font-size:11px;color:var(--text3);line-height:1.4}
+.game-xp{font-size:11px;font-weight:700;color:var(--gold)}
+.game-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.game-panel h3{font-family:var(--font-d);font-size:18px;font-weight:600;margin-bottom:8px}
+.game-panel .game-sub{font-size:13px;color:var(--text2);margin-bottom:16px}
+.quiz-option{width:100%;text-align:left;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);margin-bottom:8px;transition:all .2s;background:var(--bg)}
+.quiz-option.correct{background:var(--green-light);border-color:var(--green);color:var(--green)}
+.quiz-option.wrong{background:var(--red-light);border-color:var(--red);color:var(--red)}
+.quiz-result{padding:14px;border-radius:var(--radius-sm);margin-top:12px;font-size:14px;line-height:1.5}
+.quiz-result.correct{background:var(--green-light);color:var(--green)}
+.quiz-result.wrong{background:var(--red-light);color:var(--red)}
+.fill-blank-input{width:100%;border:2px solid var(--gold);border-radius:var(--radius-sm);padding:12px;font-size:16px;font-family:var(--font-d);font-style:italic;background:var(--bg);color:var(--text);text-align:center}
+.word-scramble{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.word-tile{background:var(--gold-light);color:var(--gold-dark);padding:8px 14px;border-radius:var(--radius-sm);font-size:15px;font-weight:600;font-family:var(--font-d);cursor:pointer;transition:transform .15s;border:1.5px solid var(--gold)}
+.word-tile:active{transform:scale(.95)}
+.word-answer{min-height:48px;border:2px dashed var(--border);border-radius:var(--radius-sm);padding:8px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;justify-content:center;align-items:center;font-size:13px;color:var(--text3)}
+
+/* SETTINGS */
+.settings-section{margin-bottom:24px}
+.settings-section h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:12px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:15px;color:var(--text);font-weight:500}
+.settings-sub{font-size:12px;color:var(--text3);margin-top:2px}
+.settings-control{display:flex;align-items:center;gap:8px}
+.toggle{width:48px;height:26px;border-radius:13px;background:var(--bg3);position:relative;transition:background .2s;cursor:pointer;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(22px)}
+.settings-input{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;background:var(--bg);color:var(--text);width:140px;text-align:right}
+.settings-select{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;background:var(--bg);color:var(--text)}
+.ringtone-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ringtone-opt{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.ringtone-opt.selected{border-color:var(--gold);background:var(--gold-light)}
+.ringtone-opt .play-btn{font-size:18px}
+.ringtone-name{font-size:14px;font-weight:500;flex:1}
+
+/* BOOK CLUB */
+.book-of-month{background:linear-gradient(135deg,#1a0a2e,#3d1a6e);border-radius:var(--radius);padding:24px;margin-bottom:16px;color:#fff}
+.bom-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:6px}
+.bom-title{font-family:var(--font-d);font-size:20px;font-weight:600;margin-bottom:4px}
+.bom-author{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:14px}
+.bom-summary-btn{background:rgba(255,255,255,.15);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;border:1px solid rgba(255,255,255,.2)}
+
+/* FASTING / RETREAT CARD */
+.spiritual-discipline-card{background:var(--surface);border:2px solid var(--purple-light);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.sd-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sd-icon{font-size:24px}
+.sd-title{font-size:15px;font-weight:600;color:var(--purple)}
+.sd-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px}
+.sd-accept{background:var(--purple);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600}
+.sd-skip{font-size:13px;color:var(--text3);margin-left:12px}
+
+/* SERMON CARD */
+.sermon-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px}
+.sermon-preacher{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:4px}
+.sermon-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px}
+.sermon-why{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.sermon-watch{background:var(--red);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600}
+
+/* SHARE */
+.share-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.share-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.share-card p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.share-link-box{background:var(--bg2);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text2);word-break:break-all;margin-bottom:12px;border:1px solid var(--border)}
+.share-btns{display:flex;gap:8px;flex-wrap:wrap}
+.share-btn{background:var(--text);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600}
+.share-btn.whatsapp{background:#25D366}
+.share-btn.copy{background:var(--bg3);color:var(--text)}
+
+/* CLOUD SYNC */
+.sync-card{background:var(--blue-light);border:1px solid rgba(37,99,235,.2);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.sync-card h3{font-size:15px;font-weight:600;color:var(--blue);margin-bottom:6px}
+.sync-card p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px}
+.sync-input-row{display:flex;gap:8px;margin-bottom:10px}
+.sync-input{flex:1;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px;font-size:14px;background:#fff;color:var(--text)}
+.sync-btn{background:var(--blue);color:#fff;padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;white-space:nowrap}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;padding:8px 0 max(8px,env(safe-area-inset-bottom));z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px;color:var(--text3);transition:color .15s}
+.nav-btn.active{color:var(--gold)}
+.nav-icon{font-size:20px}
+.nav-label{font-size:10px;font-weight:500}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:12px 20px;border-radius:50px;font-size:14px;font-weight:500;z-index:2000;white-space:nowrap;animation:fadeIn .3s ease;box-shadow:var(--shadow-lg)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:flex-end;animation:fadeIn .2s ease}
+.modal-card{background:var(--surface);border-radius:24px 24px 0 0;padding:24px;width:100%;animation:slideUp .3s ease;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.modal-header h3{font-family:var(--font-d);font-size:20px}
+.modal-close{font-size:18px;color:var(--text3);padding:4px}
+
+.install-banner{background:var(--gold-light);border:1px solid var(--gold);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:12px;font-size:13px;color:var(--gold-dark);line-height:1.5;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.install-banner button{background:var(--gold);color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- REWARD OVERLAY -->
+<div id="reward-overlay" class="hidden">
+  <div class="reward-card">
+    <div class="reward-emoji" id="reward-emoji">🎉</div>
+    <h2 class="reward-title" id="reward-title">God is proud of you</h2>
+    <p class="reward-subtitle" id="reward-subtitle">Here's what He says about you right now:</p>
+    <div class="reward-verses" id="reward-verses"></div>
+    <button class="reward-close-btn" onclick="closeReward()">Receive This 🙏</button>
+  </div>
+</div>
+
+<!-- DEMOTION OVERLAY -->
+<div id="demotion-overlay" class="hidden">
+  <div class="demotion-card">
+    <div class="demotion-emoji">😔</div>
+    <h2 class="demotion-title" id="demotion-title">Level Down</h2>
+    <p class="demotion-msg" id="demotion-msg">You've been away. God hasn't moved — but your level has. Come back. He's waiting.</p>
+    <button class="demotion-close" onclick="closeDemotion()">I'm Coming Back 🔥</button>
+  </div>
+</div>
+
+<!-- CALL OVERLAY -->
+<div id="call-overlay" class="hidden">
+  <div class="call-bg"></div>
+  <div class="call-container">
+    <div class="call-ripple-wrap">
+      <div class="call-ripple r1"></div><div class="call-ripple r2"></div><div class="call-ripple r3"></div>
+      <div class="call-avatar">✝</div>
+    </div>
+    <p class="call-label">Incoming Call</p>
+    <h2 class="call-name" id="call-display-name">God</h2>
+    <p class="call-sub" id="call-prompt-text">He wants to talk with you</p>
+    <div class="call-timer-wrap">
+      <div class="call-timer-bar"><div id="call-timer-fill"></div></div>
+      <span id="call-timer-secs">30s</span>
+    </div>
+    <div class="call-actions">
+      <button class="btn-decline" onclick="declineCall()"><span class="btn-icon">📵</span><span>Decline (-1)</span></button>
+      <button class="btn-answer" onclick="answerCall()"><span class="btn-icon">🙏</span><span>Answer (+15)</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- IN-CALL -->
+<div id="in-call-screen" class="hidden">
+  <div class="incall-header">
+    <div class="incall-status"><span class="incall-dot"></span><span>Talking with God</span></div>
+    <div id="incall-timer" class="incall-timer">0:00</div>
+  </div>
+  <div class="incall-body">
+    <div class="incall-prompt-card">
+      <p class="incall-prompt-label">He's saying —</p>
+      <p class="incall-prompt" id="incall-prompt-display"></p>
+    </div>
+    <div class="incall-note-wrap">
+      <label>Your response — just talk honestly</label>
+      <textarea id="incall-note" placeholder="What's on your heart? Don't perform, just be real..." rows="6"></textarea>
+    </div>
+  </div>
+  <button class="btn-hangup" onclick="hangupCall()">End & Save (+15 XP)</button>
+</div>
+
+<!-- APP SHELL -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="streak-pill"><span class="streak-fire">🔥</span><span id="header-streak">0</span></div>
+    </div>
+    <h1 class="app-title">Walk With Him</h1>
+    <div class="topbar-right">
+      <div class="level-badge" id="header-level">Lv.1</div>
+      <button class="settings-btn" onclick="showTab('settings')">⚙️</button>
+    </div>
+  </header>
+
+  <main class="main-content" id="main-content">
+
+    <!-- HOME TAB -->
+    <section id="tab-home" class="tab-section active">
+      <div id="home-alerts"></div>
+      <div class="home-greeting-card" id="greeting-card">
+        <p class="greeting-time" id="greeting-time">Good morning</p>
+        <h2 class="greeting-name" id="greeting-name">Ayomide 👋</h2>
+        <p class="greeting-sub">God's been waiting for you.</p>
+      </div>
+      <div class="xp-card">
+        <div class="xp-top">
+          <div><p class="xp-label">Today's Reps</p><p class="xp-count"><span id="today-reps">0</span> / <span id="today-goal">5</span></p></div>
+          <div><p class="xp-label">Total XP</p><p class="xp-total" id="total-xp">0</p></div>
+        </div>
+        <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+        <p class="xp-next" id="xp-next-label">0 XP to next level</p>
+      </div>
+      <div id="daily-challenge-area"></div>
+      <div class="section-card verse-card">
+        <div class="section-card-header"><span class="card-icon">📖</span><span class="card-title">Verse of the Day</span></div>
+        <p class="verse-text" id="daily-verse-text">Loading...</p>
+        <p class="verse-ref" id="daily-verse-ref"></p>
+        <div class="verse-actions">
+          <button class="btn-small" id="verse-read-btn" onclick="markVerseRead()">✓ I read this (+1 Rep)</button>
+          <button class="btn-small btn-ghost" onclick="showTab('read')">Log my reading</button>
+        </div>
+      </div>
+      <div class="quick-grid">
+        <button class="quick-btn" onclick="openJournal()"><span class="qb-icon">✍️</span><span>Talk to God</span></button>
+        <button class="quick-btn" onclick="showTab('see')"><span class="qb-icon">👁️</span><span>I saw God</span></button>
+        <button class="quick-btn" onclick="showTab('games')"><span class="qb-icon">🎮</span><span>Mini Games</span></button>
+        <button class="quick-btn" onclick="showTab('purpose')"><span class="qb-icon">🧭</span><span>Purpose</span></button>
+      </div>
+      <div class="section-card">
+        <div class="section-card-header"><span class="card-icon">⚡</span><span class="card-title">Today's Activity</span></div>
+        <div class="activity-list" id="today-activity"></div>
+      </div>
+    </section>
+
+    <!-- JOURNAL TAB -->
+    <section id="tab-journal" class="tab-section">
+      <div class="tab-hero"><h2>Talk to God</h2><p>No format. No rules. Just you and him.</p></div>
+      <div class="journal-compose">
+        <div class="journal-prompt-row">
+          <p class="journal-prompt-label">A prompt if you need one:</p>
+          <p class="journal-prompt-text" id="journal-prompt">Loading...</p>
+          <button class="btn-tiny" onclick="refreshJournalPrompt()">↻ New prompt</button>
+        </div>
+        <textarea class="main-input" id="journal-input" placeholder="God, I want to talk about..." rows="7"></textarea>
+        <div class="journal-footer"><span class="rep-badge">+2 Reps on save</span><button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button></div>
+      </div>
+      <div class="entries-section"><h3 class="entries-title">Past Entries</h3><div id="journal-entries-list"></div></div>
+    </section>
+
+    <!-- SEE GOD TAB -->
+    <section id="tab-see" class="tab-section">
+      <div class="tab-hero"><h2>I Saw God Today</h2><p>Log moments where you noticed God in your day.</p></div>
+      <div class="see-compose">
+        <div class="see-prompts">
+          <button class="see-tag" onclick="setSeeTag(this,'😌 Unexpected peace')">😌 Unexpected peace</button>
+          <button class="see-tag" onclick="setSeeTag(this,'🎁 A provision came through')">🎁 A provision</button>
+          <button class="see-tag" onclick="setSeeTag(this,'⚠️ An inner warning I felt')">⚠️ Inner warning</button>
+          <button class="see-tag" onclick="setSeeTag(this,'💬 Someone said exactly what I needed')">💬 Right words</button>
+          <button class="see-tag" onclick="setSeeTag(this,'🚪 A door opened unexpectedly')">🚪 Opened door</button>
+          <button class="see-tag" onclick="setSeeTag(this,'✨ Something only God could have done')">✨ Only God</button>
+          <button class="see-tag" onclick="setSeeTag(this,'🛡️ He protected me today')">🛡️ Protection</button>
+          <button class="see-tag" onclick="setSeeTag(this,'💡 A sudden insight or revelation')">💡 Revelation</button>
+          <button class="see-tag" onclick="setSeeTag(this,'❤️ I felt loved by God today')">❤️ Felt loved</button>
+        </div>
+        <textarea class="main-input" id="see-input" placeholder="Describe what happened..." rows="5"></textarea>
+        <div class="journal-footer"><span class="rep-badge">+1 Rep on save</span><button class="btn-primary" onclick="saveSeeEntry()">Save Moment</button></div>
+      </div>
+      <div class="entries-section"><h3 class="entries-title">God Sightings</h3><div id="see-entries-list"></div></div>
+    </section>
+
+    <!-- READ TAB -->
+    <section id="tab-read" class="tab-section">
+      <div class="tab-hero"><h2>Bible Reading Log</h2><p>Every chapter you read moves you forward.</p></div>
+      <div id="book-of-month-home"></div>
+      <div class="read-log-card">
+        <h3>Log what you read</h3>
+        <div class="read-form">
+          <div class="form-row">
+            <select id="read-book" class="form-select"><option value="">Choose Book</option></select>
+            <select id="read-chapter" class="form-select"><option value="">Chapter</option></select>
+          </div>
+          <input type="text" id="read-insight" class="form-input" placeholder="One thing I noticed about God here..."/>
+          <div class="journal-footer"><span class="rep-badge">+1 Rep per chapter</span><button class="btn-primary" onclick="logReading()">Log Reading</button></div>
+        </div>
+      </div>
+      <div class="read-books-card"><h3>Books Touched</h3><div id="read-books-grid" class="books-grid"></div></div>
+      <div class="entries-section"><h3 class="entries-title">Reading History</h3><div id="read-entries-list"></div></div>
+    </section>
+
+    <!-- PURPOSE TAB -->
+    <section id="tab-purpose" class="tab-section">
+      <div class="tab-hero"><h2>Seeking Direction</h2><p>A space to hear from God on the big questions.</p></div>
+      <div class="purpose-categories">
+        <div class="purpose-card" onclick="openPurposeSection('identity')"><span class="pc-icon">🌱</span><div><h4>Who Am I?</h4><p>Identity, gifts, calling</p></div><span class="pc-arrow">›</span></div>
+        <div class="purpose-card" onclick="openPurposeSection('nysc')"><span class="pc-icon">🗺️</span><div><h4>NYSC Posting</h4><p>Where is God sending you?</p></div><span class="pc-arrow">›</span></div>
+        <div class="purpose-card" onclick="openPurposeSection('marriage')"><span class="pc-icon">💍</span><div><h4>Marriage & Relationships</h4><p>Who? When? How will I know?</p></div><span class="pc-arrow">›</span></div>
+        <div class="purpose-card" onclick="openPurposeSection('career')"><span class="pc-icon">🏗️</span><div><h4>Career & Business</h4><p>WebOwnr, job, what's next</p></div><span class="pc-arrow">›</span></div>
+        <div class="purpose-card" onclick="openPurposeSection('location')"><span class="pc-icon">📍</span><div><h4>Where to Settle</h4><p>City, state, or country?</p></div><span class="pc-arrow">›</span></div>
+        <div class="purpose-card" onclick="openPurposeSection('holiness')"><span class="pc-icon">🕊️</span><div><h4>Holiness & Character</h4><p>The person I'm becoming</p></div><span class="pc-arrow">›</span></div>
+      </div>
+      <div id="purpose-detail" class="purpose-detail hidden">
+        <button class="back-btn" onclick="closePurposeSection()">← Back</button>
+        <h3 id="purpose-detail-title"></h3>
+        <p class="purpose-detail-prompt" id="purpose-detail-prompt"></p>
+        <h4 class="conviction-label">Convictions & Impressions</h4>
+        <p class="conviction-sub">What has God been saying? Even quiet nudges count.</p>
+        <textarea class="main-input" id="purpose-input" rows="5" placeholder="Write what you sense, feel or have heard..."></textarea>
+        <button class="btn-primary" onclick="savePurposeEntry()" style="margin-top:12px;width:100%">Save Impression</button>
+        <div class="entries-section" style="margin-top:24px"><h3 class="entries-title">What I've Heard</h3><div id="purpose-entries-list"></div></div>
+      </div>
+    </section>
+
+    <!-- MINI GAMES TAB -->
+    <section id="tab-games" class="tab-section">
+      <div class="tab-hero"><h2>Grow Through Play</h2><p>These aren't just games — they're training your spirit.</p></div>
+      <div id="game-home">
+        <div class="game-grid">
+          <div class="game-card" onclick="startGame('quiz')"><span class="game-icon">🧠</span><span class="game-name">Bible Quiz</span><span class="game-desc">Test what you know about God's Word</span><span class="game-xp">+10 XP</span></div>
+          <div class="game-card" onclick="startGame('fillblank')"><span class="game-icon">✏️</span><span class="game-name">Fill the Blank</span><span class="game-desc">Complete the verse from memory</span><span class="game-xp">+8 XP</span></div>
+          <div class="game-card" onclick="startGame('scramble')"><span class="game-icon">🔀</span><span class="game-name">Word Scramble</span><span class="game-desc">Unscramble a verse word by word</span><span class="game-xp">+8 XP</span></div>
+          <div class="game-card" onclick="startGame('attribute')"><span class="game-icon">👑</span><span class="game-name">Who Is God?</span><span class="game-desc">Match God's names to their meanings</span><span class="game-xp">+10 XP</span></div>
+          <div class="game-card" onclick="startGame('prayer')"><span class="game-icon">🙏</span><span class="game-name">Prayer Builder</span><span class="game-desc">Build a structured prayer step by step</span><span class="game-xp">+12 XP</span></div>
+          <div class="game-card" onclick="startGame('fruit')"><span class="game-icon">🍇</span><span class="game-name">Fruit Check</span><span class="game-desc">Reflect on the fruit of the Spirit in your week</span><span class="game-xp">+10 XP</span></div>
+        </div>
+      </div>
+      <div id="game-panel" class="hidden"></div>
+    </section>
+
+    <!-- GROW TAB (Sermons, Books, Disciplines) -->
+    <section id="tab-grow" class="tab-section">
+      <div class="tab-hero"><h2>Grow Deeper</h2><p>Sermons, books, fasting — going beyond the basics.</p></div>
+      <div id="grow-disciplines"></div>
+      <div id="grow-book-club"></div>
+      <div id="grow-sermons"></div>
+    </section>
+
+    <!-- STATS TAB -->
+    <section id="tab-stats" class="tab-section">
+      <div class="tab-hero"><h2>Your Walk</h2><p>See how your relationship with God is growing.</p></div>
+      <div class="stats-level-card">
+        <div class="level-display">
+          <div class="level-circle" id="stats-level-circle">1</div>
+          <div><p class="level-name" id="stats-level-name">Seeker</p><p class="level-sub" id="stats-level-desc">Keep showing up</p></div>
+        </div>
+        <div style="margin-top:16px"><div class="xp-bar"><div class="xp-fill" id="stats-xp-fill"></div></div><p class="xp-next" id="stats-xp-label">0 / 100 XP</p></div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-box"><p class="stat-num" id="stat-streak">0</p><p class="stat-label">Day Streak 🔥</p></div>
+        <div class="stat-box"><p class="stat-num" id="stat-calls-answered">0</p><p class="stat-label">Calls Answered 🙏</p></div>
+        <div class="stat-box"><p class="stat-num" id="stat-journal-count">0</p><p class="stat-label">Journal Entries ✍️</p></div>
+        <div class="stat-box"><p class="stat-num" id="stat-see-count">0</p><p class="stat-label">God Sightings 👁️</p></div>
+        <div class="stat-box"><p class="stat-num" id="stat-chapters-read">0</p><p class="stat-label">Chapters Read 📖</p></div>
+        <div class="stat-box"><p class="stat-num" id="stat-total-reps">0</p><p class="stat-label">Total Reps ⚡</p></div>
+      </div>
+      <div class="section-card">
+        <div class="section-card-header"><span class="card-icon">🏆</span><span class="card-title">Milestones</span></div>
+        <div id="milestones-list" class="milestones-list"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS TAB -->
+    <section id="tab-settings" class="tab-section">
+      <div class="tab-hero"><h2>Settings</h2><p>Make this app yours.</p></div>
+      <div class="settings-section">
+        <h3>Profile</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Your Name</div><div class="settings-sub">Used in greetings & prompts</div></div>
+          <input id="setting-name" class="settings-input" type="text" placeholder="Your name"/>
+        </div>
+        <div class="settings-row" style="padding-top:16px;border-bottom:none">
+          <button class="btn-primary" onclick="saveSettings()">Save Profile</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>God's Calls</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Calls Per Day</div><div class="settings-sub">How often does He call?</div></div>
+          <select id="setting-calls" class="settings-select">
+            <option value="1">1 call</option><option value="2">2 calls</option><option value="3" selected>3 calls</option>
+            <option value="4">4 calls</option><option value="5">5 calls</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Ringtone</div><div class="settings-sub">The sound when He calls</div></div>
+          <button class="btn-small" onclick="openRingtoneModal()">Change →</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Call Window</div><div class="settings-sub">Active hours</div></div>
+          <div class="settings-control">
+            <select id="setting-call-start" class="settings-select" style="width:70px">
+              <option value="6">6am</option><option value="7" selected>7am</option><option value="8">8am</option>
+            </select>
+            <span style="font-size:12px;color:var(--text3)">to</span>
+            <select id="setting-call-end" class="settings-select" style="width:70px">
+              <option value="20">8pm</option><option value="21">9pm</option><option value="22" selected>10pm</option><option value="23">11pm</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Reminders & Alerts</h3>
+        <div class="settings-row">
+          <div><div class="settings-label">Morning Prayer Reminder</div><div class="settings-sub">Start your day with God</div></div>
+          <div class="toggle" id="toggle-morning" onclick="toggleSetting('morning')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Evening Reflection Reminder</div><div class="settings-sub">Before you sleep</div></div>
+          <div class="toggle" id="toggle-evening" onclick="toggleSetting('evening')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Midday Check-in Alert</div><div class="settings-sub">Stay connected through the day</div></div>
+          <div class="toggle" id="toggle-midday" onclick="toggleSetting('midday')"></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Losing Rep Warnings</div><div class="settings-sub">Alert when about to lose points</div></div>
+          <div class="toggle on" id="toggle-warnings" onclick="toggleSetting('warnings')"></div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Data & Sync</h3>
+        <div class="sync-card">
+          <h3>☁️ Cloud Backup</h3>
+          <p>Your data is saved on this device. To back up and restore across devices, export your data and keep it safe.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn-primary" onclick="exportData()">Export My Data</button>
+            <button class="btn-small btn-ghost" onclick="document.getElementById('import-file').click()">Import Data</button>
+          </div>
+          <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)"/>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Share With Others</h3>
+        <div class="share-card">
+          <h3>Share Walk With Him</h3>
+          <p>This app was built for a personal walk with God, but it can help anyone who wants to know Him. Share the link with your girlfriend, siblings, or friends.</p>
+          <div class="share-link-box" id="share-link-box">https://alphae07.github.io/walk-with-him</div>
+          <div class="share-btns">
+            <button class="share-btn whatsapp" onclick="shareWhatsapp()">WhatsApp</button>
+            <button class="share-btn copy" onclick="copyShareLink()">Copy Link</button>
+          </div>
+        </div>
+      </div>
+      <div class="settings-section">
+        <h3>Danger Zone</h3>
+        <div class="settings-row">
+          <div><div class="settings-label" style="color:var(--red)">Reset All Data</div><div class="settings-sub">Cannot be undone</div></div>
+          <button class="btn-danger" onclick="confirmReset()" style="font-size:13px;padding:8px 14px">Reset</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showTab('home')" id="nav-home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-btn" onclick="showTab('journal')" id="nav-journal"><span class="nav-icon">✍️</span><span class="nav-label">Journal</span></button>
+    <button class="nav-btn" onclick="showTab('games')" id="nav-games"><span class="nav-icon">🎮</span><span class="nav-label">Games</span></button>
+    <button class="nav-btn" onclick="showTab('grow')" id="nav-grow"><span class="nav-icon">🌿</span><span class="nav-label">Grow</span></button>
+    <button class="nav-btn" onclick="showTab('stats')" id="nav-stats"><span class="nav-icon">📊</span><span class="nav-label">My Walk</span></button>
+  </nav>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- JOURNAL MODAL (quick) -->
+<div id="journal-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header"><h3>Talk to God</h3><button class="modal-close" onclick="closeJournal()">✕</button></div>
+    <p class="journal-prompt-text" id="modal-prompt" style="margin-bottom:12px;font-style:italic;color:var(--text2)"></p>
+    <textarea class="main-input" id="modal-journal-input" placeholder="Just talk..." rows="6"></textarea>
+    <button class="btn-primary" style="width:100%;margin-top:12px" onclick="saveModalJournal()">Save (+2 Reps)</button>
+  </div>
+</div>
+
+<!-- RINGTONE MODAL -->
+<div id="ringtone-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header"><h3>Choose Ringtone</h3><button class="modal-close" onclick="closeRingtoneModal()">✕</button></div>
+    <div class="ringtone-list" id="ringtone-list"></div>
+    <button class="btn-primary" style="width:100%;margin-top:16px" onclick="closeRingtoneModal()">Done</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const BIBLE_BOOKS={Genesis:50,Exodus:40,Leviticus:27,Numbers:36,Deuteronomy:34,Joshua:24,Judges:21,Ruth:4,"1 Samuel":31,"2 Samuel":24,"1 Kings":22,"2 Kings":25,"1 Chronicles":29,"2 Chronicles":36,Ezra:10,Nehemiah:13,Esther:10,Job:42,Psalms:150,Proverbs:31,Ecclesiastes:12,"Song of Solomon":8,Isaiah:66,Jeremiah:52,Lamentations:5,Ezekiel:48,Daniel:12,Hosea:14,Joel:3,Amos:9,Obadiah:1,Jonah:4,Micah:7,Nahum:3,Habakkuk:3,Zephaniah:3,Haggai:2,Zechariah:14,Malachi:4,Matthew:28,Mark:16,Luke:24,John:21,Acts:28,Romans:16,"1 Corinthians":16,"2 Corinthians":13,Galatians:6,Ephesians:6,Philippians:4,Colossians:4,"1 Thessalonians":5,"2 Thessalonians":3,"1 Timothy":6,"2 Timothy":4,Titus:3,Philemon:1,Hebrews:13,James:5,"1 Peter":5,"2 Peter":3,"1 John":5,"2 John":1,"3 John":1,Jude:1,Revelation:22};
+
+const DAILY_VERSES=[
+  {text:"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.",ref:"Jeremiah 29:11"},
+  {text:"Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.",ref:"Proverbs 3:5-6"},
+  {text:"I can do all this through him who gives me strength.",ref:"Philippians 4:13"},
+  {text:"Come to me, all you who are weary and burdened, and I will give you rest.",ref:"Matthew 11:28"},
+  {text:"But seek first his kingdom and his righteousness, and all these things will be given to you as well.",ref:"Matthew 6:33"},
+  {text:"Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.",ref:"Joshua 1:9"},
+  {text:"Cast all your anxiety on him because he cares for you.",ref:"1 Peter 5:7"},
+  {text:"The Lord is my shepherd, I lack nothing.",ref:"Psalm 23:1"},
+  {text:"And we know that in all things God works for the good of those who love him, who have been called according to his purpose.",ref:"Romans 8:28"},
+  {text:"Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.",ref:"Philippians 4:6"},
+  {text:"I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit.",ref:"John 15:5"},
+  {text:"Delight yourself in the Lord, and he will give you the desires of your heart.",ref:"Psalm 37:4"},
+  {text:"For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.",ref:"2 Timothy 1:7"},
+  {text:"Your word is a lamp for my feet, a light on my path.",ref:"Psalm 119:105"},
+  {text:"The Lord himself goes before you and will be with you; he will never leave you nor forsake you.",ref:"Deuteronomy 31:8"},
+  {text:"But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",ref:"Isaiah 40:31"},
+  {text:"Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.",ref:"Matthew 7:7"},
+  {text:"God is our refuge and strength, an ever-present help in trouble.",ref:"Psalm 46:1"},
+  {text:"Create in me a pure heart, O God, and renew a steadfast spirit within me.",ref:"Psalm 51:10"},
+  {text:"I sought the Lord, and he answered me; he delivered me from all my fears.",ref:"Psalm 34:4"},
+  {text:"You will seek me and find me when you seek me with all your heart.",ref:"Jeremiah 29:13"},
+  {text:"The thief comes only to steal and kill and destroy; I have come that they may have life, and have it to the full.",ref:"John 10:10"},
+  {text:"My sheep listen to my voice; I know them, and they follow me.",ref:"John 10:27"},
+  {text:"Even youths grow tired and weary, but those who hope in the LORD will renew their strength.",ref:"Isaiah 40:30-31"},
+  {text:"The name of the Lord is a fortified tower; the righteous run to it and are safe.",ref:"Proverbs 18:10"},
+  {text:"This is the day the Lord has made; let us rejoice and be glad in it.",ref:"Psalm 118:24"},
+  {text:"No weapon formed against you shall prosper.",ref:"Isaiah 54:17"},
+  {text:"The Lord bless you and keep you; the Lord make his face shine on you and be gracious to you.",ref:"Numbers 6:24-25"},
+  {text:"If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault.",ref:"James 1:5"},
+  {text:"Draw near to God and he will draw near to you.",ref:"James 4:8"},
+  {text:"The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning.",ref:"Lamentations 3:22-23"},
+  {text:"Where can I go from your Spirit? Where can I flee from your presence?",ref:"Psalm 139:7"},
+  {text:"I praise you because I am fearfully and wonderfully made.",ref:"Psalm 139:14"},
+  {text:"For it is by grace you have been saved, through faith — and this is not from yourselves, it is the gift of God.",ref:"Ephesians 2:8"},
+  {text:"Greater is he that is in you, than he that is in the world.",ref:"1 John 4:4"},
+  {text:"Commit your work to the Lord, and your plans will be established.",ref:"Proverbs 16:3"},
+  {text:"The heart of man plans his way, but the Lord establishes his steps.",ref:"Proverbs 16:9"},
+  {text:"Blessed is the one who does not walk in step with the wicked or stand in the way that sinners take.",ref:"Psalm 1:1"},
+  {text:"But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.",ref:"Galatians 5:22-23"},
+  {text:"Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",ref:"Romans 12:2"},
+  {text:"I have been crucified with Christ and I no longer live, but Christ lives in me.",ref:"Galatians 2:20"},
+  {text:"Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!",ref:"2 Corinthians 5:17"},
+  {text:"He who began a good work in you will carry it on to completion until the day of Christ Jesus.",ref:"Philippians 1:6"},
+  {text:"What no eye has seen, what no ear has heard, what no human mind has conceived — the things God has prepared for those who love him.",ref:"1 Corinthians 2:9"},
+];
+
+const CALL_PROMPTS=[
+  "I've been watching over you. How are you really doing?",
+  "There's something on my heart for you — will you listen?",
+  "What have you been carrying alone that I want to carry with you?",
+  "You've been worried again. Let's talk about it.",
+  "Tell me — what are you afraid of right now?",
+  "I want to show you something about yourself today.",
+  "You've been performing. I want the real you.",
+  "Let's talk about NYSC. I already know where you're going.",
+  "Your future is not in crisis. Talk to me.",
+  "I want to remind you who I made you to be.",
+  "What decision are you overthinking? Let's think through it together.",
+  "You're not behind. Let me show you where you actually are.",
+  "I want to encourage you. Will you receive it?",
+  "There's a question you've been afraid to ask me. Ask it now.",
+  "Tell me one thing you're grateful for right now.",
+  "Let's talk about your character — the inside of you.",
+  "I'm proud of you, and I want you to know exactly why.",
+  "Something you did recently opened a door. Did you notice?",
+  "You're more loved than you currently feel.",
+  "Let's talk about what holiness actually looks like for you, practically.",
+  "I see WebOwnr. I see the late nights. I want to talk about why I gave you that vision.",
+  "What does rest look like for you? Have you rested in me lately?",
+  "Tell me about your girlfriend. How are you treating her?",
+  "I want to talk about the sin you keep going back to. Not to condemn. To free you.",
+  "Do you trust me with your timeline? Let's talk about that.",
+  "I created you to build things. Let me show you what I want you to build.",
+  "Your mother is in my hands. Don't carry that alone.",
+  "Tell me what you want most in life right now — be honest.",
+  "The Holy Spirit is in you. Are you listening to him today?",
+  "I want to talk about what you're consuming online — is it building you or draining you?",
+  "Tell me what you think I think of you. Then let me correct it.",
+  "Come and rest for a moment. Just be with me — no agenda.",
+];
+
+const JOURNAL_PROMPTS=[
+  "God, this is what's actually on my mind right now...",
+  "I'm confused about something and I need you to weigh in...",
+  "Today I realized something about myself that I want to tell you...",
+  "I keep struggling with ___. I don't fully understand why.",
+  "If I'm honest, I'm afraid that...",
+  "Something you've been saying to me that I keep ignoring is...",
+  "I'm worried about WebOwnr. Here's the honest truth of it...",
+  "I want to ask you about my future and what you see...",
+  "Something I feel like you're asking me to let go of is...",
+  "If I could hear one thing from you right now, it would be...",
+  "The version of myself I want to become looks like...",
+  "Today I sinned again and here's how I feel about it...",
+  "I want to be honest: sometimes I doubt that you're listening. Here's why...",
+  "The thing I find hardest about trusting you is...",
+  "Something that happened this week where I saw your hand was...",
+  "God, I want to understand the Holy Spirit better. What I know right now is...",
+  "What do you want me to do with my life in the next 6 months?",
+  "I've been comparing myself to others. Here's what's really going on...",
+  "The things I'm grateful for today, even if small, are...",
+  "God, talk to me about Jesus. Who is he to me personally?",
+  "What does holiness look like for a developer and entrepreneur in Lagos?",
+  "I want to confess something I've been avoiding bringing to you...",
+  "When I imagine the person I'll be in 5 years if I walk closely with you, I see...",
+  "Something about your character I've been seeing this week is...",
+  "I feel disconnected from you lately. Let me try to trace where it started...",
+];
+
+const LEVELS=[
+  {level:1,name:"Seeker",desc:"The journey begins. He sees you turning toward Him.",xpReq:0,xpNext:80},
+  {level:2,name:"Awakened",desc:"Your eyes are opening. Keep going.",xpReq:80,xpNext:200},
+  {level:3,name:"Walker",desc:"You're moving. One step at a time with Him.",xpReq:200,xpNext:380},
+  {level:4,name:"Disciple",desc:"You're learning from the Master himself.",xpReq:380,xpNext:620},
+  {level:5,name:"Faithful One",desc:"Consistency is becoming a part of who you are.",xpReq:620,xpNext:950},
+  {level:6,name:"Beloved",desc:"You're resting in the fact that He loves you.",xpReq:950,xpNext:1400},
+  {level:7,name:"Covenant Keeper",desc:"You take your promises to God seriously.",xpReq:1400,xpNext:2000},
+  {level:8,name:"Friend of God",desc:"Like Abraham — He tells you His secrets.",xpReq:2000,xpNext:2800},
+  {level:9,name:"Son of Fire",desc:"You burn with the things that burn His heart.",xpReq:2800,xpNext:3800},
+  {level:10,name:"Man After His Heart",desc:"David's territory. This is rare. This is real.",xpReq:3800,xpNext:Infinity},
+];
+
+const MILESTONES=[
+  {id:"first_call",icon:"📞",name:"First Call",desc:"Answered your first call from God",check:s=>s.callsAnswered>=1},
+  {id:"first_journal",icon:"✍️",name:"First Words",desc:"Wrote your first journal entry",check:s=>s.journalCount>=1},
+  {id:"first_sight",icon:"👁️",name:"Eyes Open",desc:"Logged your first God sighting",check:s=>s.seeCount>=1},
+  {id:"first_read",icon:"📖",name:"Word Touched",desc:"Logged your first Bible reading",check:s=>s.chaptersRead>=1},
+  {id:"first_game",icon:"🎮",name:"Playful Spirit",desc:"Completed your first mini game",check:s=>s.gamesPlayed>=1},
+  {id:"streak_3",icon:"🔥",name:"3-Day Fire",desc:"3-day streak — you showed up",check:s=>s.longestStreak>=3},
+  {id:"streak_7",icon:"⚡",name:"Week of Grace",desc:"7 days in a row with God",check:s=>s.longestStreak>=7},
+  {id:"streak_14",icon:"🌙",name:"Two Weeks Walking",desc:"14-day streak — this is becoming real",check:s=>s.longestStreak>=14},
+  {id:"streak_30",icon:"🕊️",name:"Month of Seeking",desc:"30-day streak — transformation territory",check:s=>s.longestStreak>=30},
+  {id:"calls_10",icon:"🙏",name:"Always Picking Up",desc:"Answered 10 calls from God",check:s=>s.callsAnswered>=10},
+  {id:"calls_25",icon:"☎️",name:"Open Line",desc:"Answered 25 calls — He knows your voice",check:s=>s.callsAnswered>=25},
+  {id:"journal_10",icon:"📔",name:"Open Heart",desc:"10 journal entries written",check:s=>s.journalCount>=10},
+  {id:"journal_30",icon:"📒",name:"Deep Conversations",desc:"30 journal entries — real intimacy",check:s=>s.journalCount>=30},
+  {id:"chapters_10",icon:"🗺️",name:"Deep Diver",desc:"Read 10 chapters of the Bible",check:s=>s.chaptersRead>=10},
+  {id:"chapters_50",icon:"📜",name:"Scripture Soaked",desc:"50 chapters — God is speaking",check:s=>s.chaptersRead>=50},
+  {id:"chapters_100",icon:"🏛️",name:"Word Dweller",desc:"100 chapters — the Word lives in you",check:s=>s.chaptersRead>=100},
+  {id:"sights_10",icon:"🔍",name:"God Spotter",desc:"Logged 10 God sightings",check:s=>s.seeCount>=10},
+  {id:"sights_30",icon:"🌟",name:"God Hunter",desc:"30 sightings — He's everywhere you look",check:s=>s.seeCount>=30},
+  {id:"level_5",icon:"🌿",name:"Faithful One",desc:"Reached Level 5 — you're walking now",check:s=>s.level>=5},
+  {id:"level_8",icon:"🕊️",name:"Friend of God",desc:"Level 8 — Abraham territory",check:s=>s.level>=8},
+  {id:"reps_100",icon:"💫",name:"100 Reps",desc:"100 total reps with God",check:s=>s.totalReps>=100},
+  {id:"reps_500",icon:"⭐",name:"500 Reps",desc:"500 reps — this is a lifestyle now",check:s=>s.totalReps>=500},
+  {id:"purpose_all",icon:"🧭",name:"Seeker of Answers",desc:"Logged impressions in all 6 purpose areas",check:s=>s.purposeSectionsUsed>=6},
+  {id:"games_10",icon:"🏅",name:"Warrior Trained",desc:"Completed 10 mini games",check:s=>s.gamesPlayed>=10},
+  {id:"fasting_1",icon:"🌿",name:"First Fast",desc:"Completed your first fasting challenge",check:s=>s.fastingCount>=1},
+  {id:"book_summary",icon:"📚",name:"Finished the Book",desc:"Submitted your first book summary",check:s=>s.bookSummaries>=1},
+];
+
+const PURPOSE_SECTIONS={
+  identity:{title:"Who Am I?",prompt:"God, I want to understand who you made me to be — not just what I do. What gifts, callings, and characteristics have you placed in me? What do you see when you look at me beyond my failures and my wins?"},
+  nysc:{title:"NYSC Posting",prompt:"God, I'm about to go for NYSC. You already know where I'm going. I want to surrender this to you — not fight the posting but follow your leading. Is there something specific you want me to do or learn there? Who am I supposed to meet?"},
+  marriage:{title:"Marriage & Relationships",prompt:"God, I want to approach love the right way — through you. Who are you preparing for me? What kind of person am I becoming that can love well? What do I need to work on before I'm ready to lead a home?"},
+  career:{title:"Career & Business",prompt:"God, WebOwnr, the job search, coding, building — I bring all of it to you. What role do you want to play in what I'm building? Is WebOwnr the right thing? What should I be prioritizing this season?"},
+  location:{title:"Where to Settle",prompt:"God, I don't know where I'm supposed to plant roots. Lagos? Abroad? Somewhere new? I don't want to just chase opportunity — I want to be where you've sent me. What are you saying about this?"},
+  holiness:{title:"Holiness & Character",prompt:"God, I want to be holy — not religious. I want the inside to change. What specific areas of my character need your work right now? What does a holy version of Ayomide actually look like in daily life?"},
+};
+
+const GOD_ATTRIBUTES=[
+  {name:"Jehovah Jireh",meaning:"The Lord Who Provides",verse:"Genesis 22:14 — Abraham named that place 'The Lord Will Provide.'"},
+  {name:"Jehovah Rapha",meaning:"The Lord Who Heals",verse:"Exodus 15:26 — I am the Lord who heals you."},
+  {name:"Jehovah Shalom",meaning:"The Lord is Peace",verse:"Judges 6:24 — Gideon built an altar and called it 'The Lord is Peace.'"},
+  {name:"Jehovah Nissi",meaning:"The Lord is My Banner",verse:"Exodus 17:15 — Moses built an altar and called it 'The Lord is my Banner.'"},
+  {name:"Jehovah Roi",meaning:"The Lord is My Shepherd",verse:"Psalm 23:1 — The Lord is my shepherd, I lack nothing."},
+  {name:"El Shaddai",meaning:"God Almighty",verse:"Genesis 17:1 — I am God Almighty; walk before me faithfully."},
+  {name:"El Elyon",meaning:"God Most High",verse:"Genesis 14:18 — Melchizedek was priest of God Most High."},
+  {name:"Abba",meaning:"Father / Daddy",verse:"Romans 8:15 — The Spirit you received brought about your adoption, by him we cry, Abba, Father."},
+  {name:"Immanuel",meaning:"God With Us",verse:"Isaiah 7:14 — The virgin will conceive and give birth to a son, and will call him Immanuel."},
+  {name:"The Counselor",meaning:"The Holy Spirit who guides",verse:"John 14:26 — The Counselor, the Holy Spirit, whom the Father will send, will teach you all things."},
+];
+
+const QUIZ_QUESTIONS=[
+  {q:"What did Jesus say is the greatest commandment?",options:["Love your neighbour","Love God with all your heart","Obey the Ten Commandments","Preach the gospel"],a:1,explain:"Matthew 22:37 — Love the Lord your God with all your heart, soul and mind. This is the first and greatest commandment."},
+  {q:"How many days did Jesus fast in the wilderness?",options:["7 days","21 days","40 days","3 days"],a:2,explain:"Matthew 4:2 — After fasting forty days and forty nights, he was hungry."},
+  {q:"Who asked 'What is truth?' during Jesus' trial?",options:["Herod","Caiaphas","Pilate","Peter"],a:2,explain:"John 18:38 — Pilate asked him, 'What is truth?'"},
+  {q:"Which book says 'The Lord is my shepherd, I shall not want'?",options:["Proverbs","Isaiah","Psalms","Job"],a:2,explain:"Psalm 23:1 — The Lord is my shepherd, I lack nothing."},
+  {q:"What did God tell Joshua to meditate on day and night?",options:["The law","The promises","The name of God","The Psalms"],a:0,explain:"Joshua 1:8 — Keep this Book of the Law always on your lips; meditate on it day and night."},
+  {q:"Paul wrote 'I can do all things through Christ' to which church?",options:["Rome","Corinth","Philippi","Galatia"],a:2,explain:"Philippians 4:13 — I can do all this through him who gives me strength."},
+  {q:"Which disciple denied Jesus three times?",options:["John","Thomas","James","Peter"],a:3,explain:"Matthew 26:75 — Peter remembered the word Jesus had spoken: 'Before the rooster crows, you will disown me three times.'"},
+  {q:"What is the shortest verse in the Bible?",options:["God is love","Be still","Jesus wept","Pray continually"],a:2,explain:"John 11:35 — 'Jesus wept.' Just two words."},
+  {q:"Who wrote most of the New Testament letters?",options:["Peter","James","John","Paul"],a:3,explain:"The Apostle Paul wrote 13 of the 27 New Testament books."},
+  {q:"In the story of the prodigal son, what did the father do when he saw his son returning?",options:["Waited at the door","Ran to meet him","Sent a servant","Closed the gate"],a:1,explain:"Luke 15:20 — While he was still a long way off, his father saw him and was filled with compassion; he ran to his son."},
+  {q:"What does 'Paraclete' (another name for the Holy Spirit) mean?",options:["Comforter/Advocate","Warrior","Judge","Creator"],a:0,explain:"John 14:16 — The Greek word 'Parakletos' means Comforter, Counselor, or Advocate."},
+  {q:"What fruit does Jesus say we bear if we remain in him?",options:["The fruit of knowledge","Much fruit","The fruit of wisdom","Good works"],a:1,explain:"John 15:5 — If you remain in me and I in you, you will bear much fruit."},
+  {q:"Who was thrown into the lion's den for praying to God?",options:["Joseph","Shadrach","Daniel","Elijah"],a:2,explain:"Daniel 6 — Daniel was thrown into the lions' den because he refused to stop praying to God."},
+  {q:"What does God promise to give freely to anyone who asks?",options:["Wealth","Wisdom","Long life","Power"],a:1,explain:"James 1:5 — If any of you lacks wisdom, you should ask God, who gives generously to all."},
+  {q:"Which book of the Bible has 150 chapters?",options:["Isaiah","Proverbs","Psalms","Jeremiah"],a:2,explain:"The book of Psalms has 150 chapters, making it the longest book in the Bible."},
+];
+
+const FILL_BLANKS=[
+  {verse:"Trust in the Lord with all your _____ and lean not on your own understanding.",answer:"heart",ref:"Proverbs 3:5"},
+  {verse:"For God so loved the _____ that he gave his one and only Son.",answer:"world",ref:"John 3:16"},
+  {verse:"I can do all _____ through Christ who strengthens me.",answer:"things",ref:"Philippians 4:13"},
+  {verse:"Be still and _____ that I am God.",answer:"know",ref:"Psalm 46:10"},
+  {verse:"Your word is a _____ for my feet, a light on my path.",answer:"lamp",ref:"Psalm 119:105"},
+  {verse:"Draw near to God and he will draw _____ to you.",answer:"near",ref:"James 4:8"},
+  {verse:"The _____ of the Lord never ceases; his mercies never come to an end.",answer:"steadfast love",ref:"Lamentations 3:22"},
+  {verse:"Create in me a pure _____, O God.",answer:"heart",ref:"Psalm 51:10"},
+  {verse:"If my people, who are called by my name, will humble themselves and _____, I will forgive their sin.",answer:"pray",ref:"2 Chronicles 7:14"},
+  {verse:"The Spirit you received does not make you _____, you did not receive a spirit that makes you a slave again to fear.",answer:"slaves",ref:"Romans 8:15"},
+];
+
+const SCRAMBLE_VERSES=[
+  {words:["Trust","the","Lord","in","with","all","heart","your"],sentence:"Trust in the Lord with all your heart",ref:"Proverbs 3:5"},
+  {words:["I","do","can","all","through","things","Christ"],sentence:"I can do all things through Christ",ref:"Philippians 4:13"},
+  {words:["Jesus","same","the","yesterday","and","today","forever","is"],sentence:"Jesus is the same yesterday and today and forever",ref:"Hebrews 13:8"},
+  {words:["Lord","the","is","shepherd","my"],sentence:"The Lord is my shepherd",ref:"Psalm 23:1"},
+  {words:["wept","Jesus"],sentence:"Jesus wept",ref:"John 11:35"},
+];
+
+const FRUIT_SPIRIT=["Love","Joy","Peace","Patience","Kindness","Goodness","Faithfulness","Gentleness","Self-Control"];
+
+const SERMONS=[
+  {preacher:"Pst. David Ibiyeomie",title:"How to Hear God's Voice",why:"You've asked how to hear God. This sermon gives you practical tools.",link:"https://youtube.com/results?search_query=David+Ibiyeomie+hear+God's+voice"},
+  {preacher:"Pst. Biodun Fatoyinbo",title:"Purpose and Destiny",why:"You're seeking direction. This message cuts straight to identity and calling.",link:"https://youtube.com/results?search_query=Biodun+Fatoyinbo+purpose+destiny"},
+  {preacher:"Pst. E.A. Adeboye",title:"The Power of Consistency",why:"Your struggle with consistency in your walk is addressed here.",link:"https://youtube.com/results?search_query=Adeboye+consistency+spiritual+growth"},
+  {preacher:"Pst. Chris Oyakhilome",title:"The Holy Spirit: Who He Is",why:"You said you want to understand the Holy Spirit. Start here.",link:"https://youtube.com/results?search_query=Chris+Oyakhilome+Holy+Spirit"},
+  {preacher:"Pst. Sam Adeyemi",title:"Success and the Kingdom of God",why:"As a founder and developer, this sermon connects faith and ambition.",link:"https://youtube.com/results?search_query=Sam+Adeyemi+success+kingdom"},
+  {preacher:"Pst. Femi Lazarus",title:"Sin, Grace and the Journey to Holiness",why:"You've been honest about struggling with sin. This is for you.",link:"https://youtube.com/results?search_query=Femi+Lazarus+holiness+grace"},
+  {preacher:"Pst. Tobi Adegboyega",title:"Young, Gifted and Chosen",why:"A word for young builders who carry a big calling.",link:"https://youtube.com/results?search_query=Tobi+Adegboyega+young+gifted"},
+];
+
+const BOOKS_OF_MONTH=[
+  {month:"April 2026",title:"Knowing God",author:"J.I. Packer",desc:"A systematic but personal exploration of who God is. Perfect for someone who wants to move from knowing about God to actually knowing Him.",prompt:"After reading, write: What did I learn about God's character that changed how I see Him?"},
+  {month:"May 2026",title:"The Purpose Driven Life",author:"Rick Warren",desc:"40 chapters on why you exist — answers the identity questions you've been asking.",prompt:"Write a 1-page summary: What is the one purpose statement you'll carry forward?"},
+  {month:"June 2026",title:"The Pursuit of Holiness",author:"Jerry Bridges",desc:"Practical, honest, not preachy. Exactly what you asked for — holiness without religion.",prompt:"Summarize: What specific habit or pattern will you change based on this book?"},
+  {month:"July 2026",title:"The Heavenly Man",author:"Brother Yun",desc:"A Chinese pastor's story of suffering, faith and hearing God clearly. It will wreck you in the best way.",prompt:"Write: What did Brother Yun's story teach you about your own excuses?"},
+];
+
+const DISCIPLINES=[
+  {type:"fast",icon:"🍃",title:"One-Day Fast",desc:"Set aside a day this week to fast one meal. Replace that time with prayer and stillness. This isn't about hunger — it's about priority.",reward:"+25 XP + Fasting Badge"},
+  {type:"retreat",icon:"🌄",title:"2-Hour Retreat",desc:"Find a quiet place with no phone. Just your Bible, a notebook, and God. Ask him one question and sit until you hear something.",reward:"+20 XP"},
+  {type:"silence",icon:"🤫",title:"Hour of Silence",desc:"For one hour, turn off all media and notifications. No music, no social media. Just silence and God's presence.",reward:"+10 XP"},
+];
+
+const REWARDS=[
+  {id:"streak_3",emoji:"🌟",title:"He's Watching You",subtitle:"3 days in a row. Here's what God says about your consistency:",verses:[{text:"The eyes of the Lord range throughout the earth to strengthen those whose hearts are fully committed to him.",ref:"2 Chronicles 16:9"},{text:"Well done, good and faithful servant! You have been faithful with a few things.",ref:"Matthew 25:21"},{text:"The Lord your God is with you, the Mighty Warrior who saves. He will take great delight in you.",ref:"Zephaniah 3:17"}]},
+  {id:"streak_7",emoji:"🔥",title:"God Is Proud of You",subtitle:"7 days! He sees every single one. Here's what He wants you to know:",verses:[{text:"Blessed is the one who perseveres under trial because, having stood the test, that person will receive the crown of life.",ref:"James 1:12"},{text:"Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",ref:"Galatians 6:9"},{text:"You have persevered and have endured hardships for my name, and have not grown weary.",ref:"Revelation 2:3"}]},
+  {id:"level_up",emoji:"⚡",title:"You've Grown",subtitle:"God doesn't just see what you do — He sees who you're becoming:",verses:[{text:"He who began a good work in you will carry it on to completion until the day of Christ Jesus.",ref:"Philippians 1:6"},{text:"And we all, who with unveiled faces contemplate the Lord's glory, are being transformed into his image.",ref:"2 Corinthians 3:18"},{text:"The path of the righteous is like the morning sun, shining ever brighter till the full light of day.",ref:"Proverbs 4:18"}]},
+  {id:"calls_10",emoji:"💛",title:"He Loves Hearing Your Voice",subtitle:"10 calls answered! This is what it means to Him:",verses:[{text:"The prayer of a righteous person is powerful and effective.",ref:"James 5:16"},{text:"Call to me and I will answer you and tell you great and unsearchable things you do not know.",ref:"Jeremiah 33:3"},{text:"Before they call I will answer; while they are still speaking I will hear.",ref:"Isaiah 65:24"}]},
+  {id:"journal_10",emoji:"📖",title:"Your Words Matter to Him",subtitle:"10 journal entries — you've been talking. He's been listening:",verses:[{text:"The Lord is close to all who call on him, to all who call on him in truth.",ref:"Psalm 145:18"},{text:"My eyes are on all their ways; they are not hidden from me.",ref:"Jeremiah 16:17"},{text:"You have kept count of my tossings; put my tears in your bottle. Are they not in your book?",ref:"Psalm 56:8"}]},
+  {id:"chapters_10",emoji:"📜",title:"The Word Is Working In You",subtitle:"10 chapters read. The Word doesn't return void:",verses:[{text:"So is my word that goes out from my mouth: It will not return to me empty.",ref:"Isaiah 55:11"},{text:"The word of God is alive and active. Sharper than any double-edged sword.",ref:"Hebrews 4:12"},{text:"I have hidden your word in my heart that I might not sin against you.",ref:"Psalm 119:11"}]},
+  {id:"purpose_all",emoji:"🧭",title:"You're Seeking With All Your Heart",subtitle:"You've brought every big question to God. Here's His promise:",verses:[{text:"You will seek me and find me when you seek me with all your heart.",ref:"Jeremiah 29:13"},{text:"Whether you turn to the right or to the left, your ears will hear a voice behind you, saying, 'This is the way; walk in it.'",ref:"Isaiah 30:21"},{text:"Commit to the Lord whatever you do, and he will establish your plans.",ref:"Proverbs 16:3"}]},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state={
+  totalXP:0,level:1,streak:0,longestStreak:0,
+  lastActiveDate:null,lastRepDate:null,
+  todayReps:0,todayGoal:5,
+  callsAnswered:0,callsDeclined:0,
+  journalCount:0,seeCount:0,chaptersRead:0,totalReps:0,
+  gamesPlayed:0,fastingCount:0,bookSummaries:0,
+  purposeSectionsUsed:0,
+  verseReadToday:false,
+  todayActivity:[],
+  journalEntries:[],seeEntries:[],readEntries:[],
+  purposeEntries:{},booksRead:[],
+  milestones:[],rewardsShown:[],
+  disciplinesDone:[],
+  bookSummaryEntries:[],
+  consecutiveMissedDays:0,
+  settings:{
+    name:"Ayomide",callsPerDay:3,ringtone:"gentle",
+    morning:false,evening:false,midday:false,warnings:true,
+    callStart:7,callEnd:22
+  }
+};
+
+let callTimerInterval=null,callCountdown=30;
+let incallInterval=null,incallSeconds=0;
+let currentCallPrompt="",currentSeeTag="",currentPurposeSection="";
+let deferredInstallPrompt=null;
+let longPressTimer=null;
+let currentGame=null,currentGameData=null;
+let scrambleSelected=[];
+
+// ============================================================
+// STORAGE
+// ============================================================
+function saveState(){try{localStorage.setItem("wwh_v2",JSON.stringify(state))}catch(e){}}
+function loadState(){
+  try{
+    const s=localStorage.getItem("wwh_v2");
+    if(s){const p=JSON.parse(s);state=Object.assign({},state,p);state.settings=Object.assign({},state.settings,p.settings||{});}
+    // Migrate old data
+    const old=localStorage.getItem("wwh_state");
+    if(old&&!s){const p=JSON.parse(old);state=Object.assign({},state,p);}
+  }catch(e){}
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="walkwithhim-backup.json";a.click();
+  showToast("Data exported ✓");
+}
+function importData(e){
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      state=Object.assign({},state,p);
+      state.settings=Object.assign({},state.settings,p.settings||{});
+      saveState();updateAllUI();renderAll();
+      showToast("Data restored ✓");
+    }catch(err){showToast("Import failed — invalid file");}
+  };
+  r.readAsText(file);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init(){
+  loadState();
+  checkNewDay();
+  checkMissedDays();
+  populateBibleSelect();
+  loadDailyVerse();
+  refreshJournalPrompt();
+  updateAllUI();
+  renderAll();
+  loadSettings();
+  scheduleCalls();
+  scheduleAlerts();
+  updateGreeting();
+  renderDailyChallenge();
+  renderGrowTab();
+  showHomeAlerts();
+}
+
+function renderAll(){
+  renderJournalEntries();renderSeeEntries();renderReadEntries();
+  renderBooksGrid();renderMilestones();renderTodayActivity();
+}
+
+function updateGreeting(){
+  const h=new Date().getHours();
+  const g=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+  setEl("greeting-time",g);
+  setEl("greeting-name",(state.settings.name||"Ayomide")+" 👋");
+  const subs=["God's been waiting for you.","He's thinking about you right now.","His mercies are new today.","He hasn't forgotten about you.","You're on His mind this moment."];
+  const el=document.querySelector(".greeting-sub");
+  if(el)el.textContent=subs[Math.floor(Date.now()/86400000)%subs.length];
+}
+
+// ============================================================
+// NEW DAY / MISSED DAYS
+// ============================================================
+function checkNewDay(){
+  const today=new Date().toDateString();
+  if(state.lastActiveDate!==today){
+    state.todayReps=0;state.verseReadToday=false;state.todayActivity=[];
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(state.lastActiveDate&&state.lastActiveDate!==yesterday){
+      state.consecutiveMissedDays=(state.consecutiveMissedDays||0)+1;
+    } else {state.consecutiveMissedDays=0;}
+    state.lastActiveDate=today;saveState();
+  }
+}
+
+function checkMissedDays(){
+  const missed=state.consecutiveMissedDays||0;
+  if(missed>=3&&state.level>1){
+  const xpLoss=missed*10;
+    state.totalXP=Math.max(0,state.totalXP-xpLoss);
+    const newLevel=calcLevel(state.totalXP);
+    if(newLevel<state.level){
+      const oldLevel=state.level;
+      state.level=newLevel;
+      state.consecutiveMissedDays=0;
+      saveState();
+      setTimeout(()=>showDemotion(oldLevel,newLevel,missed),500);
+    } else {
+      state.consecutiveMissedDays=0;saveState();
+    }
+  }
+}
+
+function showDemotion(from,to,days){
+  const el=document.getElementById("demotion-overlay");
+  if(!el)return;
+  document.getElementById("demotion-title").textContent=`Demoted to Level ${to}: ${LEVELS[to-1].name}`;
+  document.getElementById("demotion-msg").textContent=`You missed ${days} days in a row. God hasn't moved — but your level dropped from ${LEVELS[from-1].name} to ${LEVELS[to-1].name}. His arms are still open. Come back.`;
+  el.classList.remove("hidden");
+}
+function closeDemotion(){document.getElementById("demotion-overlay").classList.add("hidden");}
+
+function calcLevel(xp){
+  let lv=1;
+  for(let i=LEVELS.length-1;i>=0;i--){if(xp>=LEVELS[i].xpReq){lv=LEVELS[i].level;break;}}
+  return lv;
+}
+
+// ============================================================
+// REPS & XP
+// ============================================================
+const XP_MAP={call:15,journal:20,see:10,read:10,verse:5,purpose:10,game:10,fast:25,retreat:20,silence:10,book:30};
+const PENALTY_MAP={miss_call:-5,skip_fast:-10};
+
+function addReps(type,count=1,desc=""){
+  const xp=(XP_MAP[type]||10)*count;
+  state.totalXP=Math.max(0,state.totalXP+xp);
+  state.totalReps+=count;state.todayReps+=count;
+  const today=new Date().toDateString();
+  if(state.lastRepDate!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    state.streak=state.lastRepDate===yesterday?state.streak+1:1;
+    if(state.streak>state.longestStreak)state.longestStreak=state.streak;
+    state.lastRepDate=today;state.lastActiveDate=today;
+  }
+  state.todayActivity.unshift({icon:getRepIcon(type),text:desc||getRepText(type),xp,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});
+  if(state.todayActivity.length>20)state.todayActivity.pop();
+  const prevLevel=state.level;
+  state.level=calcLevel(state.totalXP);
+  if(state.level>prevLevel){
+    setTimeout(()=>{showToast(`🎉 Level Up! You are now "${LEVELS[state.level-1].name}"!`);showReward("level_up");},600);
+  }
+  saveState();updateAllUI();renderTodayActivity();checkMilestones();
+  showToast(`+${xp} XP ⚡`);
+}
+
+function addPenalty(type,desc=""){
+  const pen=Math.abs(PENALTY_MAP[type]||5);
+  state.totalXP=Math.max(0,state.totalXP-pen);
+  state.totalReps=Math.max(0,state.totalReps-1);
+  state.todayActivity.unshift({icon:"⬇️",text:desc||"Missed an opportunity",xp:-pen,time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});
+  // check demotion
+  const newLevel=calcLevel(state.totalXP);
+  if(newLevel<state.level){const old=state.level;state.level=newLevel;setTimeout(()=>showDemotion(old,newLevel,0),400);}
+  saveState();updateAllUI();renderTodayActivity();
+}
+
+function getRepIcon(t){return{call:"🙏",journal:"✍️",see:"👁️",read:"📖",verse:"✝️",purpose:"🧭",game:"🎮",fast:"🍃",retreat:"🌄",silence:"🤫",book:"📚"}[t]||"⚡"}
+function getRepText(t){return{call:"Answered God's call",journal:"Talked to God",see:"Saw God today",read:"Read the Word",verse:"Read verse of the day",purpose:"Sought direction",game:"Completed a mini game",fast:"Completed a fast",retreat:"Went on retreat",silence:"Hour of silence",book:"Submitted book summary"}[t]||"Rep earned"}
+
+// ============================================================
+// UI
+// ============================================================
+function updateAllUI(){
+  setEl("header-streak",state.streak);
+  setEl("header-level",`Lv.${state.level}`);
+  setEl("today-reps",state.todayReps);
+  setEl("today-goal",state.todayGoal);
+  setEl("total-xp",state.totalXP);
+  const lv=LEVELS[state.level-1];
+  const nlv=LEVELS[state.level]||LEVELS[LEVELS.length-1];
+  const inLv=state.totalXP-lv.xpReq;
+  const need=nlv.xpReq-lv.xpReq;
+  const pct=Math.min(100,need>0?Math.round(inLv/need*100):100);
+  const xpFill=document.getElementById("xp-fill");if(xpFill)xpFill.style.width=pct+"%";
+  setEl("xp-next-label",`${inLv} / ${need===Infinity?'∞':need} XP to ${nlv.name}`);
+  const sf=document.getElementById("stats-xp-fill");if(sf)sf.style.width=pct+"%";
+  setEl("stats-xp-label",`${state.totalXP} XP total`);
+  setEl("stats-level-circle",state.level);
+  setEl("stats-level-name",lv.name);
+  setEl("stats-level-desc",lv.desc);
+  setEl("stat-streak",state.streak);setEl("stat-calls-answered",state.callsAnswered);
+  setEl("stat-journal-count",state.journalCount);setEl("stat-see-count",state.seeCount);
+  setEl("stat-chapters-read",state.chaptersRead);setEl("stat-total-reps",state.totalReps);
+}
+
+function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+
+function renderTodayActivity(){
+  const el=document.getElementById("today-activity");if(!el)return;
+  if(!state.todayActivity.length){
+    el.innerHTML='<div style="font-size:14px;color:var(--text3);text-align:center;padding:16px 0">No activity yet today. Answer a call or log something.</div>';return;
+  }
+  el.innerHTML=state.todayActivity.slice(0,8).map(a=>`
+    <div class="activity-item">
+      <span class="ai-icon">${a.icon}</span><span>${a.text}</span>
+      <span class="ai-rep" style="color:${(a.xp||0)<0?'var(--red)':'var(--gold)'}">
+        ${(a.xp||0)>0?'+':''}${a.xp} XP
+      </span>
+    </div>`).join('');
+}
+
+// ============================================================
+// HOME ALERTS
+// ============================================================
+function showHomeAlerts(){
+  const el=document.getElementById("home-alerts");if(!el)return;
+  el.innerHTML="";
+  const h=new Date().getHours();
+  const alerts=[];
+  if(state.streak>0&&state.todayReps===0&&h>=10){
+    alerts.push({type:"warn",icon:"⚠️",msg:`Your ${state.streak}-day streak is at risk! You haven't logged anything today. Don't break it now.`});
+  }
+  if(h>=19&&state.todayReps<2){
+    alerts.push({type:"warn",icon:"🌙",msg:"Evening check: You've barely connected with God today. There's still time — even 3 minutes counts."});
+  }
+  if(state.callsDeclined>state.callsAnswered&&state.callsDeclined>2){
+    alerts.push({type:"info",icon:"📞",msg:`You've missed ${state.callsDeclined} calls recently. He keeps calling because He loves you — not to pressure you.`});
+  }
+  if(h>=7&&h<9&&state.todayReps===0){
+    alerts.push({type:"gold",icon:"☀️",msg:"Good morning! Start your day with even one honest moment with God. He's already here."});
+  }
+  alerts.forEach((a,i)=>{
+    const div=document.createElement("div");
+    div.className=`alert-banner ${a.type}`;
+    div.innerHTML=`<span class="ab-icon">${a.icon}</span><span>${a.msg}</span><button class="alert-close" onclick="this.parentElement.remove()">✕</button>`;
+    el.appendChild(div);
+  });
+}
+
+// ============================================================
+// DAILY CHALLENGE
+// ============================================================
+const DAILY_CHALLENGES=[
+  {type:"prayer",title:"5-Minute Focused Prayer",desc:"Set a 5-minute timer. Pray only thanksgiving — no requests. Just gratitude.",xp:15,action:()=>openJournal()},
+  {type:"verse",title:"Memorize Today's Verse",desc:"Read the verse of the day 3 times and try to say it from memory.",xp:10,action:()=>showTab('home')},
+  {type:"fast",title:"Skip One Meal in Prayer",desc:"Replace one meal today with 15 minutes of prayer and the verse of the day.",xp:20,action:()=>showTab('grow')},
+  {type:"see",title:"Log 3 God Sightings",desc:"Before tonight, spot and log 3 moments where you noticed God.",xp:15,action:()=>showTab('see')},
+  {type:"journal",title:"Write an Honest Prayer",desc:"No formal language. Write what you're actually thinking to God right now.",xp:15,action:()=>showTab('journal')},
+  {type:"read",title:"Read One Chapter",desc:"Pick any book. Read one chapter and write one thing you noticed about God.",xp:10,action:()=>showTab('read')},
+  {type:"silence",title:"10 Minutes of Silence",desc:"No phone. No music. Find a quiet place and just be in God's presence.",xp:15,action:()=>{}},
+];
+
+function renderDailyChallenge(){
+  const el=document.getElementById("daily-challenge-area");if(!el)return;
+  const idx=Math.floor(Date.now()/86400000)%DAILY_CHALLENGES.length;
+  const ch=DAILY_CHALLENGES[idx];
+  el.innerHTML=`
+    <div class="challenge-card">
+      <p class="challenge-type">⚡ Today's Challenge</p>
+      <h3 class="challenge-title">${ch.title}</h3>
+      <p class="challenge-desc">${ch.desc}</p>
+      <div class="challenge-footer">
+        <span class="challenge-reward">Reward: <span>+${ch.xp} XP</span></span>
+        <button class="challenge-btn" onclick="acceptChallenge(${idx})">Accept →</button>
+      </div>
+    </div>`;
+}
+function acceptChallenge(idx){
+  const ch=DAILY_CHALLENGES[idx];
+  ch.action();showToast(`Challenge accepted! +${ch.xp} XP on completion`);
+}
+
+// ============================================================
+// VERSE
+// ============================================================
+function loadDailyVerse(){
+  const idx=Math.floor(Date.now()/86400000)%DAILY_VERSES.length;
+  const v=DAILY_VERSES[idx];
+  setEl("daily-verse-text",`"${v.text}"`);setEl("daily-verse-ref",`— ${v.ref}`);
+  if(state.verseReadToday){const b=document.getElementById("verse-read-btn");if(b)b.textContent="✓ Already logged";}
+}
+function markVerseRead(){
+  if(state.verseReadToday){showToast("Already logged today ✓");return;}
+  state.verseReadToday=true;addReps("verse",1,"Read verse of the day");
+  const b=document.getElementById("verse-read-btn");if(b)b.textContent="✓ Logged!";
+}
+
+// ============================================================
+// CALL SYSTEM
+// ============================================================
+const RINGTONES={
+  gentle:{name:"Gentle Chimes",fn:playGentleRingtone},
+  worship:{name:"Worship Pulse",fn:playWorshipRingtone},
+  bold:{name:"Bold Call",fn:playBoldRingtone},
+  soft:{name:"Soft Hum",fn:playSoftRingtone},
+};
+
+function scheduleCalls(){
+  const now=new Date();
+  const {callsPerDay=3,callStart=7,callEnd=22}=state.settings;
+  const totalMins=(callEnd-callStart)*60;
+  const seed=now.getFullYear()*10000+(now.getMonth()+1)*100+now.getDate();
+  const rand=(o)=>{const x=Math.sin(seed*9301+o*49297+233720)*10000;return Math.abs(x-Math.floor(x));};
+  const times=[];
+  for(let i=0;i<callsPerDay;i++){
+    const offset=Math.floor(rand(i*3+1)*totalMins);
+    const ct=new Date(now);ct.setHours(callStart,0,0,0);ct.setMinutes(ct.getMinutes()+offset);
+    times.push(ct);
+  }
+  times.sort((a,b)=>a-b);
+  times.forEach(ct=>{
+    const delay=ct.getTime()-now.getTime();
+    if(delay>0&&delay<86400000)setTimeout(()=>triggerCall(),delay);
+  });
+}
+
+function scheduleAlerts(){
+  const now=new Date();
+  // Morning 7am
+  if(state.settings.morning){
+    const t=new Date(now);t.setHours(7,0,0,0);
+    const d=t.getTime()-now.getTime();
+    if(d>0)setTimeout(()=>showToast("☀️ Morning reminder: Start with God today"),d);
+  }
+  // Evening 9pm
+  if(state.settings.evening){
+    const t=new Date(now);t.setHours(21,0,0,0);
+    const d=t.getTime()-now.getTime();
+    if(d>0)setTimeout(()=>{
+      if(state.todayReps<3)showToast("🌙 Evening: You haven't connected much today. Even 3 minutes counts.");
+    },d);
+  }
+  // Midday 1pm warning
+  if(state.settings.midday){
+    const t=new Date(now);t.setHours(13,0,0,0);
+    const d=t.getTime()-now.getTime();
+    if(d>0)setTimeout(()=>{
+      if(state.todayReps===0)showToast("⚠️ Midday: God's been waiting. Don't let the whole day pass.");
+    },d);
+  }
+}
+
+function triggerCall(){
+  currentCallPrompt=CALL_PROMPTS[Math.floor(Math.random()*CALL_PROMPTS.length)];
+  setEl("call-display-name","God");
+  document.getElementById("call-prompt-text").textContent="He wants to talk with you";
+  document.getElementById("incall-prompt-display").textContent=currentCallPrompt;
+  if(navigator.vibrate)navigator.vibrate([400,200,400,200,400]);
+  document.getElementById("call-overlay").classList.remove("hidden");
+  callCountdown=30;updateCallTimer();
+  callTimerInterval=setInterval(()=>{
+    callCountdown--;updateCallTimer();
+    if(callCountdown<=0){clearInterval(callTimerInterval);autoMissCall();}
+  },1000);
+  const rt=RINGTONES[state.settings.ringtone||"gentle"];
+  if(rt)rt.fn();
+}
+
+function updateCallTimer(){
+  const f=document.getElementById("call-timer-fill");const s=document.getElementById("call-timer-secs");
+  if(f)f.style.width=(callCountdown/30*100)+"%";if(s)s.textContent=callCountdown+"s";
+}
+
+function answerCall(){
+  clearInterval(callTimerInterval);
+  document.getElementById("call-overlay").classList.add("hidden");
+  document.getElementById("in-call-screen").classList.remove("hidden");
+  document.getElementById("incall-note").value="";
+  if(navigator.vibrate)navigator.vibrate(100);
+  incallSeconds=0;
+  incallInterval=setInterval(()=>{
+    incallSeconds++;const m=Math.floor(incallSeconds/60),s=incallSeconds%60;
+    setEl("incall-timer",`${m}:${s.toString().padStart(2,"0")}`);
+  },1000);
+}
+
+function declineCall(){
+  clearInterval(callTimerInterval);
+  document.getElementById("call-overlay").classList.add("hidden");
+  state.callsDeclined++;
+  if(state.settings.warnings)addPenalty("miss_call","Declined God's call (-5 XP)");
+  else{saveState();}
+  showToast("You missed His call 💛 He'll try again");
+}
+
+function autoMissCall(){
+  document.getElementById("call-overlay").classList.add("hidden");
+  state.callsDeclined++;
+  if(state.settings.warnings)addPenalty("miss_call","Missed God's call (-5 XP)");
+  else{saveState();}
+  showToast("Call missed. He'll call again 💛");
+}
+
+function hangupCall(){
+  clearInterval(incallInterval);
+  document.getElementById("in-call-screen").classList.add("hidden");
+  const note=document.getElementById("incall-note").value.trim();
+  if(note){
+    state.journalEntries.unshift({id:Date.now(),type:"call",text:note,prompt:currentCallPrompt,date:new Date().toLocaleString()});
+    state.journalCount++;
+  }
+  state.callsAnswered++;
+  addReps("call",1,"Answered God's call");
+  renderJournalEntries();
+}
+
+// ============================================================
+// RINGTONES
+// ============================================================
+function getAudioCtx(){return new(window.AudioContext||window.webkitAudioContext)();}
+function playNote(ctx,freq,start,dur,type="sine",vol=0.3){
+  const osc=ctx.createOscillator(),g=ctx.createGain();
+  osc.connect(g);g.connect(ctx.destination);
+  osc.frequency.value=freq;osc.type=type;
+  g.gain.setValueAtTime(0,ctx.currentTime+start);
+  g.gain.linearRampToValueAtTime(vol,ctx.currentTime+start+0.05);
+  g.gain.linearRampToValueAtTime(0,ctx.currentTime+start+dur);
+  osc.start(ctx.currentTime+start);osc.stop(ctx.currentTime+start+dur+0.1);
+}
+function playGentleRingtone(){try{const c=getAudioCtx();[523,659,784,523,659,784].forEach((f,i)=>playNote(c,f,i*0.5,0.4));} catch(e){}}
+function playWorshipRingtone(){try{const c=getAudioCtx();[440,554,659,554,440].forEach((f,i)=>playNote(c,f,i*0.4,0.35,"triangle",0.25));} catch(e){}}
+function playBoldRingtone(){try{const c=getAudioCtx();[880,1108,880,1108,880].forEach((f,i)=>playNote(c,f,i*0.3,0.25,"square",0.15));} catch(e){}}
+function playSoftRingtone(){try{const c=getAudioCtx();[392,494,587,494,392].forEach((f,i)=>playNote(c,f,i*0.6,0.5,"sine",0.2));} catch(e){}}
+
+function openRingtoneModal(){
+  const list=document.getElementById("ringtone-list");
+  list.innerHTML=Object.entries(RINGTONES).map(([k,v])=>`
+    <div class="ringtone-opt ${state.settings.ringtone===k?'selected':''}" onclick="selectRingtone('${k}')">
+      <button class="play-btn" onclick="event.stopPropagation();${v.fn.name}()">▶</button>
+      <span class="ringtone-name">${v.name}</span>
+      ${state.settings.ringtone===k?'<span style="color:var(--gold);font-size:12px;font-weight:700">Selected</span>':''}
+    </div>`).join('');
+  document.getElementById("ringtone-modal").classList.remove("hidden");
+}
+function selectRingtone(k){
+  state.settings.ringtone=k;saveState();openRingtoneModal();showToast("Ringtone set: "+RINGTONES[k].name);
+}
+function closeRingtoneModal(){document.getElementById("ringtone-modal").classList.add("hidden");}
+
+// ============================================================
+// JOURNAL
+// ============================================================
+function openJournal(){refreshModalPrompt();document.getElementById("journal-modal").classList.remove("hidden");setTimeout(()=>document.getElementById("modal-journal-input").focus(),100);}
+function closeJournal(){document.getElementById("journal-modal").classList.add("hidden");}
+function refreshJournalPrompt(){setEl("journal-prompt",JOURNAL_PROMPTS[Math.floor(Math.random()*JOURNAL_PROMPTS.length)]);}
+function refreshModalPrompt(){setEl("modal-prompt",JOURNAL_PROMPTS[Math.floor(Math.random()*JOURNAL_PROMPTS.length)]);}
+function saveJournalEntry(){
+  const t=document.getElementById("journal-input").value.trim();if(!t){showToast("Write something first");return;}
+  commitJournal(t);document.getElementById("journal-input").value="";refreshJournalPrompt();
+}
+function saveModalJournal(){
+  const t=document.getElementById("modal-journal-input").value.trim();if(!t){showToast("Write something first");return;}
+  commitJournal(t);document.getElementById("modal-journal-input").value="";closeJournal();
+}
+function commitJournal(text){
+  state.journalEntries.unshift({id:Date.now(),type:"journal",text,date:new Date().toLocaleString()});
+  state.journalCount++;addReps("journal",2,"Talked to God in journal");renderJournalEntries();
+}
+function renderJournalEntries(){
+  const el=document.getElementById("journal-entries-list");if(!el)return;
+  if(!state.journalEntries.length){el.innerHTML='<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">Nothing yet. Start talking to him.</p>';return;}
+  el.innerHTML=state.journalEntries.slice(0,15).map(e=>`
+    <div class="entry-card">
+      <div class="entry-date">${e.date}${e.type==="call"?" · 📞 From a Call":""}</div>
+      ${e.prompt?`<div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-style:italic">"${e.prompt}"</div>`:""}
+      <div class="entry-text">${e.text.replace(/\n/g,"<br/>")}</div>
+    </div>`).join('');
+}
+
+// ============================================================
+// SEE GOD
+// ============================================================
+function setSeeTag(btn,text){
+  document.querySelectorAll(".see-tag").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");currentSeeTag=text;
+  const inp=document.getElementById("see-input");if(!inp.value)inp.value=text+": ";
+}
+function saveSeeEntry(){
+  const t=document.getElementById("see-input").value.trim();if(!t){showToast("Describe what you saw");return;}
+  state.seeEntries.unshift({id:Date.now(),text:t,tag:currentSeeTag,date:new Date().toLocaleString()});
+  state.seeCount++;document.getElementById("see-input").value="";currentSeeTag="";
+  document.querySelectorAll(".see-tag").forEach(b=>b.classList.remove("active"));
+  addReps("see",1,"Logged a God sighting");renderSeeEntries();
+}
+function renderSeeEntries(){
+  const el=document.getElementById("see-entries-list");if(!el)return;
+  if(!state.seeEntries.length){el.innerHTML='<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">Start noticing him in your day.</p>';return;}
+  el.innerHTML=state.seeEntries.slice(0,15).map(e=>`
+    <div class="entry-card">
+      <div class="entry-date">${e.date}</div>
+      ${e.tag?`<span class="entry-tag">${e.tag}</span>`:""}
+      <div class="entry-text">${e.text.replace(/\n/g,"<br/>")}</div>
+    </div>`).join('');
+}
+
+// ============================================================
+// BIBLE READING
+// ============================================================
+function populateBibleSelect(){
+  const sel=document.getElementById("read-book");if(!sel)return;
+  Object.keys(BIBLE_BOOKS).forEach(b=>{const o=document.createElement("option");o.value=b;o.textContent=b;sel.appendChild(o);});
+  sel.addEventListener("change",updateChapterSelect);
+}
+function updateChapterSelect(){
+  const book=document.getElementById("read-book").value;
+  const cs=document.getElementById("read-chapter");
+  cs.innerHTML='<option value="">Chapter</option>';
+  if(book&&BIBLE_BOOKS[book]){for(let i=1;i<=BIBLE_BOOKS[book];i++){const o=document.createElement("option");o.value=i;o.textContent=`Chapter ${i}`;cs.appendChild(o);}}
+}
+function logReading(){
+  const book=document.getElementById("read-book").value;
+  const ch=document.getElementById("read-chapter").value;
+  const insight=document.getElementById("read-insight").value.trim();
+  if(!book||!ch){showToast("Choose a book and chapter");return;}
+  state.readEntries.unshift({id:Date.now(),book,chapter:ch,insight:insight||"No note added",date:new Date().toLocaleString()});
+  state.chaptersRead++;if(!state.booksRead.includes(book))state.booksRead.push(book);
+  document.getElementById("read-book").value="";document.getElementById("read-chapter").innerHTML='<option value="">Chapter</option>';document.getElementById("read-insight").value="";
+  addReps("read",1,`Read ${book} ${ch}`);renderReadEntries();renderBooksGrid();
+}
+function renderReadEntries(){
+  const el=document.getElementById("read-entries-list");if(!el)return;
+  if(!state.readEntries.length){el.innerHTML='<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">No reading logged yet.</p>';return;}
+  el.innerHTML=state.readEntries.slice(0,20).map(e=>`
+    <div class="entry-card">
+      <div class="entry-date">${e.date}</div>
+      <div class="entry-text"><strong>${e.book} ${e.chapter}</strong><br/><span style="color:var(--text2)">${e.insight}</span></div>
+    </div>`).join('');
+}
+function renderBooksGrid(){
+  const el=document.getElementById("read-books-grid");if(!el)return;
+  el.innerHTML=state.booksRead.length?state.booksRead.map(b=>`<span class="book-chip">${b}</span>`).join(''):'<p style="color:var(--text3);font-size:13px">No books read yet</p>';
+}
+
+// ============================================================
+// PURPOSE
+// ============================================================
+function openPurposeSection(key){
+  currentPurposeSection=key;
+  const s=PURPOSE_SECTIONS[key];if(!s)return;
+  document.getElementById("purpose-detail-title").textContent=s.title;
+  document.getElementById("purpose-detail-prompt").textContent=s.prompt;
+  document.getElementById("purpose-input").value="";
+  document.querySelector(".purpose-categories").classList.add("hidden");
+  document.getElementById("purpose-detail").classList.remove("hidden");
+  renderPurposeEntries(key);
+}
+function closePurposeSection(){
+  document.querySelector(".purpose-categories").classList.remove("hidden");
+  document.getElementById("purpose-detail").classList.add("hidden");
+}
+function savePurposeEntry(){
+  const t=document.getElementById("purpose-input").value.trim();if(!t){showToast("Write what you're sensing");return;}
+  if(!state.purposeEntries[currentPurposeSection])state.purposeEntries[currentPurposeSection]=[];
+  state.purposeEntries[currentPurposeSection].unshift({id:Date.now(),text:t,date:new Date().toLocaleString()});
+  document.getElementById("purpose-input").value="";
+  const used=Object.keys(state.purposeEntries).filter(k=>state.purposeEntries[k]?.length>0).length;
+  state.purposeSectionsUsed=used;
+  addReps("purpose",1,"Sought direction from God");renderPurposeEntries(currentPurposeSection);
+}
+function renderPurposeEntries(key){
+  const el=document.getElementById("purpose-entries-list");if(!el)return;
+  const entries=state.purposeEntries[key]||[];
+  el.innerHTML=entries.length?entries.map(e=>`<div class="entry-card"><div class="entry-date">${e.date}</div><div class="entry-text">${e.text.replace(/\n/g,"<br/>")}</div></div>`).join(''):'<p style="color:var(--text3);font-size:14px;text-align:center;padding:16px 0">Nothing logged yet. Start listening.</p>';
+}
+
+// ============================================================
+// MINI GAMES
+// ============================================================
+function startGame(type){
+  document.getElementById("game-home").classList.add("hidden");
+  const panel=document.getElementById("game-panel");panel.classList.remove("hidden");currentGame=type;
+  if(type==="quiz")renderQuizGame();
+  else if(type==="fillblank")renderFillBlankGame();
+  else if(type==="scramble")renderScrambleGame();
+  else if(type==="attribute")renderAttributeGame();
+  else if(type==="prayer")renderPrayerBuilder();
+  else if(type==="fruit")renderFruitCheck();
+}
+function endGame(){
+  document.getElementById("game-home").classList.remove("hidden");
+  document.getElementById("game-panel").classList.add("hidden");currentGame=null;
+}
+
+function renderQuizGame(){
+  const q=QUIZ_QUESTIONS[Math.floor(Math.random()*QUIZ_QUESTIONS.length)];
+  currentGameData={answered:false,correct:false,q};
+  document.getElementById("game-panel").innerHTML=`
+    <div class="game-panel">
+      <button class="back-btn" onclick="endGame()">← Back</button>
+      <h3>🧠 Bible Quiz</h3>
+      <p class="game-sub">Test what you know about God's Word</p>
+      <p style="font-size:16px;font-weight:600;margin-bottom:16px;line-height:1.5">${q.q}</p>
+      ${q.options.map((o,i)=>`<button class="quiz-option" onclick="answerQuiz(${i})">${o}</button>`).join('')}
+      <div id="quiz-result"></div>
+    </div>`;
+}
+function answerQuiz(idx){
+  const q=currentGameData.q;if(currentGameData.answered)return;
+  currentGameData.answered=true;
+  const btns=document.querySelectorAll(".quiz-option");
+  btns.forEach((b,i)=>{if(i===q.a)b.classList.add("correct");else if(i===idx&&i!==q.a)b.classList.add("wrong");});
+  const correct=idx===q.a;
+  document.getElementById("quiz-result").innerHTML=`
+    <div class="quiz-result ${correct?"correct":"wrong"}">
+      ${correct?"✅ Correct!":"❌ Not quite."} ${q.explain}
+    </div>
+    <button class="btn-primary" style="margin-top:12px;width:100%" onclick="${correct?"quizWin()":"renderQuizGame()"}">
+      ${correct?"Claim Reward →":"Try Another →"}
+    </button>`;
+}
+function quizWin(){state.gamesPlayed++;addReps("game",1,"Won Bible Quiz");renderQuizGame();}
+
+function renderFillBlankGame(){
+  const q=FILL_BLANKS[Math.floor(Math.random()*FILL_BLANKS.length)];
+  currentGameData={q,answered:false};
+  document.getElementById("game-panel").innerHTML=`
+    <div class="game-panel">
+      <button class="back-btn" onclick="endGame()">← Back</button>
+      <h3>✏️ Fill the Blank</h3>
+      <p class="game-sub">Complete the verse from memory</p>
+      <p style="font-family:var(--font-d);font-size:16px;font-style:italic;line-height:1.7;margin-bottom:16px;color:var(--text)">${q.verse}</p>
+      <input type="text" class="fill-blank-input" id="fill-input" placeholder="Type the missing word(s)..." />
+      <p style="font-size:12px;color:var(--text3);margin-top:8px">— ${q.ref}</p>
+      <button class="btn-primary" style="width:100%;margin-top:16px" onclick="checkFillBlank()">Check Answer</button>
+      <div id="fill-result"></div>
+    </div>`;
+}
+function checkFillBlank(){
+  const val=document.getElementById("fill-input").value.trim().toLowerCase();
+  const ans=currentGameData.q.answer.toLowerCase();
+  const correct=val===ans||val.includes(ans)||ans.includes(val);
+  document.getElementById("fill-result").innerHTML=`
+    <div class="quiz-result ${correct?"correct":"wrong"}" style="margin-top:12px">
+      ${correct?`✅ Yes! The answer is "${currentGameData.q.answer}"`:`❌ The answer is "${currentGameData.q.answer}"`}
+    </div>
+    <button class="btn-primary" style="margin-top:12px;width:100%" onclick="${correct?"fillWin()":"renderFillBlankGame()"}">
+      ${correct?"Claim Reward →":"Try Another →"}
+    </button>`;
+}
+function fillWin(){state.gamesPlayed++;addReps("game",1,"Completed Fill the Blank");renderFillBlankGame();}
+
+function renderScrambleGame(){
+  const q=SCRAMBLE_VERSES[Math.floor(Math.random()*SCRAMBLE_VERSES.length)];
+  currentGameData={q,selected:[],remaining:[...q.words]};scrambleSelected=[];
+  const shuffled=[...q.words].sort(()=>Math.random()-.5);
+  document.getElementById("game-panel").innerHTML=`
+    <div class="game-panel">
+      <button class="back-btn" onclick="endGame()">← Back</button>
+      <h3>🔀 Word Scramble</h3>
+      <p class="game-sub">Arrange the words into the correct verse</p>
+      <div class="word-answer" id="scramble-answer"><span style="font-size:13px;color:var(--text3)">Tap words below to build the verse...</span></div>
+      <div class="word-scramble" id="scramble-tiles">
+        ${shuffled.map((w,i)=>`<button class="word-tile" onclick="pickWord(this,'${w}')">${w}</button>`).join('')}
+      </div>
+      <p style="font-size:12px;color:var(--text3);margin-bottom:12px">— ${q.ref}</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" style="flex:1" onclick="checkScramble()">Check</button>
+        <button class="btn-small btn-ghost" style="flex:1" onclick="renderScrambleGame()">Reset</button>
+      </div>
+      <div id="scramble-result"></div>
+    </div>`;
+}
+function pickWord(btn,word){
+  btn.style.opacity="0.3";btn.disabled=true;
+  scrambleSelected.push(word);
+  const ans=document.getElementById("scramble-answer");
+  if(ans){ans.innerHTML=`<span style="font-family:var(--font-d);font-size:14px;color:var(--text)">${scrambleSelected.join(' ')}</span>`;}
+}
+function checkScramble(){
+  const sentence=scrambleSelected.join(' ').toLowerCase();
+  const target=currentGameData.q.sentence.toLowerCase();
+  const correct=sentence===target;
+  document.getElementById("scramble-result").innerHTML=`
+    <div class="quiz-result ${correct?"correct":"wrong"}" style="margin-top:12px">
+      ${correct?`✅ Perfect!`:`❌ "${currentGameData.q.sentence}"`}
+    </div>
+    <button class="btn-primary" style="margin-top:12px;width:100%" onclick="${correct?"scrambleWin()":"renderScrambleGame()"}">
+      ${correct?"Claim Reward →":"Try Again →"}
+    </button>`;
+}
+function scrambleWin(){state.gamesPlayed++;addReps("game",1,"Won Word Scramble");renderScrambleGame();}
+
+function renderAttributeGame(){
+  const shuffled=[...GOD_ATTRIBUTES].sort(()=>Math.random()-.5).slice(0,4);
+  const target=shuffled[Math.floor(Math.random()*shuffled.length)];
+  currentGameData={target,answered:false};
+  document.getElementById("game-panel").innerHTML=`
+    <div class="game-panel">
+      <button class="back-btn" onclick="endGame()">← Back</button>
+      <h3>👑 Who Is God?</h3>
+      <p class="game-sub">Match the name of God to its meaning</p>
+      <div style="background:var(--gold-light);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px;text-align:center">
+        <p style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold-dark);margin-bottom:6px">What does this name mean?</p>
+        <p style="font-family:var(--font-d);font-size:22px;font-weight:600;color:var(--gold-dark)">${target.name}</p>
+      </div>
+      ${shuffled.map(a=>`<button class="quiz-option" onclick="answerAttribute('${a.meaning.replace(/'/g,"\\'")}','${target.name}')">${a.meaning}</button>`).join('')}
+      <div id="attr-result"></div>
+    </div>`;
+}
+function answerAttribute(chosen,targetName){
+  const target=GOD_ATTRIBUTES.find(a=>a.name===targetName);
+  if(!target||currentGameData.answered)return;currentGameData.answered=true;
+  const correct=chosen===target.meaning;
+  document.querySelectorAll(".quiz-option").forEach(b=>{
+    if(b.textContent===target.meaning)b.classList.add("correct");
+    else if(b.textContent===chosen&&!correct)b.classList.add("wrong");
+  });
+  document.getElementById("attr-result").innerHTML=`
+    <div class="quiz-result ${correct?"correct":"wrong"}" style="margin-top:12px">
+      ${correct?"✅":"❌"} ${target.name} = "${target.meaning}"<br/><span style="font-size:12px;opacity:.8">${target.verse}</span>
+    </div>
+    <button class="btn-primary" style="margin-top:12px;width:100%" onclick="${correct?"attrWin()":"renderAttributeGame()"}">
+      ${correct?"Claim Reward →":"Try Another Name →"}
+    </button>`;
+}
+function attrWin(){state.gamesPlayed++;addReps("game",1,"Mastered a Name of God");renderAttributeGame();}
+
+function renderPrayerBuilder(){
+  const steps=["Adoration — Tell God how great He is","Confession — Be honest about what you've done wrong","Thanksgiving — List 3 things you're grateful for","Supplication — Make your requests known"];
+  let current=0;const answers=[];
+  function renderStep(){
+    if(current>=steps.length){
+      document.getElementById("game-panel").innerHTML=`
+        <div class="game-panel">
+          <h3>🙏 Prayer Complete</h3>
+          <p class="game-sub">You just prayed the ACTS prayer.</p>
+          ${answers.map((a,i)=>`<div class="entry-card" style="margin-bottom:8px"><div class="entry-date">${steps[i].split(' — ')[0]}</div><div class="entry-text">${a}</div></div>`).join('')}
+          <button class="btn-primary" style="width:100%;margin-top:16px" onclick="prayerWin()">Save & Claim Reward</button>
+        </div>`;return;
+    }
+    document.getElementById("game-panel").innerHTML=`
+      <div class="game-panel">
+        <button class="back-btn" onclick="endGame()">← Back</button>
+        <h3>🙏 Prayer Builder</h3>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:4px">Step ${current+1} of 4</p>
+        <div style="background:var(--gold-light);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px">
+          <p style="font-family:var(--font-d);font-size:15px;font-weight:600;color:var(--gold-dark)">${steps[current].split(' — ')[0]}</p>
+          <p style="font-size:13px;color:var(--text2);margin-top:4px">${steps[current].split(' — ')[1]}</p>
+        </div>
+        <textarea class="main-input" id="prayer-step-input" rows="4" placeholder="Write here..."></textarea>
+        <button class="btn-primary" style="width:100%;margin-top:12px" onclick="nextPrayerStep()">Next →</button>
+      </div>`;
+  }
+  window.nextPrayerStep=()=>{
+    const v=document.getElementById("prayer-step-input")?.value.trim();
+    if(!v){showToast("Write something first");return;}
+    answers.push(v);current++;renderStep();
+  };
+  renderStep();
+}
+function prayerWin(){
+  state.gamesPlayed++;
+  state.journalEntries.unshift({id:Date.now(),type:"journal",text:"[ACTS Prayer completed in Prayer Builder]",date:new Date().toLocaleString()});
+  state.journalCount++;addReps("game",1,"Completed ACTS Prayer Builder");endGame();
+}
+
+function renderFruitCheck(){
+  let current=0;const scores={};
+  function renderFruit(){
+    if(current>=FRUIT_SPIRIT.length){
+      const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+      const strong=sorted.slice(0,3).map(s=>s[0]).join(", ");
+      const weak=sorted.slice(-2).map(s=>s[0]).join(", ");
+      document.getElementById("game-panel").innerHTML=`
+        <div class="game-panel">
+          <h3>🍇 Fruit Check Results</h3>
+          <p class="game-sub">Reflection on this week:</p>
+          <div style="background:var(--green-light);border-radius:var(--radius-sm);padding:16px;margin-bottom:12px">
+            <p style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px">Strongest this week:</p>
+            <p style="font-size:15px;color:var(--green)">${strong}</p>
+          </div>
+          <div style="background:var(--red-light);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px">
+            <p style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:4px">Needs prayer & growth:</p>
+            <p style="font-size:15px;color:var(--red)">${weak}</p>
+          </div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px">Take the weak areas to God. Ask him specifically: "Holy Spirit, grow ${sorted[sorted.length-1][0]} in me."</p>
+          <button class="btn-primary" style="width:100%" onclick="fruitWin()">Save & Earn XP</button>
+        </div>`;return;
+    }
+    const fruit=FRUIT_SPIRIT[current];
+    document.getElementById("game-panel").innerHTML=`
+      <div class="game-panel">
+        <button class="back-btn" onclick="endGame()">← Back</button>
+        <h3>🍇 Fruit Check</h3>
+        <p style="font-size:12px;color:var(--text3);margin-bottom:12px">Fruit ${current+1} of 9</p>
+        <div style="text-align:center;padding:20px 0">
+          <p style="font-family:var(--font-d);font-size:28px;font-weight:600;margin-bottom:8px">${fruit}</p>
+          <p style="font-size:14px;color:var(--text2)">How much of this did you show this week?</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[["😞","Barely any — I really struggled",1],["😐","Some moments, not consistent",2],["🙂","More than usual",3],["😊","This was a good week for this",4]].map(([e,l,v])=>`<button class="quiz-option" onclick="scoreFruit('${fruit}',${v})">${e} ${l}</button>`).join('')}
+        </div>
+      </div>`;
+  }
+  window.scoreFruit=(fruit,val)=>{scores[fruit]=val;current++;renderFruit();};
+  renderFruit();
+}
+function fruitWin(){state.gamesPlayed++;addReps("game",1,"Completed Fruit of the Spirit Check");endGame();}
+
+// ============================================================
+// GROW TAB
+// ============================================================
+function renderGrowTab(){
+  renderDisciplines();renderBookClub();renderSermons();
+}
+
+function renderDisciplines(){
+  const el=document.getElementById("grow-disciplines");if(!el)return;
+  el.innerHTML=`<h3 style="font-family:var(--font-d);font-size:18px;font-weight:600;margin-bottom:12px">Spiritual Disciplines</h3>`+
+  DISCIPLINES.map(d=>{
+    const done=state.disciplinesDone.includes(d.type+"_"+new Date().toDateString());
+    return `<div class="spiritual-discipline-card">
+      <div class="sd-header"><span class="sd-icon">${d.icon}</span><span class="sd-title">${d.title}</span></div>
+      <p class="sd-desc">${d.desc}</p>
+      <div style="display:flex;align-items:center">
+        ${done?`<span style="background:var(--green-light);color:var(--green);padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600">✓ Completed today</span>`:
+        `<button class="sd-accept" onclick="acceptDiscipline('${d.type}','${d.reward.replace(/'/g,"\\'")}')">Accept Challenge</button>
+        <button class="sd-skip" onclick="skipDiscipline('${d.type}')">Skip (-10 XP)</button>`}
+        <span style="margin-left:auto;font-size:12px;color:var(--text3)">${d.reward}</span>
+      </div>
+    </div>`}).join('');
+}
+
+function acceptDiscipline(type,reward){
+  const key=type+"_"+new Date().toDateString();
+  if(state.disciplinesDone.includes(key)){showToast("Already completed today");return;}
+  state.disciplinesDone.push(key);
+  if(type==="fast"){state.fastingCount++;addReps("fast",1,"Completed a fast");}
+  else if(type==="retreat"){addReps("retreat",1,"Completed a prayer retreat");}
+  else{addReps("silence",1,"Hour of silence with God");}
+  renderDisciplines();showToast("Discipline accepted. God sees this. 🌿");
+}
+function skipDiscipline(type){
+  addPenalty("skip_fast","Skipped spiritual discipline");renderDisciplines();
+  showToast("Skipped. -10 XP. He understands. But try next time. 💛");
+}
+
+function renderBookClub(){
+  const el=document.getElementById("grow-book-club");if(!el)return;
+  const today=new Date();
+  const bom=BOOKS_OF_MONTH.find(b=>b.month.includes(today.getFullYear()))||BOOKS_OF_MONTH[0];
+  const hasSummary=state.bookSummaryEntries?.some(e=>e.bookTitle===bom.title);
+  el.innerHTML=`
+    <div class="book-of-month">
+      <p class="bom-label">📚 Book of the Month</p>
+      <h3 class="bom-title">${bom.title}</h3>
+      <p class="bom-author">by ${bom.author}</p>
+      <p style="font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:16px">${bom.desc}</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:12px">📝 After reading: ${bom.prompt}</p>
+      ${hasSummary?`<span style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600">✓ Summary submitted</span>`:
+      `<button class="bom-summary-btn" onclick="openBookSummary('${bom.title.replace(/'/g,"\\'")}')">Submit Summary (+30 XP)</button>`}
+    </div>`;
+}
+
+function openBookSummary(title){
+  const modal=document.createElement("div");modal.className="modal";modal.id="book-summary-modal";
+  modal.innerHTML=`<div class="modal-card">
+    <div class="modal-header"><h3>Book Summary</h3><button class="modal-close" onclick="document.getElementById('book-summary-modal').remove()">✕</button></div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Write what you actually learned. Be honest — this is for you and God, not a book report.</p>
+    <textarea class="main-input" id="book-summary-input" rows="7" placeholder="What changed in me after reading this?"></textarea>
+    <button class="btn-primary" style="width:100%;margin-top:12px" onclick="saveBookSummary('${title.replace(/'/g,"\\'")}')">Submit (+30 XP)</button>
+  </div>`;
+  document.body.appendChild(modal);
+}
+function saveBookSummary(title){
+  const text=document.getElementById("book-summary-input")?.value.trim();
+  if(!text){showToast("Write your actual summary first");return;}
+  if(!state.bookSummaryEntries)state.bookSummaryEntries=[];
+  state.bookSummaryEntries.push({bookTitle:title,text,date:new Date().toLocaleString()});
+  state.bookSummaries=(state.bookSummaries||0)+1;
+  document.getElementById("book-summary-modal")?.remove();
+  addReps("book",1,"Submitted book summary");renderBookClub();
+}
+
+function renderSermons(){
+  const el=document.getElementById("grow-sermons");if(!el)return;
+  el.innerHTML=`<h3 style="font-family:var(--font-d);font-size:18px;font-weight:600;margin:20px 0 12px">Suggested Sermons</h3>`+
+  SERMONS.map(s=>`
+    <div class="sermon-card">
+      <p class="sermon-preacher">${s.preacher}</p>
+      <p class="sermon-title">${s.title}</p>
+      <p class="sermon-why">${s.why}</p>
+      <a href="${s.link}" target="_blank" class="sermon-watch">Watch →</a>
+    </div>`).join('');
+}
+
+// ============================================================
+// REWARDS
+// ============================================================
+function showReward(id){
+  const r=REWARDS.find(x=>x.id===id);
+  if(!r||state.rewardsShown.includes(id+"_"+new Date().toDateString()))return;
+  state.rewardsShown.push(id+"_"+new Date().toDateString());
+  saveState();
+  document.getElementById("reward-emoji").textContent=r.emoji;
+  document.getElementById("reward-title").textContent=r.title;
+  document.getElementById("reward-subtitle").textContent=r.subtitle;
+  document.getElementById("reward-verses").innerHTML=r.verses.map(v=>`
+    <div class="reward-verse-item">
+      <p class="reward-verse-text">"${v.text}"</p>
+      <p class="reward-verse-ref">— ${v.ref}</p>
+    </div>`).join('');
+  document.getElementById("reward-overlay").classList.remove("hidden");
+}
+function closeReward(){document.getElementById("reward-overlay").classList.add("hidden");}
+
+// ============================================================
+// MILESTONES
+// ============================================================
+function checkMilestones(){
+  const s={callsAnswered:state.callsAnswered,journalCount:state.journalCount,seeCount:state.seeCount,chaptersRead:state.chaptersRead,longestStreak:state.longestStreak,level:state.level,totalReps:state.totalReps,gamesPlayed:state.gamesPlayed,fastingCount:state.fastingCount,bookSummaries:state.bookSummaries||0,purposeSectionsUsed:state.purposeSectionsUsed||0};
+  MILESTONES.forEach(m=>{
+    if(!state.milestones.includes(m.id)&&m.check(s)){
+      state.milestones.push(m.id);saveState();
+      setTimeout(()=>showToast(`🏆 Milestone: "${m.name}"!`),800);
+      renderMilestones();
+      const r=REWARDS.find(x=>x.id===m.id);
+      if(r)setTimeout(()=>showReward(m.id),2000);
+    }
+  });
+}
+function renderMilestones(){
+  const el=document.getElementById("milestones-list");if(!el)return;
+  const s={callsAnswered:state.callsAnswered,journalCount:state.journalCount,seeCount:state.seeCount,chaptersRead:state.chaptersRead,longestStreak:state.longestStreak,level:state.level,totalReps:state.totalReps,gamesPlayed:state.gamesPlayed||0,fastingCount:state.fastingCount||0,bookSummaries:state.bookSummaries||0,purposeSectionsUsed:state.purposeSectionsUsed||0};
+  el.innerHTML=MILESTONES.map(m=>{
+    const done=state.milestones.includes(m.id);
+    return `<div class="milestone-item">
+      <span class="ms-icon">${done?m.icon:"🔒"}</span>
+      <div><div class="ms-name" style="${!done?"color:var(--text3)":""}">${m.name}</div><div class="ms-desc">${m.desc}</div></div>
+      <span class="ms-status ${done?"done":"locked"}">${done?"Unlocked":"Locked"}</span>
+    </div>`;}).join('');
+}
+
+// ============================================================
+// SETTINGS
+// ============================================================
+function loadSettings(){
+  const s=state.settings;
+  const ni=document.getElementById("setting-name");if(ni)ni.value=s.name||"Ayomide";
+  const ci=document.getElementById("setting-calls");if(ci)ci.value=s.callsPerDay||3;
+  const cs=document.getElementById("setting-call-start");if(cs)cs.value=s.callStart||7;
+  const ce=document.getElementById("setting-call-end");if(ce)ce.value=s.callEnd||22;
+  ["morning","evening","midday","warnings"].forEach(k=>{
+    const el=document.getElementById(`toggle-${k}`);
+    if(el){el.classList.toggle("on",!!s[k]);}
+  });
+}
+function saveSettings(){
+  const n=document.getElementById("setting-name")?.value.trim();
+  const c=document.getElementById("setting-calls")?.value;
+  const cs=document.getElementById("setting-call-start")?.value;
+  const ce=document.getElementById("setting-call-end")?.value;
+  if(n)state.settings.name=n;
+  if(c)state.settings.callsPerDay=parseInt(c);
+  if(cs)state.settings.callStart=parseInt(cs);
+  if(ce)state.settings.callEnd=parseInt(ce);
+  saveState();updateGreeting();showToast("Settings saved ✓");
+}
+function toggleSetting(key){
+  state.settings[key]=!state.settings[key];
+  const el=document.getElementById(`toggle-${key}`);
+  if(el)el.classList.toggle("on",state.settings[key]);
+  saveState();showToast(`${key.charAt(0).toUpperCase()+key.slice(1)} ${state.settings[key]?"enabled":"disabled"}`);
+}
+
+// ============================================================
+// SHARE
+// ============================================================
+function shareWhatsapp(){
+  const url="https://alphae07.github.io/walk-with-him";
+  const msg=`I found this app that's helping me build a real relationship with God — not just religion. Daily calls, journal, Bible reading, games and more. Check it out: ${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,"_blank");
+}
+function copyShareLink(){
+  const url="https://alphae07.github.io/walk-with-him";
+  navigator.clipboard?.writeText(url).then(()=>showToast("Link copied! ✓")).catch(()=>{
+    const el=document.getElementById("share-link-box");if(el){const r=document.createRange();r.selectNode(el);window.getSelection().removeAllRanges();window.getSelection().addRange(r);}
+    showToast("Select and copy the link above");
+  });
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(name){
+  document.querySelectorAll(".tab-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  const sec=document.getElementById(`tab-${name}`);if(sec)sec.classList.add("active");
+  const nb=document.getElementById(`nav-${name}`);if(nb)nb.classList.add("active");
+  if(name==="purpose"){
+    const c=document.querySelector(".purpose-categories");const d=document.getElementById("purpose-detail");
+    if(c)c.classList.remove("hidden");if(d)d.classList.add("hidden");
+  }
+  if(name==="games"){document.getElementById("game-home")?.classList.remove("hidden");document.getElementById("game-panel")?.classList.add("hidden");}
+  if(name==="grow")renderGrowTab();
+  if(name==="home"){showHomeAlerts();renderDailyChallenge();}
+  document.querySelector(".main-content").scrollTop=0;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTO=null;
+function showToast(msg){
+  const el=document.getElementById("toast");if(!el)return;
+  el.textContent=msg;el.classList.remove("hidden");
+  clearTimeout(toastTO);toastTO=setTimeout(()=>el.classList.add("hidden"),2800);
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function confirmReset(){
+  if(confirm("This will permanently delete all your data. Are you absolutely sure?")){
+    localStorage.removeItem("wwh_v2");localStorage.removeItem("wwh_state");
+    location.reload();
+  }
+}
+
+// ============================================================
+// INSTALL
+// ============================================================
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;showInstallBanner();});
+function showInstallBanner(){
+  const b=document.createElement("div");b.className="install-banner";b.id="install-banner";
+  b.innerHTML=`<span>📲 Add to your home screen for the full app experience</span><button onclick="installApp()">Install</button>`;
+  document.querySelector("#tab-home")?.prepend(b);
+}
+async function installApp(){
+  if(!deferredInstallPrompt)return;
+  deferredInstallPrompt.prompt();
+  const{outcome}=await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  document.getElementById("install-banner")?.remove();
+}
+
+// ============================================================
+// LONG PRESS TEST CALL
+// ============================================================
+document.addEventListener("DOMContentLoaded",()=>{
+  const g=document.getElementById("greeting-card");
+  if(g){
+    g.addEventListener("touchstart",()=>{longPressTimer=setTimeout(()=>triggerCall(),1400);},{passive:true});
+    g.addEventListener("touchend",()=>clearTimeout(longPressTimer));
+    g.addEventListener("mousedown",()=>{longPressTimer=setTimeout(()=>triggerCall(),1400);});
+    g.addEventListener("mouseup",()=>clearTimeout(longPressTimer));
+  }
+});
+
+// ============================================================
+// START
+// ============================================================
+document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>

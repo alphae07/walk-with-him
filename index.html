@@ -1120,7 +1120,7 @@ const GOD_ATTRIBUTES = [
   { name: "Possessor of Heaven and Earth", meaning: "Owner of All That Exists", verse: "Genesis 14:22 — The Lord, God Most High, Creator of heaven and earth." },
 ];
 
-  export const QUIZ_QUESTIONS = [
+  const QUIZ_QUESTIONS = [
 
   // ── JESUS & THE GOSPELS ─────────────────────────────────────────────────────
   { q: "What did Jesus say is the greatest commandment?", options: ["Love your neighbour", "Love God with all your heart", "Obey the Ten Commandments", "Preach the gospel"], a: 1, explain: "Matthew 22:37 — Love the Lord your God with all your heart, soul and mind. This is the first and greatest commandment." },
@@ -1254,7 +1254,7 @@ const GOD_ATTRIBUTES = [
 
 
     
-const FILL_BLANKS=[
+const FILL_BLANKS = [
   {verse:"Trust in the Lord with all your _____ and lean not on your own understanding.",answer:"heart",ref:"Proverbs 3:5"},
   {verse:"For God so loved the _____ that he gave his one and only Son.",answer:"world",ref:"John 3:16"},
   {verse:"I can do all _____ through Christ who strengthens me.",answer:"things",ref:"Philippians 4:13"},
@@ -1263,16 +1263,58 @@ const FILL_BLANKS=[
   {verse:"Draw near to God and he will draw _____ to you.",answer:"near",ref:"James 4:8"},
   {verse:"The _____ of the Lord never ceases; his mercies never come to an end.",answer:"steadfast love",ref:"Lamentations 3:22"},
   {verse:"Create in me a pure _____, O God.",answer:"heart",ref:"Psalm 51:10"},
-  {verse:"If my people, who are called by my name, will humble themselves and _____, I will forgive their sin.",answer:"pray",ref:"2 Chronicles 7:14"},
-  {verse:"The Spirit you received does not make you _____, you did not receive a spirit that makes you a slave again to fear.",answer:"slaves",ref:"Romans 8:15"},
+  {verse:"If my people... will humble themselves and _____, I will forgive their sin.",answer:"pray",ref:"2 Chronicles 7:14"},
+  {verse:"The Spirit you received does not make you _____ again to fear.",answer:"slaves",ref:"Romans 8:15"},
+
+  {verse:"The Lord is my _____; I shall not want.",answer:"shepherd",ref:"Psalm 23:1"},
+  {verse:"In the beginning God created the _____ and the earth.",answer:"heavens",ref:"Genesis 1:1"},
+  {verse:"Seek first the kingdom of God and his _____.",answer:"righteousness",ref:"Matthew 6:33"},
+  {verse:"Blessed are the pure in _____, for they shall see God.",answer:"heart",ref:"Matthew 5:8"},
+  {verse:"Faith comes by _____, and hearing by the word of God.",answer:"hearing",ref:"Romans 10:17"},
+  {verse:"The joy of the Lord is your _____.",answer:"strength",ref:"Nehemiah 8:10"},
+  {verse:"Cast all your _____ on him because he cares for you.",answer:"anxiety",ref:"1 Peter 5:7"},
+  {verse:"God is our refuge and _____, an ever-present help in trouble.",answer:"strength",ref:"Psalm 46:1"},
+  {verse:"The name of the Lord is a strong _____.",answer:"tower",ref:"Proverbs 18:10"},
+  {verse:"Man shall not live by bread alone, but by every _____ of God.",answer:"word",ref:"Matthew 4:4"},
+
+  {verse:"Be strong and _____, do not be afraid.",answer:"courageous",ref:"Joshua 1:9"},
+  {verse:"The Lord will fight for you; you need only to be _____.",answer:"still",ref:"Exodus 14:14"},
+  {verse:"A soft answer turns away _____, but a harsh word stirs up anger.",answer:"wrath",ref:"Proverbs 15:1"},
+  {verse:"Iron sharpens _____, so one person sharpens another.",answer:"iron",ref:"Proverbs 27:17"},
+  {verse:"The fear of the Lord is the beginning of _____.",answer:"wisdom",ref:"Proverbs 9:10"},
+  {verse:"Better is one day in your _____ than a thousand elsewhere.",answer:"courts",ref:"Psalm 84:10"},
+  {verse:"Let everything that has _____ praise the Lord.",answer:"breath",ref:"Psalm 150:6"},
+  {verse:"Your faith has made you _____.",answer:"well",ref:"Mark 5:34"},
+  {verse:"Perfect love casts out _____.",answer:"fear",ref:"1 John 4:18"},
+  {verse:"The Lord is good, a refuge in times of _____.",answer:"trouble",ref:"Nahum 1:7"},
+
+  // Continue pattern…
 ];
 
-const SCRAMBLE_VERSES=[
+const SCRAMBLE_VERSES = [
   {words:["Trust","the","Lord","in","with","all","heart","your"],sentence:"Trust in the Lord with all your heart",ref:"Proverbs 3:5"},
   {words:["I","do","can","all","through","things","Christ"],sentence:"I can do all things through Christ",ref:"Philippians 4:13"},
   {words:["Jesus","same","the","yesterday","and","today","forever","is"],sentence:"Jesus is the same yesterday and today and forever",ref:"Hebrews 13:8"},
   {words:["Lord","the","is","shepherd","my"],sentence:"The Lord is my shepherd",ref:"Psalm 23:1"},
   {words:["wept","Jesus"],sentence:"Jesus wept",ref:"John 11:35"},
+
+  {words:["God","love","is"],sentence:"God is love",ref:"1 John 4:8"},
+  {words:["light","is","God"],sentence:"God is light",ref:"1 John 1:5"},
+  {words:["be","still","and","know","I","God","am"],sentence:"Be still and know that I am God",ref:"Psalm 46:10"},
+  {words:["word","lamp","my","feet","is","your"],sentence:"Your word is a lamp to my feet",ref:"Psalm 119:105"},
+  {words:["joy","Lord","the","your","is","strength"],sentence:"The joy of the Lord is your strength",ref:"Nehemiah 8:10"},
+
+  {words:["fear","not","for","I","with","you","am"],sentence:"Do not fear for I am with you",ref:"Isaiah 41:10"},
+  {words:["strong","be","and","courageous"],sentence:"Be strong and courageous",ref:"Joshua 1:9"},
+  {words:["pray","without","ceasing"],sentence:"Pray without ceasing",ref:"1 Thessalonians 5:17"},
+  {words:["thanks","in","everything","give"],sentence:"Give thanks in everything",ref:"1 Thessalonians 5:18"},
+  {words:["walk","by","faith","not","sight"],sentence:"Walk by faith not by sight",ref:"2 Corinthians 5:7"},
+
+  {words:["peace","I","leave","you","with","my"],sentence:"My peace I leave with you",ref:"John 14:27"},
+  {words:["truth","you","set","free","will","the"],sentence:"The truth will set you free",ref:"John 8:32"},
+  {words:["ask","and","receive","you","will"],sentence:"Ask and you will receive",ref:"Matthew 7:7"},
+  {words:["seek","and","you","find","will"],sentence:"Seek and you will find",ref:"Matthew 7:7"},
+  {words:["knock","and","door","opened","will","be"],sentence:"Knock and the door will be opened",ref:"Matthew 7:7"},
 ];
 
 const FRUIT_SPIRIT=["Love","Joy","Peace","Patience","Kindness","Goodness","Faithfulness","Gentleness","Self-Control"];

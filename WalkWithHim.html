@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#FAFAF8" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Walk With Him" />
+  <title>Walk With Him</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ===================== RESET & BASE ===================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #FAFAF8;
+  --bg2: #F2F1EE;
+  --bg3: #E8E6E0;
+  --surface: #FFFFFF;
+  --border: #E5E3DC;
+  --text: #1A1916;
+  --text2: #5C5850;
+  --text3: #9E9B92;
+  --gold: #C8922A;
+  --gold-light: #F5E6C8;
+  --gold-dark: #A47520;
+  --green: #2E7D52;
+  --green-light: #D4EDDF;
+  --red: #C0392B;
+  --red-light: #FDECEA;
+  --blue: #2563EB;
+  --blue-light: #EEF3FF;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.07);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --font-display: 'Lora', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: var(--font-body);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button { cursor: pointer; border: none; background: none; font-family: var(--font-body); }
+textarea, input, select { font-family: var(--font-body); outline: none; }
+.hidden { display: none !important; }
+
+/* ===================== CALL OVERLAY ===================== */
+#call-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.call-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #0A1628 0%, #1A2E4A 50%, #0D2137 100%);
+}
+
+.call-container {
+  position: relative; z-index: 1;
+  text-align: center; padding: 40px 32px 48px;
+  width: 100%; max-width: 380px;
+}
+
+.call-ripple-wrap {
+  position: relative; width: 120px; height: 120px;
+  margin: 0 auto 24px;
+}
+
+.call-ripple {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(200, 146, 42, 0.3);
+  animation: ripple 2s ease-out infinite;
+}
+.call-ripple.r2 { animation-delay: 0.5s; }
+.call-ripple.r3 { animation-delay: 1s; }
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.call-avatar {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  border-radius: 50%;
+  font-size: 36px; color: white;
+  box-shadow: 0 0 40px rgba(200, 146, 42, 0.5);
+}
+
+.call-label { color: rgba(255,255,255,0.6); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.call-name { color: white; font-size: 32px; font-family: var(--font-display); font-weight: 600; margin-bottom: 8px; }
+.call-sub { color: rgba(255,255,255,0.7); font-size: 15px; margin-bottom: 28px; font-style: italic; }
+
+.call-timer-wrap { margin-bottom: 40px; }
+.call-timer-bar { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
+#call-timer-fill { height: 100%; width: 100%; background: var(--gold); transition: width 1s linear; }
+#call-timer-secs { color: rgba(255,255,255,0.5); font-size: 12px; }
+
+.call-actions { display: flex; gap: 32px; justify-content: center; }
+
+.btn-decline, .btn-answer {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500;
+}
+.btn-decline { color: rgba(255,255,255,0.6); }
+.btn-answer { color: white; }
+
+.btn-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.btn-decline .btn-icon { background: #C0392B; }
+.btn-answer .btn-icon { background: #2E7D52; animation: pulse-green 1.5s infinite; }
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46,125,82,0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(46,125,82,0); }
+}
+
+/* ===================== IN-CALL SCREEN ===================== */
+#in-call-screen {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  padding: 48px 20px 32px;
+  animation: slideUp 0.3s ease;
+}
+
+.incall-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 28px;
+}
+.incall-status { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text2); }
+.incall-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.incall-timer { font-size: 22px; font-family: var(--font-display); font-weight: 500; color: var(--text); }
+
+.incall-body { flex: 1; overflow-y: auto; }
+
+.incall-prompt-card {
+  background: linear-gradient(135deg, #0A1628, #1A2E4A);
+  border-radius: var(--radius);
+  padding: 24px; margin-bottom: 20px;
+  color: white;
+}
+.incall-prompt-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 10px; }
+.incall-prompt { font-family: var(--font-display); font-size: 18px; line-height: 1.6; font-style: italic; }
+
+.incall-note-wrap label { font-size: 13px; color: var(--text2); display: block; margin-bottom: 8px; }
+.incall-note-wrap textarea {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px; font-size: 15px; resize: none; background: var(--surface);
+  color: var(--text); line-height: 1.6; min-height: 120px;
+}
+
+.btn-hangup {
+  width: 100%; padding: 16px; border-radius: 50px;
+  background: var(--green); color: white; font-size: 16px; font-weight: 600;
+  margin-top: 20px;
+}
+
+/* ===================== APP STRUCTURE ===================== */
+#app {
+  display: flex; flex-direction: column;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.app-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 600;
+  color: var(--text);
+}
+
+.streak-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--gold-light); color: var(--gold-dark);
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 14px; font-weight: 600;
+}
+.streak-fire { font-size: 16px; }
+
+.level-badge {
+  background: var(--text); color: white;
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 13px; font-weight: 600;
+}
+
+.main-content {
+  flex: 1; overflow-y: auto;
+  padding: 0 0 80px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-section { display: none; padding: 16px; }
+.tab-section.active { display: block; }
+
+/* ===================== HOME TAB ===================== */
+.home-greeting-card {
+  background: linear-gradient(135deg, #0A1628 0%, #1C3455 100%);
+  border-radius: var(--radius);
+  padding: 24px; margin-bottom: 16px; color: white;
+}
+.greeting-time { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+.greeting-name { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin-bottom: 6px; }
+.greeting-sub { font-size: 14px; color: rgba(255,255,255,0.65); font-style: italic; }
+
+.xp-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.xp-top { display: flex; justify-content: space-between; margin-bottom: 16px; }
+.xp-right { text-align: right; }
+.xp-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); margin-bottom: 4px; }
+.xp-count { font-size: 26px; font-weight: 700; color: var(--text); font-family: var(--font-display); }
+.xp-total { font-size: 26px; font-weight: 700; color: var(--gold); font-family: var(--font-display); }
+.xp-bar-wrap { }
+.xp-bar { height: 8px; background: var(--bg3); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+.xp-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-dark)); border-radius: 4px; transition: width 0.6s ease; width: 0%; }
+.xp-next { font-size: 12px; color: var(--text3); }
+
+.section-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.section-card-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.card-icon { font-size: 18px; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.verse-card .verse-text {
+  font-family: var(--font-display); font-size: 16px; line-height: 1.7;
+  color: var(--text); margin-bottom: 6px; font-style: italic;
+}
+.verse-ref { font-size: 13px; color: var(--gold); font-weight: 600; margin-bottom: 14px; }
+.verse-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-small {
+  padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  background: var(--green-light); color: var(--green); border: none;
+}
+.btn-small.btn-ghost { background: var(--bg2); color: var(--text2); }
+
+.activity-list { display: flex; flex-direction: column; gap: 8px; }
+.activity-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: var(--text2); padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-item .ai-icon { font-size: 18px; }
+.activity-item .ai-rep { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--gold); }
+
+.quick-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+}
+.quick-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 18px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.quick-btn:active { transform: scale(0.97); box-shadow: none; }
+.qb-icon { font-size: 26px; }
+.quick-btn span:last-child { font-size: 13px; font-weight: 500; color: var(--text2); }
+
+/* ===================== TAB HERO ===================== */
+.tab-hero { margin-bottom: 20px; }
+.tab-hero h2 { font-family: var(--font-display); font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+.tab-hero p { font-size: 14px; color: var(--text2); }
+
+/* ===================== JOURNAL ===================== */
+.journal-compose {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.journal-prompt-row { margin-bottom: 14px; padding: 14px; background: var(--gold-light); border-radius: var(--radius-sm); }
+.journal-prompt-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-dark); margin-bottom: 6px; }
+.journal-prompt-text { font-family: var(--font-display); font-size: 15px; color: var(--text); font-style: italic; line-height: 1.5; margin-bottom: 8px; }
+.btn-tiny { font-size: 12px; color: var(--gold-dark); font-weight: 500; padding: 4px 0; }
+
+#journal-input, #modal-journal-input, #see-input, #purpose-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px; font-size: 15px; resize: none; background: var(--bg);
+  color: var(--text); line-height: 1.6; transition: border-color 0.2s;
+}
+#journal-input:focus, #modal-journal-input:focus, #see-input:focus, #purpose-input:focus { border-color: var(--gold); }
+
+.journal-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 12px;
+}
+.rep-badge {
+  font-size: 12px; font-weight: 600; color: var(--green);
+  background: var(--green-light); padding: 4px 10px; border-radius: 20px;
+}
+.btn-primary {
+  padding: 12px 22px; border-radius: 50px;
+  background: var(--text); color: white; font-size: 14px; font-weight: 600;
+  transition: transform 0.15s;
+}
+.btn-primary:active { transform: scale(0.97); }
+
+.entries-section { margin-top: 24px; }
+.entries-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text3); margin-bottom: 12px; }
+
+.entry-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 16px; margin-bottom: 10px;
+}
+.entry-date { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+.entry-text { font-size: 14px; color: var(--text); line-height: 1.6; }
+.entry-tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--blue); background: var(--blue-light); padding: 3px 8px; border-radius: 10px; margin-bottom: 6px; }
+
+/* ===================== SEE GOD ===================== */
+.see-compose { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+.see-prompts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.see-tag {
+  font-size: 12px; font-weight: 500; color: var(--text2);
+  background: var(--bg2); padding: 7px 12px; border-radius: 20px;
+  border: 1.5px solid var(--border); transition: all 0.15s;
+}
+.see-tag.active { background: var(--gold-light); color: var(--gold-dark); border-color: var(--gold); }
+
+/* ===================== READ ===================== */
+.read-log-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.read-log-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.read-form { display: flex; flex-direction: column; gap: 10px; }
+.form-row { display: flex; gap: 8px; }
+.form-select, .form-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 12px; font-size: 14px; background: var(--bg); color: var(--text);
+  transition: border-color 0.2s;
+}
+.form-select:focus, .form-input:focus { border-color: var(--gold); }
+.form-select { flex: 1; }
+
+.read-books-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.read-books-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.books-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.book-chip {
+  font-size: 12px; font-weight: 500;
+  background: var(--green-light); color: var(--green);
+  padding: 5px 10px; border-radius: 12px;
+}
+
+/* ===================== PURPOSE ===================== */
+.purpose-categories { display: flex; flex-direction: column; gap: 10px; }
+.purpose-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 18px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: transform 0.15s;
+}
+.purpose-card:active { transform: scale(0.98); }
+.pc-icon { font-size: 28px; flex-shrink: 0; }
+.purpose-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.purpose-card p { font-size: 13px; color: var(--text2); }
+.pc-arrow { margin-left: auto; font-size: 22px; color: var(--text3); flex-shrink: 0; }
+
+.purpose-detail { margin-top: 8px; }
+.back-btn { font-size: 14px; color: var(--text2); font-weight: 500; margin-bottom: 16px; padding: 4px 0; }
+.purpose-detail h3 { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.purpose-detail-prompt { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; font-style: italic; padding: 14px; background: var(--blue-light); border-radius: var(--radius-sm); }
+.conviction-label { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.conviction-sub { font-size: 13px; color: var(--text2); margin-bottom: 12px; }
+
+/* ===================== STATS TAB ===================== */
+.stats-level-card {
+  background: linear-gradient(135deg, #0A1628, #1C3455);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 16px; color: white;
+}
+.level-display { display: flex; align-items: center; gap: 18px; }
+.level-circle {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 700; color: white; flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(200,146,42,0.5);
+}
+.level-name { font-family: var(--font-display); font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+.level-sub { font-size: 13px; color: rgba(255,255,255,0.6); }
+.stats-level-card .xp-bar { background: rgba(255,255,255,0.2); }
+.stats-level-card .xp-next { color: rgba(255,255,255,0.6); }
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 18px; text-align: center;
+  box-shadow: var(--shadow);
+}
+.stat-num { font-size: 30px; font-weight: 700; font-family: var(--font-display); color: var(--text); margin-bottom: 4px; }
+.stat-label { font-size: 12px; color: var(--text2); }
+
+.milestones-list { display: flex; flex-direction: column; gap: 10px; }
+.milestone-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.milestone-item:last-child { border-bottom: none; }
+.ms-icon { font-size: 22px; }
+.ms-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.ms-desc { font-size: 12px; color: var(--text3); }
+.ms-status { margin-left: auto; font-size: 12px; font-weight: 600; }
+.ms-status.done { color: var(--green); }
+.ms-status.locked { color: var(--text3); }
+
+/* ===================== BOTTOM NAV ===================== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--surface); border-top: 1px solid var(--border);
+  display: flex; padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 6px 4px; color: var(--text3);
+  transition: color 0.15s;
+}
+.nav-btn.active { color: var(--gold); }
+.nav-icon { font-size: 20px; }
+.nav-label { font-size: 10px; font-weight: 500; }
+
+/* ===================== TOAST ===================== */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: white; padding: 12px 20px;
+  border-radius: 50px; font-size: 14px; font-weight: 500;
+  z-index: 2000; white-space: nowrap;
+  animation: toastIn 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ===================== MODAL ===================== */
+.modal {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end;
+  animation: fadeIn 0.2s ease;
+}
+.modal-card {
+  background: var(--surface); border-radius: 24px 24px 0 0;
+  padding: 24px; width: 100%;
+  animation: slideUp 0.3s ease;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.modal-header h3 { font-family: var(--font-display); font-size: 20px; }
+.modal-close { font-size: 18px; color: var(--text3); padding: 4px; }
+
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* Install prompt */
+.install-banner {
+  background: var(--gold-light); border: 1px solid var(--gold);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin: 16px;
+  font-size: 13px; color: var(--gold-dark); line-height: 1.5;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.install-banner button { background: var(--gold); color: white; padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+</style>
+</head>
+<body>
+
+<!-- INCOMING CALL OVERLAY -->
+<div id="call-overlay" class="hidden">
+  <div class="call-bg"></div>
+  <div class="call-container">
+    <div class="call-ripple-wrap">
+      <div class="call-ripple r1"></div>
+      <div class="call-ripple r2"></div>
+      <div class="call-ripple r3"></div>
+      <div class="call-avatar">✝</div>
+    </div>
+    <p class="call-label">Incoming Call</p>
+    <h2 class="call-name">God</h2>
+    <p class="call-sub" id="call-prompt-text">He wants to talk with you</p>
+    <div class="call-timer-wrap">
+      <div class="call-timer-bar"><div id="call-timer-fill"></div></div>
+      <span id="call-timer-secs">30s</span>
+    </div>
+    <div class="call-actions">
+      <button class="btn-decline" id="btn-decline" onclick="declineCall()">
+        <span class="btn-icon">📵</span>
+        <span>Decline</span>
+      </button>
+      <button class="btn-answer" id="btn-answer" onclick="answerCall()">
+        <span class="btn-icon">🙏</span>
+        <span>Answer</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- IN-CALL SCREEN -->
+<div id="in-call-screen" class="hidden">
+  <div class="incall-header">
+    <div class="incall-status">
+      <span class="incall-dot"></span>
+      <span>Talking with God</span>
+    </div>
+    <div id="incall-timer" class="incall-timer">0:00</div>
+  </div>
+  <div class="incall-body">
+    <div class="incall-prompt-card">
+      <p class="incall-prompt-label">He's saying —</p>
+      <p class="incall-prompt" id="incall-prompt-display"></p>
+    </div>
+    <div class="incall-note-wrap">
+      <label>Your response (optional)</label>
+      <textarea id="incall-note" placeholder="What's on your heart right now? Just talk..."></textarea>
+    </div>
+  </div>
+  <button class="btn-hangup" onclick="hangupCall()">
+    <span>End & Save (+1 Rep)</span>
+  </button>
+</div>
+
+<!-- APP SHELL -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="streak-pill">
+        <span class="streak-fire">🔥</span>
+        <span id="header-streak">0</span>
+      </div>
+    </div>
+    <h1 class="app-title">Walk With Him</h1>
+    <div class="topbar-right">
+      <div class="level-badge" id="header-level">Lv.1</div>
+    </div>
+  </header>
+
+  <!-- TAB CONTENT -->
+  <main class="main-content" id="main-content">
+
+    <!-- HOME TAB -->
+    <section id="tab-home" class="tab-section active">
+      <div class="home-greeting-card">
+        <p class="greeting-time" id="greeting-time">Good morning</p>
+        <h2 class="greeting-name">Ayomide 👋</h2>
+        <p class="greeting-sub">God's been waiting for you.</p>
+      </div>
+
+      <div class="xp-card">
+        <div class="xp-top">
+          <div>
+            <p class="xp-label">Today's Reps</p>
+            <p class="xp-count"><span id="today-reps">0</span> / <span id="today-goal">5</span></p>
+          </div>
+          <div class="xp-right">
+            <p class="xp-label">Total XP</p>
+            <p class="xp-total" id="total-xp">0</p>
+          </div>
+        </div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+          <p class="xp-next" id="xp-next-label">0 XP to next level</p>
+        </div>
+      </div>
+
+      <!-- VERSE CARD -->
+      <div class="section-card verse-card">
+        <div class="section-card-header">
+          <span class="card-icon">📖</span>
+          <span class="card-title">Verse of the Day</span>
+        </div>
+        <p class="verse-text" id="daily-verse-text">Loading...</p>
+        <p class="verse-ref" id="daily-verse-ref"></p>
+        <div class="verse-actions">
+          <button class="btn-small" onclick="markVerseRead()">✓ I read this (+1 Rep)</button>
+          <button class="btn-small btn-ghost" onclick="showTab('read')">Log my own reading</button>
+        </div>
+      </div>
+
+      <!-- TODAY REPS BREAKDOWN -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <span class="card-icon">⚡</span>
+          <span class="card-title">Today's Activity</span>
+        </div>
+        <div class="activity-list" id="today-activity"></div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-grid">
+        <button class="quick-btn" onclick="openJournal()">
+          <span class="qb-icon">✍️</span>
+          <span>Talk to God</span>
+        </button>
+        <button class="quick-btn" onclick="showTab('see')">
+          <span class="qb-icon">👁️</span>
+          <span>I saw God</span>
+        </button>
+        <button class="quick-btn" onclick="showTab('read')">
+          <span class="qb-icon">📚</span>
+          <span>I read</span>
+        </button>
+        <button class="quick-btn" onclick="showTab('purpose')">
+          <span class="qb-icon">🧭</span>
+          <span>Purpose</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- JOURNAL TAB -->
+    <section id="tab-journal" class="tab-section">
+      <div class="tab-hero">
+        <h2>Talk to God</h2>
+        <p>No format. No rules. Just you and him.</p>
+      </div>
+
+      <div class="journal-compose">
+        <div class="journal-prompt-row">
+          <p class="journal-prompt-label">A prompt if you need one:</p>
+          <p class="journal-prompt-text" id="journal-prompt">Loading...</p>
+          <button class="btn-tiny" onclick="refreshJournalPrompt()">↻ New prompt</button>
+        </div>
+        <textarea id="journal-input" placeholder="God, I want to talk about..." rows="7"></textarea>
+        <div class="journal-footer">
+          <span class="rep-badge">+2 Reps on save</span>
+          <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+        </div>
+      </div>
+
+      <div class="entries-section">
+        <h3 class="entries-title">Past Entries</h3>
+        <div id="journal-entries-list"></div>
+      </div>
+    </section>
+
+    <!-- SEE GOD TAB -->
+    <section id="tab-see" class="tab-section">
+      <div class="tab-hero">
+        <h2>I Saw God Today</h2>
+        <p>Log moments where you noticed God in your day.</p>
+      </div>
+
+      <div class="see-compose">
+        <div class="see-prompts">
+          <button class="see-tag" onclick="setSeeTag(this, 'Peace I didn\'t expect')">😌 Unexpected peace</button>
+          <button class="see-tag" onclick="setSeeTag(this, 'A provision came through')">🎁 A provision</button>
+          <button class="see-tag" onclick="setSeeTag(this, 'A warning I felt inside')">⚠️ Inner warning</button>
+          <button class="see-tag" onclick="setSeeTag(this, 'Someone said exactly what I needed')">💬 Right words</button>
+          <button class="see-tag" onclick="setSeeTag(this, 'A door opened unexpectedly')">🚪 Opened door</button>
+          <button class="see-tag" onclick="setSeeTag(this, 'Something that could only be God')">✨ Only God</button>
+        </div>
+        <textarea id="see-input" placeholder="Describe what happened..." rows="5"></textarea>
+        <div class="journal-footer">
+          <span class="rep-badge">+1 Rep on save</span>
+          <button class="btn-primary" onclick="saveSeeEntry()">Save Moment</button>
+        </div>
+      </div>
+
+      <div class="entries-section">
+        <h3 class="entries-title">God Sightings</h3>
+        <div id="see-entries-list"></div>
+      </div>
+    </section>
+
+    <!-- READ TAB -->
+    <section id="tab-read" class="tab-section">
+      <div class="tab-hero">
+        <h2>Bible Reading Log</h2>
+        <p>Every chapter you read moves you forward.</p>
+      </div>
+
+      <div class="read-log-card">
+        <h3>Log what you read</h3>
+        <div class="read-form">
+          <div class="form-row">
+            <select id="read-book" class="form-select">
+              <option value="">Choose Book</option>
+            </select>
+            <select id="read-chapter" class="form-select">
+              <option value="">Chapter</option>
+            </select>
+          </div>
+          <input type="text" id="read-insight" class="form-input" placeholder="One thing I noticed about God here..." />
+          <div class="journal-footer">
+            <span class="rep-badge">+1 Rep per chapter</span>
+            <button class="btn-primary" onclick="logReading()">Log Reading</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="read-books-card">
+        <h3>Books Touched</h3>
+        <div id="read-books-grid" class="books-grid"></div>
+      </div>
+
+      <div class="entries-section">
+        <h3 class="entries-title">Reading History</h3>
+        <div id="read-entries-list"></div>
+      </div>
+    </section>
+
+    <!-- PURPOSE TAB -->
+    <section id="tab-purpose" class="tab-section">
+      <div class="tab-hero">
+        <h2>Seeking Direction</h2>
+        <p>A space to hear from God on the big questions.</p>
+      </div>
+
+      <div class="purpose-categories">
+
+        <div class="purpose-card" onclick="openPurposeSection('identity')">
+          <span class="pc-icon">🌱</span>
+          <div>
+            <h4>Who Am I?</h4>
+            <p>Identity, gifts, calling</p>
+          </div>
+          <span class="pc-arrow">›</span>
+        </div>
+
+        <div class="purpose-card" onclick="openPurposeSection('nysc')">
+          <span class="pc-icon">🗺️</span>
+          <div>
+            <h4>NYSC Posting</h4>
+            <p>Where is God sending you?</p>
+          </div>
+          <span class="pc-arrow">›</span>
+        </div>
+
+        <div class="purpose-card" onclick="openPurposeSection('marriage')">
+          <span class="pc-icon">💍</span>
+          <div>
+            <h4>Marriage & Relationships</h4>
+            <p>Who? When? How will I know?</p>
+          </div>
+          <span class="pc-arrow">›</span>
+        </div>
+
+        <div class="purpose-card" onclick="openPurposeSection('career')">
+          <span class="pc-icon">🏗️</span>
+          <div>
+            <h4>Career & Business</h4>
+            <p>WebOwnr, job, what's next</p>
+          </div>
+          <span class="pc-arrow">›</span>
+        </div>
+
+        <div class="purpose-card" onclick="openPurposeSection('location')">
+          <span class="pc-icon">📍</span>
+          <div>
+            <h4>Where to Settle</h4>
+            <p>City, state, or country?</p>
+          </div>
+          <span class="pc-arrow">›</span>
+        </div>
+
+      </div>
+
+      <!-- Purpose detail panel -->
+      <div id="purpose-detail" class="purpose-detail hidden">
+        <button class="back-btn" onclick="closePurposeSection()">← Back</button>
+        <h3 id="purpose-detail-title"></h3>
+        <p class="purpose-detail-prompt" id="purpose-detail-prompt"></p>
+        <div id="purpose-conviction-section">
+          <h4 class="conviction-label">Convictions & Impressions</h4>
+          <p class="conviction-sub">What has God been saying? Even quiet nudges count.</p>
+          <textarea id="purpose-input" rows="5" placeholder="Write what you sense, feel or have heard..."></textarea>
+          <button class="btn-primary" onclick="savePurposeEntry()" style="margin-top:12px; width:100%">Save Impression</button>
+        </div>
+        <div class="entries-section" style="margin-top:24px">
+          <h3 class="entries-title">What I've Heard</h3>
+          <div id="purpose-entries-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS TAB -->
+    <section id="tab-stats" class="tab-section">
+      <div class="tab-hero">
+        <h2>Your Walk</h2>
+        <p>See how your relationship with God is growing.</p>
+      </div>
+
+      <div class="stats-level-card">
+        <div class="level-display">
+          <div class="level-circle" id="stats-level-circle">1</div>
+          <div>
+            <p class="level-name" id="stats-level-name">Seeker</p>
+            <p class="level-sub">Keep showing up</p>
+          </div>
+        </div>
+        <div class="xp-bar-wrap" style="margin-top:16px">
+          <div class="xp-bar"><div class="xp-fill" id="stats-xp-fill"></div></div>
+          <p class="xp-next" id="stats-xp-label">0 / 100 XP</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <p class="stat-num" id="stat-streak">0</p>
+          <p class="stat-label">Day Streak 🔥</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num" id="stat-calls-answered">0</p>
+          <p class="stat-label">Calls Answered 🙏</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num" id="stat-journal-count">0</p>
+          <p class="stat-label">Journal Entries ✍️</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num" id="stat-see-count">0</p>
+          <p class="stat-label">God Sightings 👁️</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num" id="stat-chapters-read">0</p>
+          <p class="stat-label">Chapters Read 📖</p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-num" id="stat-total-reps">0</p>
+          <p class="stat-label">Total Reps ⚡</p>
+        </div>
+      </div>
+
+      <div class="section-card" style="margin-top: 20px;">
+        <div class="section-card-header">
+          <span class="card-icon">🏆</span>
+          <span class="card-title">Milestones</span>
+        </div>
+        <div id="milestones-list" class="milestones-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="showTab('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('journal')" id="nav-journal">
+      <span class="nav-icon">✍️</span>
+      <span class="nav-label">Journal</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('see')" id="nav-see">
+      <span class="nav-icon">👁️</span>
+      <span class="nav-label">I Saw</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('read')" id="nav-read">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">Read</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('stats')" id="nav-stats">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">My Walk</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- JOURNAL MODAL -->
+<div id="journal-modal" class="modal hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Talk to God</h3>
+      <button class="modal-close" onclick="closeJournal()">✕</button>
+    </div>
+    <p class="journal-prompt-text" id="modal-prompt">Loading...</p>
+    <textarea id="modal-journal-input" placeholder="Just talk..." rows="6"></textarea>
+    <button class="btn-primary" style="width:100%;margin-top:12px" onclick="saveModalJournal()">Save (+2 Reps)</button>
+  </div>
+</div>
+
+
+
+<script>
+// =================== BIBLE DATA ===================
+const BIBLE_BOOKS = {
+  "Genesis": 50, "Exodus": 40, "Leviticus": 27, "Numbers": 36, "Deuteronomy": 34,
+  "Joshua": 24, "Judges": 21, "Ruth": 4, "1 Samuel": 31, "2 Samuel": 24,
+  "1 Kings": 22, "2 Kings": 25, "1 Chronicles": 29, "2 Chronicles": 36,
+  "Ezra": 10, "Nehemiah": 13, "Esther": 10, "Job": 42, "Psalms": 150,
+  "Proverbs": 31, "Ecclesiastes": 12, "Song of Solomon": 8, "Isaiah": 66,
+  "Jeremiah": 52, "Lamentations": 5, "Ezekiel": 48, "Daniel": 12, "Hosea": 14,
+  "Joel": 3, "Amos": 9, "Obadiah": 1, "Jonah": 4, "Micah": 7, "Nahum": 3,
+  "Habakkuk": 3, "Zephaniah": 3, "Haggai": 2, "Zechariah": 14, "Malachi": 4,
+  "Matthew": 28, "Mark": 16, "Luke": 24, "John": 21, "Acts": 28,
+  "Romans": 16, "1 Corinthians": 16, "2 Corinthians": 13, "Galatians": 6,
+  "Ephesians": 6, "Philippians": 4, "Colossians": 4, "1 Thessalonians": 5,
+  "2 Thessalonians": 3, "1 Timothy": 6, "2 Timothy": 4, "Titus": 3,
+  "Philemon": 1, "Hebrews": 13, "James": 5, "1 Peter": 5, "2 Peter": 3,
+  "1 John": 5, "2 John": 1, "3 John": 1, "Jude": 1, "Revelation": 22
+};
+
+// =================== DAILY VERSES ===================
+const DAILY_VERSES = [
+  { text: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11" },
+  { text: "Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.", ref: "Proverbs 3:5-6" },
+  { text: "I can do all this through him who gives me strength.", ref: "Philippians 4:13" },
+  { text: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28" },
+  { text: "But seek first his kingdom and his righteousness, and all these things will be given to you as well.", ref: "Matthew 6:33" },
+  { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
+  { text: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7" },
+  { text: "The Lord is my shepherd, I lack nothing.", ref: "Psalm 23:1" },
+  { text: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28" },
+  { text: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", ref: "Philippians 4:6" },
+  { text: "I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit.", ref: "John 15:5" },
+  { text: "The righteous person may have many troubles, but the Lord delivers him from them all.", ref: "Psalm 34:19" },
+  { text: "Delight yourself in the Lord, and he will give you the desires of your heart.", ref: "Psalm 37:4" },
+  { text: "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.", ref: "2 Timothy 1:7" },
+  { text: "Your word is a lamp for my feet, a light on my path.", ref: "Psalm 119:105" },
+  { text: "The Lord himself goes before you and will be with you; he will never leave you nor forsake you.", ref: "Deuteronomy 31:8" },
+  { text: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.", ref: "Isaiah 40:31" },
+  { text: "Whoever dwells in the shelter of the Most High will rest in the shadow of the Almighty.", ref: "Psalm 91:1" },
+  { text: "Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.", ref: "Matthew 7:7" },
+  { text: "God is our refuge and strength, an ever-present help in trouble.", ref: "Psalm 46:1" },
+  { text: "This is the day the Lord has made; let us rejoice and be glad in it.", ref: "Psalm 118:24" },
+  { text: "Even youths grow tired and weary, but those who hope in the LORD will renew their strength.", ref: "Isaiah 40:30-31" },
+  { text: "The name of the Lord is a fortified tower; the righteous run to it and are safe.", ref: "Proverbs 18:10" },
+  { text: "Create in me a pure heart, O God, and renew a steadfast spirit within me.", ref: "Psalm 51:10" },
+  { text: "I sought the Lord, and he answered me; he delivered me from all my fears.", ref: "Psalm 34:4" },
+  { text: "You will seek me and find me when you seek me with all your heart.", ref: "Jeremiah 29:13" },
+  { text: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16" },
+  { text: "The thief comes only to steal and kill and destroy; I have come that they may have life, and have it to the full.", ref: "John 10:10" },
+  { text: "Jesus answered, 'I am the way and the truth and the life.'", ref: "John 14:6" },
+  { text: "No one has ever seen God, but the one and only Son, who is himself God and is in the Father's embrace, has made him known.", ref: "John 1:18" },
+  { text: "My sheep listen to my voice; I know them, and they follow me.", ref: "John 10:27" }
+];
+
+// =================== CALL PROMPTS ===================
+const CALL_PROMPTS = [
+  "I've been watching over you. How are you really doing?",
+  "There's something on my heart for you — will you listen?",
+  "What have you been carrying alone that I want to carry with you?",
+  "You've been worried again. Let's talk about it.",
+  "I want to remind you: I haven't forgotten about WebOwnr.",
+  "Tell me — what are you afraid of right now?",
+  "I have something to show you about yourself today.",
+  "You've been performing. I want the real Ayomide.",
+  "Let's talk about NYSC. I already know where you're going.",
+  "Your future is not in crisis. Talk to me.",
+  "I want to remind you who I made you to be.",
+  "I see the work you're putting in. Let me tell you how I see it.",
+  "What would you say to me right now if you weren't afraid to be honest?",
+  "Come and rest for a moment. Just be with me.",
+  "I want to talk about the person you want to become.",
+  "What decision are you overthinking? Let's think through it together.",
+  "You're not behind. Let me show you where you are.",
+  "I want to encourage you. Will you receive it?",
+  "There's a question you've been afraid to ask me. Ask it.",
+  "Tell me one thing you're grateful for right now.",
+  "Let's talk about your character — the inside of you.",
+  "I'm proud of you, and I want you to know why.",
+  "Something you did recently opened a door. Did you notice?",
+  "You're more loved than you currently feel.",
+  "Let's talk about what holiness actually looks like for you, practically."
+];
+
+// =================== JOURNAL PROMPTS ===================
+const JOURNAL_PROMPTS = [
+  "God, this is what's actually on my mind right now...",
+  "I'm confused about something and I need you to weigh in...",
+  "Today I realized something about myself that I want to tell you...",
+  "I keep struggling with ___. I don't fully understand why.",
+  "If I'm honest, I'm afraid that...",
+  "Something you've been saying to me that I keep ignoring is...",
+  "I'm worried about [the job/WebOwnr/NYSC]. Here's why...",
+  "I want to ask you about my future and what you see...",
+  "Something I feel like you're asking me to let go of is...",
+  "If I could hear one thing from you right now, it would be...",
+  "The version of myself I want to become looks like...",
+  "Today I sinned again and here's how I feel about it...",
+  "I want to be honest: sometimes I doubt that you're listening. Here's why...",
+  "The thing I find hardest about trusting you is...",
+  "Something that happened this week where I saw your hand was..."
+];
+
+// =================== LEVEL SYSTEM ===================
+const LEVELS = [
+  { level: 1, name: "Seeker", xpRequired: 0, xpToNext: 50 },
+  { level: 2, name: "Awakened", xpRequired: 50, xpToNext: 120 },
+  { level: 3, name: "Walker", xpRequired: 120, xpToNext: 250 },
+  { level: 4, name: "Disciple", xpRequired: 250, xpToNext: 450 },
+  { level: 5, name: "Faithful One", xpRequired: 450, xpToNext: 700 },
+  { level: 6, name: "Beloved", xpRequired: 700, xpToNext: 1000 },
+  { level: 7, name: "Covenant Keeper", xpRequired: 1000, xpToNext: 1400 },
+  { level: 8, name: "Friend of God", xpRequired: 1400, xpToNext: 1900 },
+  { level: 9, name: "Son of Fire", xpRequired: 1900, xpToNext: 2500 },
+  { level: 10, name: "Man After His Heart", xpRequired: 2500, xpToNext: Infinity }
+];
+
+// =================== MILESTONES ===================
+const MILESTONES = [
+  { id: "first_call", icon: "📞", name: "First Call", desc: "Answered your first call from God", check: (s) => s.callsAnswered >= 1 },
+  { id: "first_journal", icon: "✍️", name: "First Words", desc: "Wrote your first journal entry", check: (s) => s.journalCount >= 1 },
+  { id: "first_sight", icon: "👁️", name: "Eyes Open", desc: "Logged your first God sighting", check: (s) => s.seeCount >= 1 },
+  { id: "first_read", icon: "📖", name: "Word Touched", desc: "Logged your first Bible reading", check: (s) => s.chaptersRead >= 1 },
+  { id: "streak_3", icon: "🔥", name: "3-Day Fire", desc: "3-day streak — you showed up", check: (s) => s.longestStreak >= 3 },
+  { id: "streak_7", icon: "⚡", name: "Week of Grace", desc: "7 days in a row with God", check: (s) => s.longestStreak >= 7 },
+  { id: "streak_30", icon: "🌙", name: "Month of Seeking", desc: "30-day streak — this is becoming real", check: (s) => s.longestStreak >= 30 },
+  { id: "calls_10", icon: "🙏", name: "Always Picking Up", desc: "Answered 10 calls from God", check: (s) => s.callsAnswered >= 10 },
+  { id: "journal_10", icon: "📔", name: "Open Heart", desc: "10 journal entries written", check: (s) => s.journalCount >= 10 },
+  { id: "chapters_10", icon: "🗺️", name: "Deep Diver", desc: "Read 10 chapters of the Bible", check: (s) => s.chaptersRead >= 10 },
+  { id: "chapters_50", icon: "📜", name: "Scripture Soaked", desc: "Read 50 chapters — God is speaking", check: (s) => s.chaptersRead >= 50 },
+  { id: "sights_20", icon: "🌟", name: "God Hunter", desc: "Logged 20 God sightings", check: (s) => s.seeCount >= 20 },
+  { id: "level_5", icon: "🌿", name: "Faithful One", desc: "Reached Level 5 — you're walking now", check: (s) => s.level >= 5 },
+  { id: "level_8", icon: "🕊️", name: "Friend of God", desc: "Level 8 — Abraham territory", check: (s) => s.level >= 8 },
+  { id: "reps_100", icon: "💫", name: "100 Reps", desc: "100 total reps with God", check: (s) => s.totalReps >= 100 },
+];
+
+// =================== PURPOSE SECTIONS ===================
+const PURPOSE_SECTIONS = {
+  identity: {
+    title: "Who Am I?",
+    prompt: "God, I want to understand who you made me to be — not just what I do. What gifts, callings, and characteristics have you placed in me? What do you see when you look at me?",
+  },
+  nysc: {
+    title: "NYSC Posting",
+    prompt: "God, I'm about to go for NYSC. You already know where I'm going. I want to surrender this to you — not fight the posting but follow your leading. Is there something specific you want me to do or learn there?",
+  },
+  marriage: {
+    title: "Marriage & Relationships",
+    prompt: "God, I want to approach love the right way — through you. Who are you preparing for me? What kind of person am I becoming that can love well? What do I need to know about this season?",
+  },
+  career: {
+    title: "Career & Business",
+    prompt: "God, WebOwnr, the job search, coding, building — I bring all of it to you. What role do you want to play in what I'm building? Am I building what you want me to build? What should I be prioritizing?",
+  },
+  location: {
+    title: "Where to Settle",
+    prompt: "God, I don't know where I'm supposed to plant roots. Lagos? Abroad? Somewhere new? I don't want to just chase opportunity — I want to be where you've sent me. What are you saying about this?",
+  }
+};
+
+
+// =================== STATE ===================
+let state = {
+  totalXP: 0,
+  level: 1,
+  streak: 0,
+  longestStreak: 0,
+  lastActiveDate: null,
+  todayReps: 0,
+  todayGoal: 5,
+  callsAnswered: 0,
+  callsDeclined: 0,
+  journalCount: 0,
+  seeCount: 0,
+  chaptersRead: 0,
+  totalReps: 0,
+  versesRead: [],
+  todayActivity: [],
+  journalEntries: [],
+  seeEntries: [],
+  readEntries: [],
+  purposeEntries: {},
+  booksRead: [],
+  verseReadToday: false,
+  callScheduledTimes: [],
+  milestones: [],
+};
+
+let callTimer = null;
+let callCountdown = 30;
+let callTimerInterval = null;
+let incallInterval = null;
+let incallSeconds = 0;
+let currentCallPrompt = "";
+let currentSeeTag = "";
+let currentPurposeSection = "";
+let deferredInstallPrompt = null;
+
+// =================== STORAGE ===================
+function saveState() {
+  localStorage.setItem("wwh_state", JSON.stringify(state));
+}
+
+function loadState() {
+  const saved = localStorage.getItem("wwh_state");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      state = Object.assign(state, parsed);
+    } catch (e) {}
+  }
+}
+
+// =================== INIT ===================
+function init() {
+  loadState();
+  checkStreak();
+  checkNewDay();
+  populateBibleSelect();
+  loadDailyVerse();
+  refreshJournalPrompt();
+  updateAllUI();
+  scheduleCalls();
+  renderJournalEntries();
+  renderSeeEntries();
+  renderReadEntries();
+  renderBooksGrid();
+  renderMilestones();
+  updateGreeting();
+}
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  let greeting = "Good morning";
+  if (hour >= 12 && hour < 17) greeting = "Good afternoon";
+  else if (hour >= 17) greeting = "Good evening";
+  const el = document.getElementById("greeting-time");
+  if (el) el.textContent = greeting;
+}
+
+// =================== NEW DAY CHECK ===================
+function checkNewDay() {
+  const today = new Date().toDateString();
+  if (state.lastActiveDate !== today) {
+    state.todayReps = 0;
+    state.verseReadToday = false;
+    state.todayActivity = [];
+    state.lastActiveDate = today;
+    saveState();
+  }
+}
+
+function checkStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (state.lastActiveDate === yesterday) {
+    // streak continues
+  } else if (state.lastActiveDate !== today) {
+    state.streak = 0;
+  }
+}
+
+// =================== REPS & XP ===================
+const XP_PER_REP_TYPE = {
+  call: 15,
+  journal: 20,
+  see: 10,
+  read: 10,
+  verse: 5,
+  purpose: 10,
+};
+
+function addReps(type, count = 1, description = "") {
+  const xp = (XP_PER_REP_TYPE[type] || 10) * count;
+  state.totalXP += xp;
+  state.totalReps += count;
+  state.todayReps += count;
+
+  // Streak
+  const today = new Date().toDateString();
+  if (state.lastActiveDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (state.lastActiveDate === yesterday) {
+      state.streak++;
+    } else {
+      state.streak = 1;
+    }
+    if (state.streak > state.longestStreak) state.longestStreak = state.streak;
+    state.lastActiveDate = today;
+  }
+
+  // Log activity
+  state.todayActivity.unshift({
+    icon: getRepIcon(type),
+    text: description || getRepText(type),
+    xp: xp,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  });
+  if (state.todayActivity.length > 15) state.todayActivity.pop();
+
+  updateLevel();
+  saveState();
+  updateAllUI();
+  checkMilestones();
+
+  showToast(`+${xp} XP ⚡`);
+}
+
+function getRepIcon(type) {
+  const icons = { call: "🙏", journal: "✍️", see: "👁️", read: "📖", verse: "✝️", purpose: "🧭" };
+  return icons[type] || "⚡";
+}
+
+function getRepText(type) {
+  const texts = { call: "Answered God's call", journal: "Talked to God", see: "Saw God today", read: "Read the Word", verse: "Read verse of the day", purpose: "Sought direction" };
+  return texts[type] || "Rep earned";
+}
+
+function updateLevel() {
+  let newLevel = 1;
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (state.totalXP >= LEVELS[i].xpRequired) {
+      newLevel = LEVELS[i].level;
+      break;
+    }
+  }
+  if (newLevel > state.level) {
+    state.level = newLevel;
+    setTimeout(() => showToast(`🎉 Level Up! You are now a "${LEVELS[newLevel-1].name}"!`), 600);
+  }
+}
+
+// =================== UI UPDATES ===================
+function updateAllUI() {
+  // Header
+  setEl("header-streak", state.streak);
+  setEl("header-level", `Lv.${state.level}`);
+
+  // Today reps
+  setEl("today-reps", state.todayReps);
+  setEl("today-goal", state.todayGoal);
+
+  // XP bar
+  const levelData = LEVELS[state.level - 1];
+  const nextLevelData = LEVELS[state.level] || LEVELS[LEVELS.length - 1];
+  const xpInLevel = state.totalXP - levelData.xpRequired;
+  const xpNeeded = nextLevelData.xpRequired - levelData.xpRequired;
+  const pct = Math.min(100, Math.round((xpInLevel / xpNeeded) * 100));
+
+  setEl("total-xp", state.totalXP);
+  const fillEl = document.getElementById("xp-fill");
+  if (fillEl) fillEl.style.width = pct + "%";
+  setEl("xp-next-label", `${xpInLevel} / ${xpNeeded} XP to next level`);
+
+  // Stats XP
+  const statsFill = document.getElementById("stats-xp-fill");
+  if (statsFill) statsFill.style.width = pct + "%";
+  setEl("stats-xp-label", `${state.totalXP} XP total`);
+  setEl("stats-level-circle", state.level);
+  setEl("stats-level-name", LEVELS[state.level - 1]?.name || "Seeker");
+
+  // Stats numbers
+  setEl("stat-streak", state.streak);
+  setEl("stat-calls-answered", state.callsAnswered);
+  setEl("stat-journal-count", state.journalCount);
+  setEl("stat-see-count", state.seeCount);
+  setEl("stat-chapters-read", state.chaptersRead);
+  setEl("stat-total-reps", state.totalReps);
+
+  renderTodayActivity();
+}
+
+function setEl(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderTodayActivity() {
+  const el = document.getElementById("today-activity");
+  if (!el) return;
+  if (!state.todayActivity.length) {
+    el.innerHTML = '<div class="activity-item"><span class="ai-icon">☀️</span><span>No activity yet today. Answer a call or log something.</span></div>';
+    return;
+  }
+  el.innerHTML = state.todayActivity.slice(0, 6).map(a => `
+    <div class="activity-item">
+      <span class="ai-icon">${a.icon}</span>
+      <span>${a.text}</span>
+      <span class="ai-rep">+${a.xp} XP</span>
+    </div>
+  `).join('');
+}
+
+// =================== DAILY VERSE ===================
+function loadDailyVerse() {
+  const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_VERSES.length;
+  const verse = DAILY_VERSES[dayIndex];
+  setEl("daily-verse-text", `"${verse.text}"`);
+  setEl("daily-verse-ref", `— ${verse.ref}`);
+}
+
+function markVerseRead() {
+  if (state.verseReadToday) { showToast("Already logged today ✓"); return; }
+  state.verseReadToday = true;
+  addReps("verse", 1, "Read verse of the day");
+  document.querySelector(".verse-actions .btn-small").textContent = "✓ Logged!";
+}
+
+// =================== CALL SYSTEM ===================
+function scheduleCalls() {
+  // Schedule 3 random calls per day within waking hours (7am - 10pm)
+  const now = new Date();
+  const startHour = 7, endHour = 22;
+  const totalMinutes = (endHour - startHour) * 60;
+
+  // Use today's date as seed for consistent scheduling
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  const times = [];
+
+  // Simple seeded random
+  const rand = (n, offset) => {
+    const x = Math.sin(seed * 9301 + offset * 49297 + 233720) * 10000;
+    return Math.abs(x - Math.floor(x));
+  };
+
+  for (let i = 0; i < 3; i++) {
+    const minuteOffset = Math.floor(rand(seed, i * 3 + 1) * totalMinutes);
+    const callTime = new Date(now);
+    callTime.setHours(startHour, 0, 0, 0);
+    callTime.setMinutes(callTime.getMinutes() + minuteOffset);
+    times.push(callTime);
+  }
+
+  times.sort((a, b) => a - b);
+
+  times.forEach((callTime, idx) => {
+    const delay = callTime.getTime() - now.getTime();
+    if (delay > 0 && delay < 86400000) {
+      setTimeout(() => triggerCall(), delay);
+    }
+  });
+
+  // Also allow manual test via hidden shake or long press
+}
+
+function triggerCall() {
+  // Pick a random prompt
+  currentCallPrompt = CALL_PROMPTS[Math.floor(Math.random() * CALL_PROMPTS.length)];
+  document.getElementById("call-prompt-text").textContent = "He wants to talk with you";
+  document.getElementById("incall-prompt-display").textContent = currentCallPrompt;
+
+  // Vibrate if possible
+  if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]);
+
+  // Show overlay
+  document.getElementById("call-overlay").classList.remove("hidden");
+
+  // Start 30s countdown
+  callCountdown = 30;
+  updateCallTimer();
+  callTimerInterval = setInterval(() => {
+    callCountdown--;
+    updateCallTimer();
+    if (callCountdown <= 0) {
+      clearInterval(callTimerInterval);
+      autoMissCall();
+    }
+  }, 1000);
+
+  // Play a soft sound if audio context available
+  tryPlayCallSound();
+}
+
+function updateCallTimer() {
+  const fill = document.getElementById("call-timer-fill");
+  const secs = document.getElementById("call-timer-secs");
+  if (fill) fill.style.width = ((callCountdown / 30) * 100) + "%";
+  if (secs) secs.textContent = callCountdown + "s";
+}
+
+function answerCall() {
+  clearInterval(callTimerInterval);
+  document.getElementById("call-overlay").classList.add("hidden");
+  document.getElementById("in-call-screen").classList.remove("hidden");
+  document.getElementById("incall-note").value = "";
+  if (navigator.vibrate) navigator.vibrate(100);
+
+  // Start in-call timer
+  incallSeconds = 0;
+  incallInterval = setInterval(() => {
+    incallSeconds++;
+    const m = Math.floor(incallSeconds / 60);
+    const s = incallSeconds % 60;
+    setEl("incall-timer", `${m}:${s.toString().padStart(2, "0")}`);
+  }, 1000);
+}
+
+function declineCall() {
+  clearInterval(callTimerInterval);
+  document.getElementById("call-overlay").classList.add("hidden");
+  state.callsDeclined++;
+  saveState();
+  showToast("You missed His call. He'll try again 💛");
+}
+
+function autoMissCall() {
+  document.getElementById("call-overlay").classList.add("hidden");
+  state.callsDeclined++;
+  saveState();
+  showToast("Call missed. He'll call again 💛");
+}
+
+function hangupCall() {
+  clearInterval(incallInterval);
+  document.getElementById("in-call-screen").classList.add("hidden");
+
+  // Save note if any
+  const note = document.getElementById("incall-note").value.trim();
+  if (note) {
+    state.journalEntries.unshift({
+      id: Date.now(),
+      type: "call",
+      text: note,
+      prompt: currentCallPrompt,
+      date: new Date().toLocaleString()
+    });
+    state.journalCount++;
+  }
+
+  state.callsAnswered++;
+  addReps("call", 1, "Answered God's call");
+  renderJournalEntries();
+}
+
+// =================== JOURNAL ===================
+function openJournal() {
+  refreshModalPrompt();
+  document.getElementById("journal-modal").classList.remove("hidden");
+  setTimeout(() => document.getElementById("modal-journal-input").focus(), 100);
+}
+function closeJournal() {
+  document.getElementById("journal-modal").classList.add("hidden");
+}
+
+function refreshJournalPrompt() {
+  const p = JOURNAL_PROMPTS[Math.floor(Math.random() * JOURNAL_PROMPTS.length)];
+  setEl("journal-prompt", p);
+}
+function refreshModalPrompt() {
+  const p = JOURNAL_PROMPTS[Math.floor(Math.random() * JOURNAL_PROMPTS.length)];
+  setEl("modal-prompt", p);
+}
+
+function saveJournalEntry() {
+  const text = document.getElementById("journal-input").value.trim();
+  if (!text) { showToast("Write something first"); return; }
+  commitJournal(text);
+  document.getElementById("journal-input").value = "";
+  refreshJournalPrompt();
+}
+
+function saveModalJournal() {
+  const text = document.getElementById("modal-journal-input").value.trim();
+  if (!text) { showToast("Write something first"); return; }
+  commitJournal(text);
+  document.getElementById("modal-journal-input").value = "";
+  closeJournal();
+}
+
+function commitJournal(text) {
+  state.journalEntries.unshift({
+    id: Date.now(),
+    type: "journal",
+    text: text,
+    date: new Date().toLocaleString()
+  });
+  state.journalCount++;
+  addReps("journal", 2, "Talked to God in journal");
+  renderJournalEntries();
+}
+
+function renderJournalEntries() {
+  const el = document.getElementById("journal-entries-list");
+  if (!el) return;
+  if (!state.journalEntries.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">Nothing yet. Start talking to him.</p>';
+    return;
+  }
+  el.innerHTML = state.journalEntries.slice(0, 15).map(e => `
+    <div class="entry-card">
+      <div class="entry-date">${e.date}${e.type === 'call' ? ' · 📞 From a Call' : ''}</div>
+      ${e.prompt ? `<div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-style:italic">"${e.prompt}"</div>` : ''}
+      <div class="entry-text">${e.text}</div>
+    </div>
+  `).join('');
+}
+
+// =================== SEE GOD ===================
+function setSeeTag(btn, text) {
+  document.querySelectorAll(".see-tag").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentSeeTag = text;
+  const input = document.getElementById("see-input");
+  if (!input.value) input.value = text + ": ";
+}
+
+function saveSeeEntry() {
+  const text = document.getElementById("see-input").value.trim();
+  if (!text) { showToast("Describe what you saw"); return; }
+  state.seeEntries.unshift({
+    id: Date.now(),
+    text: text,
+    tag: currentSeeTag,
+    date: new Date().toLocaleString()
+  });
+  state.seeCount++;
+  document.getElementById("see-input").value = "";
+  currentSeeTag = "";
+  document.querySelectorAll(".see-tag").forEach(b => b.classList.remove("active"));
+  addReps("see", 1, "Logged a God sighting");
+  renderSeeEntries();
+}
+
+function renderSeeEntries() {
+  const el = document.getElementById("see-entries-list");
+  if (!el) return;
+  if (!state.seeEntries.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">Start noticing him in your day.</p>';
+    return;
+  }
+  el.innerHTML = state.seeEntries.slice(0, 15).map(e => `
+    <div class="entry-card">
+      <div class="entry-date">${e.date}</div>
+      ${e.tag ? `<span class="entry-tag">${e.tag}</span>` : ''}
+      <div class="entry-text">${e.text}</div>
+    </div>
+  `).join('');
+}
+
+// =================== BIBLE READING ===================
+function populateBibleSelect() {
+  const sel = document.getElementById("read-book");
+  if (!sel) return;
+  Object.keys(BIBLE_BOOKS).forEach(book => {
+    const opt = document.createElement("option");
+    opt.value = book;
+    opt.textContent = book;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", updateChapterSelect);
+}
+
+function updateChapterSelect() {
+  const book = document.getElementById("read-book").value;
+  const chapSel = document.getElementById("read-chapter");
+  chapSel.innerHTML = '<option value="">Chapter</option>';
+  if (book && BIBLE_BOOKS[book]) {
+    for (let i = 1; i <= BIBLE_BOOKS[book]; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `Chapter ${i}`;
+      chapSel.appendChild(opt);
+    }
+  }
+}
+
+function logReading() {
+  const book = document.getElementById("read-book").value;
+  const chapter = document.getElementById("read-chapter").value;
+  const insight = document.getElementById("read-insight").value.trim();
+  if (!book || !chapter) { showToast("Choose a book and chapter"); return; }
+
+  state.readEntries.unshift({
+    id: Date.now(),
+    book, chapter,
+    insight: insight || "No note added",
+    date: new Date().toLocaleString()
+  });
+  state.chaptersRead++;
+
+  if (!state.booksRead.includes(book)) state.booksRead.push(book);
+
+  document.getElementById("read-book").value = "";
+  document.getElementById("read-chapter").innerHTML = '<option value="">Chapter</option>';
+  document.getElementById("read-insight").value = "";
+
+  addReps("read", 1, `Read ${book} ${chapter}`);
+  renderReadEntries();
+  renderBooksGrid();
+}
+
+function renderReadEntries() {
+  const el = document.getElementById("read-entries-list");
+  if (!el) return;
+  if (!state.readEntries.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:14px;text-align:center;padding:20px 0">No reading logged yet.</p>';
+    return;
+  }
+  el.innerHTML = state.readEntries.slice(0, 20).map(e => `
+    <div class="entry-card">
+      <div class="entry-date">${e.date}</div>
+      <div class="entry-text"><strong>${e.book} ${e.chapter}</strong><br/><span style="color:var(--text2)">${e.insight}</span></div>
+    </div>
+  `).join('');
+}
+
+function renderBooksGrid() {
+  const el = document.getElementById("read-books-grid");
+  if (!el) return;
+  if (!state.booksRead.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:13px">No books read yet</p>';
+    return;
+  }
+  el.innerHTML = state.booksRead.map(b => `<span class="book-chip">${b}</span>`).join('');
+}
+
+// =================== PURPOSE ===================
+function openPurposeSection(key) {
+  currentPurposeSection = key;
+  const section = PURPOSE_SECTIONS[key];
+  if (!section) return;
+  document.getElementById("purpose-detail-title").textContent = section.title;
+  document.getElementById("purpose-detail-prompt").textContent = section.prompt;
+  document.getElementById("purpose-input").value = "";
+  document.querySelector(".purpose-categories").classList.add("hidden");
+  document.getElementById("purpose-detail").classList.remove("hidden");
+  renderPurposeEntries(key);
+}
+
+function closePurposeSection() {
+  document.querySelector(".purpose-categories").classList.remove("hidden");
+  document.getElementById("purpose-detail").classList.add("hidden");
+}
+
+function savePurposeEntry() {
+  const text = document.getElementById("purpose-input").value.trim();
+  if (!text) { showToast("Write what you're sensing"); return; }
+  if (!state.purposeEntries[currentPurposeSection]) state.purposeEntries[currentPurposeSection] = [];
+  state.purposeEntries[currentPurposeSection].unshift({
+    id: Date.now(),
+    text,
+    date: new Date().toLocaleString()
+  });
+  document.getElementById("purpose-input").value = "";
+  addReps("purpose", 1, "Sought direction from God");
+  renderPurposeEntries(currentPurposeSection);
+}
+
+function renderPurposeEntries(key) {
+  const el = document.getElementById("purpose-entries-list");
+  if (!el) return;
+  const entries = state.purposeEntries[key] || [];
+  if (!entries.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:14px;text-align:center;padding:16px 0">Nothing logged yet. Start listening.</p>';
+    return;
+  }
+  el.innerHTML = entries.map(e => `
+    <div class="entry-card">
+      <div class="entry-date">${e.date}</div>
+      <div class="entry-text">${e.text}</div>
+    </div>
+  `).join('');
+}
+
+// =================== MILESTONES ===================
+function checkMilestones() {
+  const statsForCheck = {
+    callsAnswered: state.callsAnswered,
+    journalCount: state.journalCount,
+    seeCount: state.seeCount,
+    chaptersRead: state.chaptersRead,
+    longestStreak: state.longestStreak,
+    level: state.level,
+    totalReps: state.totalReps,
+  };
+  MILESTONES.forEach(m => {
+    if (!state.milestones.includes(m.id) && m.check(statsForCheck)) {
+      state.milestones.push(m.id);
+      saveState();
+      setTimeout(() => showToast(`🏆 Milestone: "${m.name}"!`), 800);
+      renderMilestones();
+    }
+  });
+}
+
+function renderMilestones() {
+  const el = document.getElementById("milestones-list");
+  if (!el) return;
+  const statsForCheck = {
+    callsAnswered: state.callsAnswered,
+    journalCount: state.journalCount,
+    seeCount: state.seeCount,
+    chaptersRead: state.chaptersRead,
+    longestStreak: state.longestStreak,
+    level: state.level,
+    totalReps: state.totalReps,
+  };
+  el.innerHTML = MILESTONES.map(m => {
+    const done = state.milestones.includes(m.id);
+    return `
+      <div class="milestone-item">
+        <span class="ms-icon">${done ? m.icon : '🔒'}</span>
+        <div>
+          <div class="ms-name" style="${!done ? 'color:var(--text3)' : ''}">${m.name}</div>
+          <div class="ms-desc">${m.desc}</div>
+        </div>
+        <span class="ms-status ${done ? 'done' : 'locked'}">${done ? 'Unlocked' : 'Locked'}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+// =================== TABS ===================
+function showTab(name) {
+  document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  const section = document.getElementById(`tab-${name}`);
+  if (section) section.classList.add("active");
+  const navBtn = document.getElementById(`nav-${name}`);
+  if (navBtn) navBtn.classList.add("active");
+
+  // Reset purpose sub-panels
+  if (name === 'purpose') {
+    const cats = document.querySelector(".purpose-categories");
+    const det = document.getElementById("purpose-detail");
+    if (cats) cats.classList.remove("hidden");
+    if (det) det.classList.add("hidden");
+  }
+
+  document.querySelector(".main-content").scrollTop = 0;
+}
+
+// =================== TOAST ===================
+let toastTimeout = null;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.classList.add("hidden"), 2800);
+}
+
+// =================== AUDIO ===================
+function tryPlayCallSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const playNote = (freq, start, duration) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0, ctx.currentTime + start);
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + start + 0.05);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + start + duration);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + duration + 0.1);
+    };
+    // Gentle ascending tones
+    playNote(523, 0, 0.4);
+    playNote(659, 0.5, 0.4);
+    playNote(784, 1.0, 0.6);
+    playNote(523, 1.8, 0.4);
+    playNote(659, 2.3, 0.4);
+    playNote(784, 2.8, 0.8);
+  } catch (e) {}
+}
+
+// =================== INSTALL PROMPT ===================
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  const banner = document.createElement("div");
+  banner.className = "install-banner";
+  banner.id = "install-banner";
+  banner.innerHTML = `
+    <span>📲 Add to your home screen for the full app experience</span>
+    <button onclick="installApp()">Install</button>
+  `;
+  document.querySelector("#tab-home").prepend(banner);
+}
+
+async function installApp() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  const banner = document.getElementById("install-banner");
+  if (banner) banner.remove();
+}
+
+// =================== TEST CALL BUTTON ===================
+// Long press on the greeting card triggers a test call
+let longPressTimer = null;
+document.addEventListener("DOMContentLoaded", () => {
+  const greeting = document.querySelector(".home-greeting-card");
+  if (greeting) {
+    greeting.addEventListener("touchstart", () => {
+      longPressTimer = setTimeout(() => triggerCall(), 1200);
+    });
+    greeting.addEventListener("touchend", () => clearTimeout(longPressTimer));
+    greeting.addEventListener("mousedown", () => {
+      longPressTimer = setTimeout(() => triggerCall(), 1200);
+    });
+    greeting.addEventListener("mouseup", () => clearTimeout(longPressTimer));
+  }
+});
+
+// =================== START ===================
+document.addEventListener("DOMContentLoaded", init);
+
+</script>
+</body>
+</html>

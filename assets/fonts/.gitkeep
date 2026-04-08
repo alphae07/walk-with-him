@@ -1,0 +1,3 @@
+# Font files go here if you want custom local fonts.
+# This project uses @expo-google-fonts/lora and @expo-google-fonts/dm-sans
+# which are fetched automatically during the build.

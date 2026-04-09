@@ -9,11 +9,8 @@
     "build:apk": "eas build --platform android --profile preview",
     "build:aab": "eas build --platform android --profile production"
   },
-  "resolutions": {
-    "react-native": "0.74.5",
-    "@babel/core": "^7.24.0",
-    "metro": "~0.80.0",
-    "metro-babel-transformer": "~0.80.0"
+  "overrides": {
+    "react-native": "0.74.5"
   },
   "dependencies": {
     "expo": "~51.0.28",

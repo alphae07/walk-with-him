@@ -9,10 +9,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Lora_400Regular, Lora_400Regular_Italic, Lora_600SemiBold } from '@expo-google-fonts/lora';
-import { DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold } from '@expo-google-fonts/dm-sans';
+import { DMSans_400Regular, DMSans_500Medium, DMSans_700Bold } from '@expo-google-fonts/dm-sans';
 import { Ionicons } from '@expo/vector-icons';
 
-import { DARK_COLORS, LIGHT_COLORS } from './src/constants/theme';
+import { DARK_COLORS, LIGHT_COLORS, ThemeColors } from './src/constants/theme';
 import { Storage, UserProfile, defaultProfile } from './src/utils/storage';
 import { requestNotificationPermissions, setupAllNotifications } from './src/services/notifications';
 import { checkAndUpdateStreak } from './src/utils/xp';
@@ -63,7 +63,7 @@ Notifications.setNotificationHandler({
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function MainTabs({ C }: { C: typeof DARK_COLORS }) {
+function MainTabs({ C }: { C: ThemeColors }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -120,7 +120,7 @@ export default function App() {
     'Lora-SemiBold': Lora_600SemiBold,
     'DMSans-Regular': DMSans_400Regular,
     'DMSans-Medium': DMSans_500Medium,
-    'DMSans-SemiBold': DMSans_600SemiBold,
+    'DMSans-SemiBold': DMSans_700Bold,
   });
 
   useEffect(() => {
@@ -254,3 +254,4 @@ const styles = StyleSheet.create({
   splashTitle: { fontSize: 22, marginTop: 16, fontFamily: 'Lora-SemiBold' },
   splashSub: { fontSize: 13, marginTop: 8, fontFamily: 'DMSans-Regular' },
 });
+    

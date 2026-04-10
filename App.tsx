@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, ActivityIndicator, StatusBar, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, ActivityIndicator, StatusBar, StyleSheet, useColorScheme } from 'react-native';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -12,16 +12,19 @@ import { useFonts, Lora_400Regular, Lora_400Regular_Italic, Lora_600SemiBold } f
 import { DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold } from '@expo-google-fonts/dm-sans';
 import { Ionicons } from '@expo/vector-icons';
 
-import { COLORS } from './src/constants/theme';
+import { DARK_COLORS, LIGHT_COLORS } from './src/constants/theme';
 import { Storage, UserProfile, defaultProfile } from './src/utils/storage';
 import { requestNotificationPermissions, setupAllNotifications } from './src/services/notifications';
 import { checkAndUpdateStreak } from './src/utils/xp';
+import { setLanguage, LangCode } from './src/utils/i18n';
+import { shouldShowPopup, WeeklyPopupModal } from './src/screens/WeeklyPopup';
 
 import HomeScreen from './src/screens/HomeScreen';
 import GrowScreen from './src/screens/GrowScreen';
 import GamesScreen from './src/screens/GamesScreen';
 import JournalScreen from './src/screens/JournalScreen';
 import MoreScreen from './src/screens/MoreScreen';
+import CommunityScreen from './src/screens/CommunityScreen';
 import CallOverlayScreen from './src/screens/CallOverlayScreen';
 import OnboardingScreen from './src/screens/OnboardingScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -51,31 +54,30 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
-    priority:
-      n.request.content.data?.type === 'GOD_CALLING'
-        ? Notifications.AndroidNotificationPriority.MAX
-        : Notifications.AndroidNotificationPriority.DEFAULT,
+    priority: n.request.content.data?.type === 'GOD_CALLING'
+      ? Notifications.AndroidNotificationPriority.MAX
+      : Notifications.AndroidNotificationPriority.DEFAULT,
   }),
 });
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function MainTabs() {
+function MainTabs({ C }: { C: typeof DARK_COLORS }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: COLORS.bg2,
-          borderTopColor: COLORS.border,
+          backgroundColor: C.tabBar,
+          borderTopColor: C.tabBorder,
           borderTopWidth: 1,
           paddingBottom: 8,
           paddingTop: 6,
           height: 64,
         },
-        tabBarActiveTintColor: COLORS.gold,
-        tabBarInactiveTintColor: COLORS.text3,
+        tabBarActiveTintColor: C.gold,
+        tabBarInactiveTintColor: C.text3,
         tabBarLabelStyle: { fontSize: 10, marginTop: 2 },
         tabBarIcon: ({ color, size, focused }) => {
           const map: Record<string, [string, string]> = {
@@ -83,27 +85,32 @@ function MainTabs() {
             Grow: ['leaf', 'leaf-outline'],
             Games: ['game-controller', 'game-controller-outline'],
             Journal: ['book', 'book-outline'],
+            Community: ['people', 'people-outline'],
             More: ['menu', 'menu-outline'],
           };
           const [a, b] = map[route.name] ?? ['ellipse', 'ellipse-outline'];
           return <Ionicons name={(focused ? a : b) as any} size={size} color={color} />;
         },
-      })}
-    >
+      })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Grow" component={GrowScreen} />
       <Tab.Screen name="Games" component={GamesScreen} />
       <Tab.Screen name="Journal" component={JournalScreen} />
+      <Tab.Screen name="Community" component={CommunityScreen} />
       <Tab.Screen name="More" component={MoreScreen} />
     </Tab.Navigator>
   );
 }
 
 export default function App() {
+  const colorScheme = useColorScheme();
+  const C = colorScheme === 'light' ? LIGHT_COLORS : DARK_COLORS;
   const [appReady, setAppReady] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showCall, setShowCall] = useState(false);
   const [callData, setCallData] = useState<any>(null);
+  const [activePopup, setActivePopup] = useState<any>(null);
+  const navRef = useRef<NavigationContainerRef<any>>(null);
   const notifRef = useRef<Notifications.Subscription | null>(null);
   const respRef = useRef<Notifications.Subscription | null>(null);
 
@@ -120,6 +127,9 @@ export default function App() {
     if (!fontsLoaded && !fontError) return;
     (async () => {
       try {
+        const savedLang = await Storage.get<LangCode>('app_language', 'en');
+        if (savedLang) setLanguage(savedLang);
+
         const profile = await Storage.get<UserProfile>('profile', null);
         if (!profile) {
           setShowOnboarding(true);
@@ -128,6 +138,12 @@ export default function App() {
           await Storage.set('profile', updated);
           const granted = await requestNotificationPermissions();
           if (granted) await setupAllNotifications(updated);
+
+          // Check for weekly popups after 3s delay
+          setTimeout(async () => {
+            const popup = await shouldShowPopup();
+            if (popup) setActivePopup(popup);
+          }, 3000);
         }
       } catch (e) {
         console.warn('Init error', e);
@@ -159,11 +175,11 @@ export default function App() {
 
   if (!appReady) {
     return (
-      <View style={styles.splash}>
+      <View style={[styles.splash, { backgroundColor: C.bg }]}>
         <Text style={styles.splashCross}>✝</Text>
-        <ActivityIndicator color={COLORS.gold} size="large" style={{ marginTop: 24 }} />
-        <Text style={styles.splashTitle}>Walk With Him</Text>
-        <Text style={styles.splashSub}>Preparing your walk...</Text>
+        <ActivityIndicator color={C.gold} size="large" style={{ marginTop: 24 }} />
+        <Text style={[styles.splashTitle, { color: C.text }]}>Walk With Him</Text>
+        <Text style={[styles.splashSub, { color: C.text3 }]}>Preparing your walk...</Text>
       </View>
     );
   }
@@ -171,7 +187,7 @@ export default function App() {
   if (showOnboarding) {
     return (
       <SafeAreaProvider>
-        <StatusBar barStyle="light-content" backgroundColor={COLORS.bg} />
+        <StatusBar barStyle={C.statusBar} backgroundColor={C.bg} />
         <GestureHandlerRootView style={{ flex: 1 }}>
           <OnboardingScreen onComplete={() => setShowOnboarding(false)} />
         </GestureHandlerRootView>
@@ -182,12 +198,11 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar barStyle="light-content" backgroundColor={COLORS.bg} translucent={false} />
-        <NavigationContainer>
+        <StatusBar barStyle={C.statusBar} backgroundColor={C.bg} translucent={false} />
+        <NavigationContainer ref={navRef}>
           <Stack.Navigator
-            screenOptions={{ headerShown: false, cardStyle: { backgroundColor: COLORS.bg } }}
-          >
-            <Stack.Screen name="MainTabs" component={MainTabs} />
+            screenOptions={{ headerShown: false, cardStyle: { backgroundColor: C.bg } }}>
+            <Stack.Screen name="MainTabs">{() => <MainTabs C={C} />}</Stack.Screen>
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="Devotional" component={DevotionalScreen} />
@@ -207,15 +222,24 @@ export default function App() {
             <Stack.Screen name="Suggestions" component={SuggestionsScreen} />
             <Stack.Screen name="Testimony" component={TestimonyScreen} />
             <Stack.Screen name="Contact" component={ContactScreen} />
+            <Stack.Screen name="Community" component={CommunityScreen} />
           </Stack.Navigator>
 
           {showCall && (
             <CallOverlayScreen
               callData={callData}
-              onDismiss={() => {
-                setShowCall(false);
-                setCallData(null);
+              onDismiss={() => { setShowCall(false); setCallData(null); }}
+            />
+          )}
+
+          {activePopup && !showCall && (
+            <WeeklyPopupModal
+              popup={activePopup}
+              onNavigate={(route) => {
+                setActivePopup(null);
+                setTimeout(() => navRef.current?.navigate(route), 350);
               }}
+              onDismiss={() => setActivePopup(null)}
             />
           )}
         </NavigationContainer>
@@ -225,13 +249,8 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  splash: {
-    flex: 1,
-    backgroundColor: COLORS.bg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  splashCross: { fontSize: 64, color: COLORS.gold },
-  splashTitle: { color: COLORS.text, fontSize: 22, marginTop: 16, fontWeight: '600' },
-  splashSub: { color: COLORS.text3, fontSize: 13, marginTop: 8 },
+  splash: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  splashCross: { fontSize: 64, color: '#C8922A' },
+  splashTitle: { fontSize: 22, marginTop: 16, fontFamily: 'Lora-SemiBold' },
+  splashSub: { fontSize: 13, marginTop: 8, fontFamily: 'DMSans-Regular' },
 });

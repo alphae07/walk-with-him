@@ -2,7 +2,9 @@
 
 > *See Him more clearly. Love Him more dearly. Follow Him more nearly. Day by day.*
 
-A gamified daily companion app for building a real, personal relationship with God. Built with React Native + Expo.
+A gamified daily companion app for building a real, personal relationship with God.
+
+Built with ❤️ by **Alphae X**
 
 ---
 
@@ -15,7 +17,6 @@ A gamified daily companion app for building a real, personal relationship with G
 
 ### Install & Run
 ```bash
-cd WalkWithHim
 npm install
 npx expo start
 ```
@@ -26,24 +27,17 @@ Scan the QR code with [Expo Go](https://expo.dev/go) on your Android device.
 
 ## 📦 Build APK
 
-### 1. Create an Expo account
 ```bash
+# Login to Expo
 npx eas login
-```
 
-### 2. Configure your project
-```bash
+# Configure (first time only)
 npx eas build:configure
-```
 
-### 3. Build the APK (preview/internal)
-```bash
+# Build APK for testing
 npx eas build --platform android --profile preview
-```
-This outputs a downloadable `.apk` file you can install on any Android device.
 
-### 4. Build Production AAB (for Play Store)
-```bash
+# Build for Play Store
 npx eas build --platform android --profile production
 ```
 
@@ -51,14 +45,15 @@ npx eas build --platform android --profile production
 
 ## 🔑 Configuration
 
-### Paystack (Donations & Sponsorship)
-In `src/screens/DonateScreen.tsx`, replace:
+### Paystack (Donations)
+In `src/screens/DonateScreen.tsx`:
 ```ts
-const PAYSTACK_PUBLIC_KEY = 'YOUR_PAYSTACK_PUBLIC_KEY';
+const PAYSTACK_PUBLIC_KEY = 'your_key_here';
 ```
+Supports: USD, NGN, GBP, EUR, GHS, KES, ZAR
 
 ### Notifications
-Push notifications are configured in `src/services/notifications.ts`. All daily reminders and "God Is Calling" calls are scheduled using `expo-notifications`.
+Configured in `src/services/notifications.ts`.
 
 ---
 
@@ -66,132 +61,83 @@ Push notifications are configured in `src/services/notifications.ts`. All daily 
 
 ```
 WalkWithHim/
-├── App.tsx                    # Root app with navigation
-├── app.json                   # Expo configuration
-├── eas.json                   # EAS build profiles
+├── App.tsx                         # Root with navigation + theme + popups
+├── app.json                        # Expo config (userInterfaceStyle: automatic)
 ├── src/
+│   ├── components/                 # Reusable components
+│   │   ├── NavBar.tsx
+│   │   ├── XPBar.tsx
+│   │   ├── StatCard.tsx
+│   │   ├── VerseCard.tsx
+│   │   ├── LevelBadge.tsx
+│   │   ├── SectionCard.tsx
+│   │   ├── EmptyState.tsx
+│   │   └── GameComponents.tsx      # GameHeader, GameResult
 │   ├── constants/
-│   │   ├── theme.ts           # Colors, fonts, spacing
-│   │   └── data.ts            # All static data (verses, books, games, sermons)
+│   │   ├── theme.ts                # Light/dark theme + useThemeColors()
+│   │   └── data.ts                 # All static data
 │   ├── utils/
-│   │   ├── storage.ts         # AsyncStorage helpers + type definitions
-│   │   └── xp.ts              # XP system, level calculations, milestones
+│   │   ├── storage.ts              # AsyncStorage helpers
+│   │   ├── xp.ts                   # XP system
+│   │   └── i18n.ts                 # 13-language translation system
 │   ├── services/
-│   │   └── notifications.ts   # Push notification scheduling
+│   │   └── notifications.ts        # Push notifications
 │   └── screens/
-│       ├── OnboardingScreen.tsx
-│       ├── HomeScreen.tsx          # Dashboard, verse of day, quick actions
-│       ├── CallOverlayScreen.tsx   # "God Is Calling" incoming call UI
-│       ├── JournalScreen.tsx       # Talk to God journaling
-│       ├── GamesScreen.tsx         # All 6 mini-games
-│       ├── GrowScreen.tsx          # Sermons, book of month, disciplines
-│       ├── MoreScreen.tsx          # Navigation hub
-│       ├── ProfileScreen.tsx       # XP, level map, stats
-│       ├── SettingsScreen.tsx      # All user preferences
-│       ├── SpiritualScreens.tsx    # Bible Log, God Sightings, Purpose
-│       ├── DisciplinesAndPrayer.tsx # Fasting, Retreat, Silence, Prayer Builder
-│       ├── SermonsScreen.tsx       # All sermons with filters
-│       ├── BookOfMonthScreen.tsx   # Books 2024–2030 + summary submission
-│       ├── AboutScreen.tsx         # App info
-│       ├── DonateScreen.tsx        # Paystack donations + sponsorship tiers
-│       └── CommunityScreens.tsx    # Suggestions, Testimony, Contact
+│       ├── OnboardingScreen.tsx    # Country + Language + Name
+│       ├── HomeScreen.tsx
+│       ├── GamesScreen.tsx         # 6 fully fixed mini-games
+│       ├── CommunityScreen.tsx     # FreeFire-style chat
+│       ├── ProfileScreen.tsx       # Fixed crash + safe dates
+│       ├── DonateScreen.tsx        # Multi-currency
+│       ├── SettingsScreen.tsx      # Ringtone picker
+│       ├── CallOverlayScreen.tsx   # God is Calling + audio
+│       ├── WeeklyPopup.tsx         # Engagement popup system
+│       └── ... (all other screens)
 ```
 
 ---
 
-## ✨ Features
+## ✨ What's Fixed & New
 
-### 📞 God Is Calling
-- Random push notifications 1–5x daily within your set waking hours
-- Full-screen incoming call UI with ripple animations
-- 30-second countdown before auto-decline
-- Answer → in-call screen with a prompt + response space
-- All responses auto-saved to journal
-- +15 XP for answering, -10 XP for declining
-- **Works even when app is closed** via push notifications
+### Bug Fixes
+- ✅ ProfileScreen crash (safe date parsing, null guards)
+- ✅ All 6 games fully working (Quiz, Fill Blank, Scramble, Names, Prayer, Fruits)
+- ✅ XP levels rebalanced (1,000 → 800,000 XP across 10 levels)
+- ✅ Fonts loading correctly (via @expo-google-fonts)
 
-### ⚡ XP & Level System
-| Level | Name |
-|-------|------|
-| 1 | Seeker |
-| 2 | Awakened |
-| 3 | Walker |
-| 4 | Disciple |
-| 5 | Faithful One |
-| 6 | Beloved |
-| 7 | Covenant Keeper |
-| 8 | Friend of God |
-| 9 | Son of Fire |
-| 10 | Man After His Heart |
+### New Features
+- 🎨 **System-responsive Light/Dark theme** (`useThemeColors()`)
+- 🌍 **13 languages**: English, French, Spanish, Portuguese, Yoruba, Igbo, Hausa, Swahili, Arabic, Hindi, German, Korean, Mandarin
+- 🌏 **Country selector** in onboarding (auto-sets currency + region)
+- 💰 **Multi-currency donations**: USD, NGN, GBP, EUR, GHS, KES, ZAR
+- 🔔 **Ringtone picker**: 5 built-in + upload from phone (MP3/AAC/WAV)
+- 💬 **Community Chat**: Global, Region, Personal tabs — FreeFire style with AI responses
+- 🤝 **Partners system**: Prayer, Discipline, Bible Study partners
+- 👥 **Friend profiles**: Level cards, add/search friends
+- 📅 **Weekly popups**: Donate, Testimony, Suggestions, Community, Share
+- 🎤 **50 sermons** from 20+ global preachers (T.D. Jakes, Keller, Piper, Johnson, etc.)
+- 🧩 **Reusable components**: NavBar, XPBar, StatCard, VerseCard, LevelBadge, etc.
 
-### 🎮 6 Mini Games
-- **Bible Quiz** — 10 randomised questions with explanations
-- **Fill the Blank** — Complete verses from memory (letter-by-letter keyboard)
-- **Word Scramble** — Rebuild verses word by word
-- **Who Is God?** — Learn God's Hebrew names with flip cards
-- **Prayer Builder** — ACTS prayer (Adoration, Confession, Thanksgiving, Supplication)
-- **Fruit Check** — Weekly self-assessment of all 9 fruits of the Spirit
-
-### 📚 Books of the Month (2024–2030)
-84 curated Christian books — one per month for 7 years. Every book has a reflection prompt. Submit summaries for +30 XP.
-
-### 🎤 Sermons
-Curated sermons from:
-- **Apostle Joshua Selman** (7 sermons)
-- Pastor E.A. Adeboye
-- Pastor Chris Oyakhilome
-- Pastor David Ibiyeomie
-- Sam Adeyemi
-- Femi Lazarus
-- Pastor Tobi Adegboyega
-- Steven Furtick, Francis Chan, Touré Roberts
-
-Filtered by category and preacher.
-
-### 💪 Spiritual Disciplines
-- **Fasting** — Start/end fasting log with timestamp (+25 XP)
-- **Prayer Retreat** — 2+ hour solitary prayer (+35 XP)
-- **Hour of Silence** — No noise, no phone, just God (+20 XP)
-
-### 🧭 Purpose Journal
-6 sections: Identity, How to Serve, Marriage & Relationships, Career & Business, Where to Settle, Holiness & Character. Each has a prayer prompt.
-
-### 💝 Donations & Sponsorship (Paystack)
-- One-time donations with preset and custom amounts
-- 4 monthly sponsorship tiers: Seed, Branch, Tree, Kingdom Pillar
-- All payments via Paystack (NGN)
-
-### 📩 Community
-- **Testimony** screen → emails to builder
-- **Suggestions** screen → emails to builder
-- **Contact** screen → email, WhatsApp, phone
+### XP Levels
+| Level | Name | XP Required |
+|-------|------|-------------|
+| 1 | Seeker | 0 |
+| 2 | Awakened | 1,000 |
+| 3 | Walker | 5,000 |
+| 4 | Disciple | 15,000 |
+| 5 | Faithful One | 35,000 |
+| 6 | Beloved | 75,000 |
+| 7 | Covenant Keeper | 150,000 |
+| 8 | Friend of God | 280,000 |
+| 9 | Son of Fire | 500,000 |
+| 10 | Man After His Heart | 800,000 |
 
 ---
 
-## 📱 Notifications Architecture
+## 📩 Contact
 
-All notifications are scheduled client-side using `expo-notifications`:
-- God Is Calling: randomly distributed within user's waking hours
-- Morning/Midday/Evening reminders: daily repeating
-- Streak warning: 9:30 PM if user hasn't opened app
-
-Notifications fire even when the app is closed/backgrounded on Android.
-
----
-
-## 🗄 Data Storage
-
-All data is stored locally using `@react-native-async-storage/async-storage`. No account, no server, no login required.
-
-**Export/Import**: Users can export their full data as JSON and import it on any device (via the More screen).
-
----
-
-## 📝 Contact
-
-**Ayomide Emmanuel Alao**  
-Email: ayomidealao017@gmail.com  
-Phone/WhatsApp: +2349113216637
+**Alphae X**
+Email: support@alphae-x.app
 
 ---
 

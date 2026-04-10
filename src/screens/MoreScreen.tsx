@@ -12,7 +12,7 @@ import { getLevelInfo } from '../utils/xp';
 
 const MENU = [
   { title: 'Your Walk', items: [
-    { icon: '👤', label: 'Profile & Stats', route: 'Profile', color: C.gold },
+    { icon: '👤', label: 'Profile & Stats', route: 'Profile', color: '#C8922A' },
     { icon: '⚙️', label: 'Settings', route: 'Settings', color: '#4A90D9' },
   ]},
   { title: 'Spiritual Life', items: [
@@ -32,7 +32,7 @@ const MENU = [
     { icon: '✍️', label: 'Give a Testimony', route: 'Testimony', color: '#2E8B5A' },
     { icon: '💡', label: 'Suggestions', route: 'Suggestions', color: '#4A90D9' },
     { icon: '📩', label: 'Contact Alphae X', route: 'Contact', color: '#7C3AED' },
-    { icon: '💝', label: 'Sponsor / Donate', route: 'Donate', color: C.gold },
+    { icon: '💝', label: 'Sponsor / Donate', route: 'Donate', color: '#C8922A' },
   ]},
   { title: 'App', items: [
     { icon: 'ℹ️', label: 'About Walk With Him', route: 'About', color: '#4A90D9' },

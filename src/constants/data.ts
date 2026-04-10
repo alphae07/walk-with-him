@@ -216,7 +216,7 @@ export const SERMONS = [
   { id: 's25', preacher: 'Timothy Keller', title: 'Making Sense of God', url: 'https://www.youtube.com/results?search_query=timothy+keller+making+sense+of+god', thumbnail: '🧠', category: 'Apologetics' },
   // John Piper
   { id: 's26', preacher: 'John Piper', title: 'Desiring God', url: 'https://www.youtube.com/results?search_query=john+piper+desiring+god+sermon', thumbnail: '😍', category: 'Worship' },
-  { id: 's27', preacher: 'John Piper', title: 'Don't Waste Your Life', url: 'https://www.youtube.com/results?search_query=john+piper+dont+waste+your+life', thumbnail: '⏳', category: 'Purpose' },
+  { id: 's27', preacher: 'John Piper', title: "Don't Waste Your Life", url: 'https://www.youtube.com/results?search_query=john+piper+dont+waste+your+life', thumbnail: '⏳', category: 'Purpose' },
   { id: 's28', preacher: 'John Piper', title: 'Future Grace', url: 'https://www.youtube.com/results?search_query=john+piper+future+grace+faith', thumbnail: '🌅', category: 'Faith' },
   // Bill Johnson
   { id: 's29', preacher: 'Bill Johnson', title: 'The Supernatural Power of a Transformed Mind', url: 'https://www.youtube.com/results?search_query=bill+johnson+supernatural+power+transformed+mind', thumbnail: '⚡', category: 'Holy Spirit' },

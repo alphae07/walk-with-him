@@ -8,45 +8,30 @@ export const Storage = {
       const val = await AsyncStorage.getItem(PREFIX + key);
       if (val === null) return fallback;
       return JSON.parse(val) as T;
-    } catch {
-      return fallback;
-    }
+    } catch { return fallback; }
   },
-
   async set(key: string, value: unknown): Promise<void> {
-    try {
-      await AsyncStorage.setItem(PREFIX + key, JSON.stringify(value));
-    } catch (e) {
-      console.error('Storage.set error', e);
-    }
+    try { await AsyncStorage.setItem(PREFIX + key, JSON.stringify(value)); }
+    catch (e) { console.error('Storage.set error', e); }
   },
-
   async remove(key: string): Promise<void> {
     await AsyncStorage.removeItem(PREFIX + key);
   },
-
   async getAllKeys(): Promise<string[]> {
     const keys = await AsyncStorage.getAllKeys();
     return keys.filter(k => k.startsWith(PREFIX)).map(k => k.replace(PREFIX, ''));
   },
-
   async exportAll(): Promise<Record<string, unknown>> {
     const keys = await this.getAllKeys();
     const result: Record<string, unknown> = {};
-    for (const key of keys) {
-      result[key] = await this.get(key);
-    }
+    for (const key of keys) result[key] = await this.get(key);
     return result;
   },
-
   async importAll(data: Record<string, unknown>): Promise<void> {
-    for (const [key, value] of Object.entries(data)) {
-      await this.set(key, value);
-    }
+    for (const [key, value] of Object.entries(data)) await this.set(key, value);
   },
 };
 
-// ── Typed helpers ─────────────────────────────────────────
 export interface UserProfile {
   name: string;
   joinedAt: string;
@@ -60,9 +45,10 @@ export interface UserProfile {
   totalGodSightings: number;
   totalChaptersRead: number;
   callsPerDay: number;
-  callWindowStart: number; // hour 0-23
+  callWindowStart: number;
   callWindowEnd: number;
   ringtone: string;
+  customRingtoneUri?: string;
   morningReminder: boolean;
   morningHour: number;
   eveningReminder: boolean;
@@ -71,43 +57,27 @@ export interface UserProfile {
   penaltyWarnings: boolean;
   notificationsEnabled: boolean;
   googleDriveConnected: boolean;
+  preferredCurrency: 'USD' | 'NGN' | 'GBP' | 'EUR' | 'GHS' | 'KES' | 'ZAR';
+  communityId?: string;
+  communityUsername?: string;
+  communityRegion?: string;
+  communityJoinedAt?: string;
 }
 
 export interface JournalEntry {
-  id: string;
-  date: string;
-  content: string;
-  prompt?: string;
-  xpEarned: number;
+  id: string; date: string; content: string; prompt?: string; xpEarned: number;
 }
-
 export interface GodSighting {
-  id: string;
-  date: string;
-  content: string;
-  category?: string;
+  id: string; date: string; content: string; category?: string;
 }
-
 export interface BibleLog {
-  id: string;
-  date: string;
-  book: string;
-  chapter: number;
-  observation: string;
+  id: string; date: string; book: string; chapter: number; observation: string;
 }
-
 export interface PurposeEntry {
-  id: string;
-  section: string;
-  content: string;
-  updatedAt: string;
+  id: string; section: string; content: string; updatedAt: string;
 }
-
 export interface BookSummary {
-  monthKey: string;
-  summary: string;
-  submittedAt: string;
-  xpEarned: number;
+  monthKey: string; summary: string; submittedAt: string; xpEarned: number;
 }
 
 export const PURPOSE_SECTIONS = [
@@ -120,27 +90,15 @@ export const PURPOSE_SECTIONS = [
 ];
 
 export const defaultProfile: UserProfile = {
-  name: 'Friend',
-  joinedAt: new Date().toISOString(),
-  xp: 0,
-  level: 1,
-  streak: 0,
-  lastActiveDate: '',
-  callsAnswered: 0,
-  callsDeclined: 0,
-  totalJournalEntries: 0,
-  totalGodSightings: 0,
-  totalChaptersRead: 0,
-  callsPerDay: 3,
-  callWindowStart: 7,
-  callWindowEnd: 21,
-  ringtone: 'default',
-  morningReminder: true,
-  morningHour: 7,
-  eveningReminder: true,
-  eveningHour: 20,
-  middayReminder: true,
-  penaltyWarnings: true,
-  notificationsEnabled: true,
-  googleDriveConnected: false,
+  name: 'Friend', joinedAt: new Date().toISOString(),
+  xp: 0, level: 1, streak: 0, lastActiveDate: '',
+  callsAnswered: 0, callsDeclined: 0,
+  totalJournalEntries: 0, totalGodSightings: 0, totalChaptersRead: 0,
+  callsPerDay: 3, callWindowStart: 7, callWindowEnd: 21,
+  ringtone: 'heavenly', customRingtoneUri: undefined,
+  morningReminder: true, morningHour: 7,
+  eveningReminder: true, eveningHour: 20,
+  middayReminder: true, penaltyWarnings: true,
+  notificationsEnabled: true, googleDriveConnected: false,
+  preferredCurrency: 'USD',
 };

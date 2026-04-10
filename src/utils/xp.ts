@@ -1,6 +1,8 @@
 import { LEVELS, XP_REWARDS } from '../constants/data';
 import { Storage, UserProfile } from './storage';
 
+export { LEVELS };
+
 export function getLevelInfo(xp: number) {
   for (let i = LEVELS.length - 1; i >= 0; i--) {
     if (xp >= LEVELS[i].minXP) return LEVELS[i];
@@ -16,12 +18,11 @@ export function getXPProgress(xp: number) {
   const current = getLevelInfo(xp);
   const next = getNextLevel(current.level);
   if (!next) return { current, next: null, progress: 1, remaining: 0 };
-  const range = next.minXP - current.minXP;
+  const range = Math.max(next.minXP - current.minXP, 1);
   const earned = xp - current.minXP;
   return {
-    current,
-    next,
-    progress: Math.min(earned / range, 1),
+    current, next,
+    progress: Math.min(Math.max(earned / range, 0), 1),
     remaining: next.minXP - xp,
   };
 }
@@ -35,42 +36,20 @@ export async function awardXP(
   const newXP = Math.max(0, profile.xp + amount);
   const newLevelInfo = getLevelInfo(newXP);
   const newLevel = newLevelInfo.level;
-
-  const updatedProfile: UserProfile = {
-    ...profile,
-    xp: newXP,
-    level: newLevel,
-  };
-
+  const updatedProfile: UserProfile = { ...profile, xp: newXP, level: newLevel };
   await Storage.set('profile', updatedProfile);
-
-  return {
-    profile: updatedProfile,
-    leveledUp: newLevel > oldLevel,
-    leveledDown: newLevel < oldLevel,
-    newLevel: newLevelInfo,
-  };
+  return { profile: updatedProfile, leveledUp: newLevel > oldLevel, leveledDown: newLevel < oldLevel, newLevel: newLevelInfo };
 }
 
 export function checkAndUpdateStreak(profile: UserProfile): UserProfile {
   const today = new Date().toISOString().split('T')[0];
   const lastActive = profile.lastActiveDate;
-
-  if (!lastActive) {
-    return { ...profile, streak: 1, lastActiveDate: today };
-  }
-
+  if (!lastActive) return { ...profile, streak: 1, lastActiveDate: today };
   if (lastActive === today) return profile;
-
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-  if (lastActive === yesterdayStr) {
-    return { ...profile, streak: profile.streak + 1, lastActiveDate: today };
-  }
-
-  // Streak broken
+  if (lastActive === yesterdayStr) return { ...profile, streak: profile.streak + 1, lastActiveDate: today };
   return { ...profile, streak: 1, lastActiveDate: today };
 }
 
@@ -83,11 +62,8 @@ export const MILESTONE_REWARDS: Array<{
   verses: Array<{ text: string; ref: string }>;
 }> = [
   {
-    id: 'streak_3',
-    condition: p => p.streak === 3,
-    title: '3-Day Streak!',
-    subtitle: 'Three days of walking with Him. He notices. He\'s proud of you.',
-    emoji: '🌱',
+    id: 'streak_3', condition: p => p.streak === 3,
+    title: '3-Day Streak!', subtitle: 'Three days of walking with Him. He notices. He\'s proud of you.', emoji: '🌱',
     verses: [
       { text: 'Blessed is the one who does not walk in step with the wicked...', ref: 'Psalm 1:1' },
       { text: 'Let us not become weary in doing good, for at the proper time we will reap a harvest.', ref: 'Galatians 6:9' },
@@ -95,11 +71,8 @@ export const MILESTONE_REWARDS: Array<{
     ],
   },
   {
-    id: 'streak_7',
-    condition: p => p.streak === 7,
-    title: 'A Full Week!',
-    subtitle: 'Seven days. One whole week of showing up. This is what faithfulness looks like.',
-    emoji: '🔥',
+    id: 'streak_7', condition: p => p.streak === 7,
+    title: 'A Full Week!', subtitle: 'Seven days. One whole week of showing up. This is what faithfulness looks like.', emoji: '🔥',
     verses: [
       { text: 'His mercies are new every morning; great is your faithfulness.', ref: 'Lamentations 3:23' },
       { text: 'A man\'s heart plans his way, but the Lord directs his steps.', ref: 'Proverbs 16:9' },
@@ -107,11 +80,8 @@ export const MILESTONE_REWARDS: Array<{
     ],
   },
   {
-    id: 'streak_30',
-    condition: p => p.streak === 30,
-    title: '30-Day Legend',
-    subtitle: 'A whole month of walking with God. You are no longer trying — you are becoming.',
-    emoji: '👑',
+    id: 'streak_30', condition: p => p.streak === 30,
+    title: '30-Day Legend', subtitle: 'A whole month of walking with God. You are no longer trying — you are becoming.', emoji: '👑',
     verses: [
       { text: 'He who began a good work in you will carry it on to completion.', ref: 'Philippians 1:6' },
       { text: 'But those who hope in the Lord will renew their strength.', ref: 'Isaiah 40:31' },
@@ -119,11 +89,8 @@ export const MILESTONE_REWARDS: Array<{
     ],
   },
   {
-    id: 'calls_10',
-    condition: p => p.callsAnswered === 10,
-    title: '10 Calls Answered',
-    subtitle: 'You keep picking up. That\'s not habit — that\'s love.',
-    emoji: '📞',
+    id: 'calls_10', condition: p => p.callsAnswered === 10,
+    title: '10 Calls Answered', subtitle: 'You keep picking up. That\'s not habit — that\'s love.', emoji: '📞',
     verses: [
       { text: 'My sheep listen to my voice; I know them, and they follow me.', ref: 'John 10:27' },
       { text: 'Speak, Lord, for your servant is listening.', ref: '1 Samuel 3:9' },
@@ -131,11 +98,8 @@ export const MILESTONE_REWARDS: Array<{
     ],
   },
   {
-    id: 'level_5',
-    condition: p => p.level === 5,
-    title: 'Faithful One',
-    subtitle: 'Level 5. You\'re past the beginning. This is where real formation happens.',
-    emoji: '🛡️',
+    id: 'level_5', condition: p => p.level === 5,
+    title: 'Faithful One', subtitle: 'Level 5. You\'re past the beginning. This is where real formation happens.', emoji: '🛡️',
     verses: [
       { text: 'Well done, good and faithful servant!', ref: 'Matthew 25:23' },
       { text: 'For the eyes of the Lord range throughout the earth to strengthen those whose hearts are fully committed to him.', ref: '2 Chronicles 16:9' },

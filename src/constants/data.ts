@@ -3,31 +3,31 @@
 // ────────────────────────────────────────────────────────────
 
 export const LEVELS = [
-  { level: 1, name: 'Seeker', minXP: 0, maxXP: 200, emoji: '🌱', color: '#6B8E73' },
-  { level: 2, name: 'Awakened', minXP: 200, maxXP: 500, emoji: '🌤', color: '#7EB8D4' },
-  { level: 3, name: 'Walker', minXP: 500, maxXP: 900, emoji: '🚶', color: '#87A96B' },
-  { level: 4, name: 'Disciple', minXP: 900, maxXP: 1500, emoji: '📖', color: '#5B9BD5' },
-  { level: 5, name: 'Faithful One', minXP: 1500, maxXP: 2500, emoji: '🛡️', color: '#C8922A' },
-  { level: 6, name: 'Beloved', minXP: 2500, maxXP: 4000, emoji: '❤️', color: '#E91E8C' },
-  { level: 7, name: 'Covenant Keeper', minXP: 4000, maxXP: 6000, emoji: '🤝', color: '#9B59B6' },
-  { level: 8, name: 'Friend of God', minXP: 6000, maxXP: 9000, emoji: '✨', color: '#F39C12' },
-  { level: 9, name: 'Son of Fire', minXP: 9000, maxXP: 13000, emoji: '🔥', color: '#E74C3C' },
-  { level: 10, name: 'Man After His Heart', minXP: 13000, maxXP: Infinity, emoji: '👑', color: '#FFD700' },
+  { level: 1,  name: 'Seeker',             minXP: 0,       maxXP: 1000,    emoji: '🌱', color: '#6B8E73' },
+  { level: 2,  name: 'Awakened',           minXP: 1000,    maxXP: 5000,    emoji: '🌤', color: '#7EB8D4' },
+  { level: 3,  name: 'Walker',             minXP: 5000,    maxXP: 15000,   emoji: '🚶', color: '#87A96B' },
+  { level: 4,  name: 'Disciple',           minXP: 15000,   maxXP: 35000,   emoji: '📖', color: '#5B9BD5' },
+  { level: 5,  name: 'Faithful One',       minXP: 35000,   maxXP: 75000,   emoji: '🛡️', color: '#C8922A' },
+  { level: 6,  name: 'Beloved',            minXP: 75000,   maxXP: 150000,  emoji: '❤️', color: '#E91E8C' },
+  { level: 7,  name: 'Covenant Keeper',    minXP: 150000,  maxXP: 280000,  emoji: '🤝', color: '#9B59B6' },
+  { level: 8,  name: 'Friend of God',      minXP: 280000,  maxXP: 500000,  emoji: '✨', color: '#F39C12' },
+  { level: 9,  name: 'Son of Fire',        minXP: 500000,  maxXP: 800000,  emoji: '🔥', color: '#E74C3C' },
+  { level: 10, name: 'Man After His Heart', minXP: 800000, maxXP: Infinity, emoji: '👑', color: '#FFD700' },
 ];
 
 export const XP_REWARDS = {
-  answerCall: 15,
-  declineCall: -10,
-  journalEntry: 20,
-  godSighting: 10,
-  bibleChapterRead: 10,
-  verseOfDay: 5,
-  purposeEntry: 10,
-  miniGameWon: 10,
-  fastCompleted: 25,
-  bookSummary: 30,
-  hourOfSilence: 20,
-  prayerRetreat: 35,
+  answerCall: 50,
+  declineCall: -30,
+  journalEntry: 80,
+  godSighting: 40,
+  bibleChapterRead: 35,
+  verseOfDay: 20,
+  purposeEntry: 45,
+  miniGameWon: 60,
+  fastCompleted: 150,
+  bookSummary: 200,
+  hourOfSilence: 100,
+  prayerRetreat: 250,
   missedDay: -5,
 };
 
@@ -205,6 +205,54 @@ export const SERMONS = [
   { id: 's17', preacher: 'Steven Furtick', title: 'Greater', url: 'https://www.youtube.com/results?search_query=steven+furtick+greater', thumbnail: '📈', category: 'Faith' },
   // Francis Chan
   { id: 's18', preacher: 'Francis Chan', title: 'Multiply', url: 'https://www.youtube.com/results?search_query=francis+chan+multiply+discipleship', thumbnail: '✖️', category: 'Discipleship' },
+  { id: 's19', preacher: 'Francis Chan', title: 'Forgotten God', url: 'https://www.youtube.com/results?search_query=francis+chan+forgotten+god+holy+spirit', thumbnail: '🌬️', category: 'Holy Spirit' },
+  // T.D. Jakes
+  { id: 's20', preacher: 'Bishop T.D. Jakes', title: 'Crushing — God Turns Pressure Into Power', url: 'https://www.youtube.com/results?search_query=td+jakes+crushing+pressure+power', thumbnail: '💎', category: 'Faith' },
+  { id: 's21', preacher: 'Bishop T.D. Jakes', title: 'Instinct — The Power to Unleash Your Inborn Drive', url: 'https://www.youtube.com/results?search_query=td+jakes+instinct+inborn+drive', thumbnail: '🦁', category: 'Purpose' },
+  { id: 's22', preacher: 'Bishop T.D. Jakes', title: 'Woman Thou Art Loosed', url: 'https://www.youtube.com/results?search_query=td+jakes+woman+thou+art+loosed', thumbnail: '🕊️', category: 'Healing' },
+  // Timothy Keller
+  { id: 's23', preacher: 'Timothy Keller', title: 'The Prodigal God', url: 'https://www.youtube.com/results?search_query=timothy+keller+prodigal+god+sermon', thumbnail: '🏃', category: 'Grace' },
+  { id: 's24', preacher: 'Timothy Keller', title: 'The Meaning of Marriage', url: 'https://www.youtube.com/results?search_query=timothy+keller+meaning+marriage+sermon', thumbnail: '💍', category: 'Relationships' },
+  { id: 's25', preacher: 'Timothy Keller', title: 'Making Sense of God', url: 'https://www.youtube.com/results?search_query=timothy+keller+making+sense+of+god', thumbnail: '🧠', category: 'Apologetics' },
+  // John Piper
+  { id: 's26', preacher: 'John Piper', title: 'Desiring God', url: 'https://www.youtube.com/results?search_query=john+piper+desiring+god+sermon', thumbnail: '😍', category: 'Worship' },
+  { id: 's27', preacher: 'John Piper', title: 'Don't Waste Your Life', url: 'https://www.youtube.com/results?search_query=john+piper+dont+waste+your+life', thumbnail: '⏳', category: 'Purpose' },
+  { id: 's28', preacher: 'John Piper', title: 'Future Grace', url: 'https://www.youtube.com/results?search_query=john+piper+future+grace+faith', thumbnail: '🌅', category: 'Faith' },
+  // Bill Johnson
+  { id: 's29', preacher: 'Bill Johnson', title: 'The Supernatural Power of a Transformed Mind', url: 'https://www.youtube.com/results?search_query=bill+johnson+supernatural+power+transformed+mind', thumbnail: '⚡', category: 'Holy Spirit' },
+  { id: 's30', preacher: 'Bill Johnson', title: 'When Heaven Invades Earth', url: 'https://www.youtube.com/results?search_query=bill+johnson+when+heaven+invades+earth+sermon', thumbnail: '🌩️', category: 'Kingdom' },
+  // Priscilla Shirer
+  { id: 's31', preacher: 'Priscilla Shirer', title: 'Fervent — Prayer as a Weapon', url: 'https://www.youtube.com/results?search_query=priscilla+shirer+fervent+prayer+weapon', thumbnail: '⚔️', category: 'Prayer' },
+  { id: 's32', preacher: 'Priscilla Shirer', title: 'The Armor of God', url: 'https://www.youtube.com/results?search_query=priscilla+shirer+armor+of+god+sermon', thumbnail: '🛡️', category: 'Spiritual Warfare' },
+  // Rick Warren
+  { id: 's33', preacher: 'Rick Warren', title: 'The Purpose Driven Life', url: 'https://www.youtube.com/results?search_query=rick+warren+purpose+driven+life+sermon', thumbnail: '🎯', category: 'Purpose' },
+  { id: 's34', preacher: 'Rick Warren', title: 'What On Earth Am I Here For?', url: 'https://www.youtube.com/results?search_query=rick+warren+what+on+earth+am+i+here+for', thumbnail: '🌍', category: 'Identity' },
+  // Jentezen Franklin
+  { id: 's35', preacher: 'Jentezen Franklin', title: 'Fasting — Opening the Door to Spiritual Power', url: 'https://www.youtube.com/results?search_query=jentezen+franklin+fasting+spiritual+power', thumbnail: '🌿', category: 'Disciplines' },
+  { id: 's36', preacher: 'Jentezen Franklin', title: 'Right People Right Places', url: 'https://www.youtube.com/results?search_query=jentezen+franklin+right+people+right+places', thumbnail: '🤝', category: 'Relationships' },
+  // Paul Enenche
+  { id: 's37', preacher: 'Pastor Paul Enenche', title: 'Power of the Midnight Cry', url: 'https://www.youtube.com/results?search_query=paul+enenche+midnight+cry+power', thumbnail: '🌙', category: 'Prayer' },
+  { id: 's38', preacher: 'Pastor Paul Enenche', title: 'Uncommon Wisdom for an Uncommon Life', url: 'https://www.youtube.com/results?search_query=paul+enenche+uncommon+wisdom', thumbnail: '💡', category: 'Wisdom' },
+  // Jerry Eze
+  { id: 's39', preacher: 'Pastor Jerry Eze', title: 'New Season Prophetic Prayers', url: 'https://www.youtube.com/results?search_query=jerry+eze+new+season+prophetic+prayers', thumbnail: '🌄', category: 'Prayer' },
+  { id: 's40', preacher: 'Pastor Jerry Eze', title: 'The Making of a Champion', url: 'https://www.youtube.com/results?search_query=jerry+eze+making+of+a+champion', thumbnail: '🏆', category: 'Purpose' },
+  // Andy Stanley
+  { id: 's41', preacher: 'Andy Stanley', title: 'Your Move — Live with the End in Mind', url: 'https://www.youtube.com/results?search_query=andy+stanley+your+move+live+with+end+in+mind', thumbnail: '♟️', category: 'Purpose' },
+  { id: 's42', preacher: 'Andy Stanley', title: 'Better Decisions, Fewer Regrets', url: 'https://www.youtube.com/results?search_query=andy+stanley+better+decisions+fewer+regrets', thumbnail: '⚖️', category: 'Wisdom' },
+  // Charles Stanley
+  { id: 's43', preacher: 'Dr. Charles Stanley', title: 'The Reason for My Hope', url: 'https://www.youtube.com/results?search_query=charles+stanley+reason+for+hope+sermon', thumbnail: '🌟', category: 'Faith' },
+  { id: 's44', preacher: 'Dr. Charles Stanley', title: 'Walking Wisely', url: 'https://www.youtube.com/results?search_query=charles+stanley+walking+wisely', thumbnail: '🦉', category: 'Wisdom' },
+  // Kong Hee
+  { id: 's45', preacher: 'Pastor Kong Hee', title: 'The Presence of God', url: 'https://www.youtube.com/results?search_query=kong+hee+presence+of+god+sermon', thumbnail: '✨', category: 'Intimacy' },
+  // Sunday Adelaja
+  { id: 's46', preacher: 'Pastor Sunday Adelaja', title: 'How Mightily God Can Use a Person', url: 'https://www.youtube.com/results?search_query=sunday+adelaja+how+god+uses+a+person', thumbnail: '🌍', category: 'Purpose' },
+  // Myles Munroe
+  { id: 's47', preacher: 'Dr. Myles Munroe', title: 'Understanding the Purpose and Power of Prayer', url: 'https://www.youtube.com/results?search_query=myles+munroe+purpose+power+of+prayer', thumbnail: '🙏', category: 'Prayer' },
+  { id: 's48', preacher: 'Dr. Myles Munroe', title: 'The Principles of Kingdom', url: 'https://www.youtube.com/results?search_query=myles+munroe+principles+of+kingdom', thumbnail: '👑', category: 'Kingdom' },
+  // Benny Hinn
+  { id: 's49', preacher: 'Benny Hinn', title: 'Good Morning Holy Spirit', url: 'https://www.youtube.com/results?search_query=benny+hinn+good+morning+holy+spirit+sermon', thumbnail: '🕊️', category: 'Holy Spirit' },
+  // Lou Engle
+  { id: 's50', preacher: 'Lou Engle', title: 'TheCall — Fasting and Prayer', url: 'https://www.youtube.com/results?search_query=lou+engle+thecall+fasting+prayer', thumbnail: '🔔', category: 'Prayer' },
 ];
 
 // ── BIBLE QUIZ QUESTIONS ────────────────────────────────────

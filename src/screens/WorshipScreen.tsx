@@ -110,6 +110,8 @@ export default function WorshipScreen() {
 }
 
 function SongCard({ song, expanded, onToggle }: { song: WorshipSong; expanded: boolean; onToggle: () => void }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   return (
     <View style={styles.songCard}>
       <TouchableOpacity style={styles.songCardHeader} onPress={onToggle} activeOpacity={0.85}>

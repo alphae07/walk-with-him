@@ -49,11 +49,15 @@ export default function CallOverlayScreen({ callData, onDismiss }: Props) {
   }, []);
 
   useEffect(() => {
-    startRinging();
-    return () => stopRinging();
+    let riInterval: ReturnType<typeof setInterval>;
+    startRinging().then(ri => { riInterval = ri; });
+    return () => {
+      if (riInterval) clearInterval(riInterval);
+      stopRinging();
+    };
   }, []);
 
-  const startRinging = async () => {
+  const startRinging = async (): Promise<ReturnType<typeof setInterval>> => {
     // Vibration pattern like a phone call
     const vibratePattern = [0, 1000, 1000, 1000, 1000, 1000];
     if (Platform.OS === 'android') {
@@ -108,7 +112,7 @@ export default function CallOverlayScreen({ callData, onDismiss }: Props) {
       });
     }, 1000);
 
-    return () => clearInterval(ri);
+    return ri;
   };
 
   const stopRinging = async () => {

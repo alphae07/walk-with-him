@@ -12,6 +12,8 @@ const BUILDER_EMAIL = 'support@alphae-x.app';
 const BUILDER_PHONE = '+2349113216637';
 
 function NavBar({ title, onBack }: { title: string; onBack: () => void }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   return (
     <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
       <TouchableOpacity onPress={onBack}><Ionicons name="chevron-back" size={24} color={C.text} /></TouchableOpacity>

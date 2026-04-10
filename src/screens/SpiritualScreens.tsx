@@ -290,6 +290,8 @@ export function PurposeScreen() {
 
 // ── Shared Components ──────────────────────────────────────
 function NavBar({ title, onBack, rightAction }: { title: string; onBack: () => void; rightAction?: { label: string; onPress: () => void } }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   return (
     <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
       <TouchableOpacity onPress={onBack}>
@@ -306,6 +308,8 @@ function NavBar({ title, onBack, rightAction }: { title: string; onBack: () => v
 }
 
 function EmptyState({ emoji, title, subtitle }: { emoji: string; title: string; subtitle: string }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   return (
     <View style={styles.emptyState}>
       <Text style={styles.emptyEmoji}>{emoji}</Text>

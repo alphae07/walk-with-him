@@ -228,6 +228,8 @@ export default function HomeScreen() {
 }
 
 function DisciplineCheck({ label, storageKey }: { label: string; storageKey: string }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -246,6 +248,8 @@ function DisciplineCheck({ label, storageKey }: { label: string; storageKey: str
 }
 
 function RewardOverlay({ data, onClose }: { data: any; onClose: () => void }) {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   return (
     <View style={styles.rewardOverlay}>
       <TouchableOpacity style={styles.rewardBackdrop} onPress={onClose} activeOpacity={1} />

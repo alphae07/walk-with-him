@@ -6,13 +6,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { awardXP } from '../utils/xp';
 import { CALL_PROMPTS } from '../constants/data';
 import { format } from 'date-fns';
 
 export default function JournalScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const [entries, setEntries] = useState<any[]>([]);
   const [composing, setComposing] = useState(false);
   const [content, setContent] = useState('');
@@ -74,7 +76,7 @@ export default function JournalScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Journal</Text>
         <Text style={styles.headerSub}>Talk to God. No rules.</Text>
@@ -109,7 +111,7 @@ export default function JournalScreen() {
                 style={styles.refreshPrompt}
                 onPress={() => setPrompt(CALL_PROMPTS[Math.floor(Math.random() * CALL_PROMPTS.length)])}
               >
-                <Ionicons name="refresh" size={14} color={COLORS.gold} />
+                <Ionicons name="refresh" size={14} color={C.gold} />
                 <Text style={styles.refreshPromptText}>New prompt</Text>
               </TouchableOpacity>
             </View>
@@ -120,7 +122,7 @@ export default function JournalScreen() {
               multiline
               numberOfLines={10}
               placeholder="Dear God..."
-              placeholderTextColor={COLORS.text3}
+              placeholderTextColor={C.text3}
               value={content}
               onChangeText={setContent}
               textAlignVertical="top"
@@ -151,7 +153,7 @@ export default function JournalScreen() {
                     {format(new Date(entry.date), 'MMM d, yyyy • h:mm a')}
                   </Text>
                   <TouchableOpacity onPress={() => deleteEntry(entry.id)}>
-                    <Ionicons name="trash-outline" size={16} color={COLORS.text3} />
+                    <Ionicons name="trash-outline" size={16} color={C.text3} />
                   </TouchableOpacity>
                 </View>
                 {entry.prompt && (
@@ -168,58 +170,58 @@ export default function JournalScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm, paddingBottom: SPACING.md },
-  headerTitle: { color: COLORS.text, fontSize: 24, fontFamily: 'Lora-SemiBold' },
-  headerSub: { color: COLORS.text3, fontSize: 13, fontFamily: 'Lora-Italic', marginTop: 2 },
+  headerTitle: { color: C.text, fontSize: 24, fontFamily: 'Lora-SemiBold' },
+  headerSub: { color: C.text3, fontSize: 13, fontFamily: 'Lora-Italic', marginTop: 2 },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
   tab: {
     flex: 1, paddingVertical: 10, borderRadius: RADIUS.md,
-    backgroundColor: COLORS.surface, alignItems: 'center',
-    borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, alignItems: 'center',
+    borderWidth: 1, borderColor: C.border,
   },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   writeContainer: { flex: 1, paddingHorizontal: SPACING.lg },
   promptCard: {
-    backgroundColor: COLORS.bg2, borderRadius: RADIUS.lg,
+    backgroundColor: C.bg2, borderRadius: RADIUS.lg,
     padding: SPACING.lg, marginBottom: SPACING.lg,
-    borderLeftWidth: 3, borderLeftColor: COLORS.gold,
+    borderLeftWidth: 3, borderLeftColor: C.gold,
   },
-  promptLabel: { color: COLORS.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  promptText: { color: COLORS.text, fontSize: 15, fontFamily: 'Lora-Italic', lineHeight: 24, marginBottom: 12 },
+  promptLabel: { color: C.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  promptText: { color: C.text, fontSize: 15, fontFamily: 'Lora-Italic', lineHeight: 24, marginBottom: 12 },
   refreshPrompt: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  refreshPromptText: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  writeLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: 8 },
+  refreshPromptText: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  writeLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: 8 },
   textArea: {
-    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border,
     borderRadius: RADIUS.md, padding: SPACING.md,
-    color: COLORS.text, fontSize: 15, lineHeight: 24,
+    color: C.text, fontSize: 15, lineHeight: 24,
     fontFamily: 'DMSans-Regular', minHeight: 200, marginBottom: SPACING.lg,
   },
   saveBtn: {
-    backgroundColor: COLORS.gold, borderRadius: RADIUS.full,
+    backgroundColor: C.gold, borderRadius: RADIUS.full,
     paddingVertical: 14, alignItems: 'center', marginBottom: SPACING.xl,
   },
   saveBtnDisabled: { opacity: 0.4 },
-  saveBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  saveBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
   historyContainer: { flex: 1, paddingHorizontal: SPACING.lg },
   emptyState: { alignItems: 'center', paddingTop: 60 },
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyText: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  emptySubtext: { color: COLORS.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  emptyText: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  emptySubtext: { color: C.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
   entryCard: {
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.lg,
+    backgroundColor: C.surface, borderRadius: RADIUS.lg,
     padding: SPACING.lg, marginBottom: SPACING.md,
-    borderWidth: 1, borderColor: COLORS.border,
+    borderWidth: 1, borderColor: C.border,
   },
   entryHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  entryDate: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  entryDate: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
   entryPromptLabel: {
-    color: COLORS.gold, fontSize: 12, fontFamily: 'Lora-Italic',
+    color: C.gold, fontSize: 12, fontFamily: 'Lora-Italic',
     marginBottom: 8, lineHeight: 18,
   },
-  entryContent: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  entryContent: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
 });

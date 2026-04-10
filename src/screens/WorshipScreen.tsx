@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { WORSHIP_SONGS, getSongsForMood, WorshipSong } from '../services/api';
 
 const { width } = Dimensions.get('window');
@@ -24,6 +24,8 @@ const MOODS = [
 ];
 
 export default function WorshipScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [expandedSong, setExpandedSong] = useState<string | null>(null);
@@ -33,10 +35,10 @@ export default function WorshipScreen() {
     : WORSHIP_SONGS;
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Worship</Text>
         <View style={{ width: 24 }} />
@@ -121,7 +123,7 @@ function SongCard({ song, expanded, onToggle }: { song: WorshipSong; expanded: b
         <View style={styles.songThemeBadge}>
           <Text style={styles.songThemeText}>{song.theme}</Text>
         </View>
-        <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color={COLORS.text3} />
+        <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color={C.text3} />
       </TouchableOpacity>
 
       {expanded && (
@@ -162,57 +164,57 @@ function SongCard({ song, expanded, onToggle }: { song: WorshipSong; expanded: b
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   hero: { padding: SPACING.xl, alignItems: 'center' },
   heroEmoji: { fontSize: 48, marginBottom: 12 },
-  heroTitle: { color: COLORS.white, fontSize: 22, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 12 },
+  heroTitle: { color: C.white, fontSize: 22, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 12 },
   heroSubtitle: { color: 'rgba(255,255,255,0.65)', fontSize: 14, lineHeight: 22, textAlign: 'center', fontFamily: 'DMSans-Regular' },
   moodSection: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.xl, paddingBottom: SPACING.md },
-  sectionTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
-  sectionSubtitle: { color: COLORS.text3, fontSize: 13, fontFamily: 'DMSans-Regular', lineHeight: 18, marginBottom: SPACING.md },
+  sectionTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
+  sectionSubtitle: { color: C.text3, fontSize: 13, fontFamily: 'DMSans-Regular', lineHeight: 18, marginBottom: SPACING.md },
   moodGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   moodChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 14, paddingVertical: 10,
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.full,
-    borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderRadius: RADIUS.full,
+    borderWidth: 1, borderColor: C.border,
   },
-  moodChipActive: { backgroundColor: COLORS.gold + '25', borderColor: COLORS.gold },
+  moodChipActive: { backgroundColor: C.gold + '25', borderColor: C.gold },
   moodEmoji: { fontSize: 16 },
-  moodLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
-  moodLabelActive: { color: COLORS.gold },
+  moodLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  moodLabelActive: { color: C.gold },
   songsSection: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.lg },
   songCard: {
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.lg,
-    marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderRadius: RADIUS.lg,
+    marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border,
     overflow: 'hidden',
   },
   songCardHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: SPACING.md },
-  songIconWrap: { width: 44, height: 44, borderRadius: RADIUS.md, backgroundColor: COLORS.bg2, alignItems: 'center', justifyContent: 'center' },
+  songIconWrap: { width: 44, height: 44, borderRadius: RADIUS.md, backgroundColor: C.bg2, alignItems: 'center', justifyContent: 'center' },
   songIcon: { fontSize: 20 },
   songInfo: { flex: 1 },
-  songTitle: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
-  songArtist: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
-  songThemeBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
-  songThemeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  songExpanded: { padding: SPACING.md, borderTopWidth: 1, borderTopColor: COLORS.border },
-  songWhyCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  songWhyLabel: { color: COLORS.text3, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 6 },
-  songWhyText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
-  songLyricCard: { backgroundColor: COLORS.bg3, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm },
-  songLyricLabel: { color: COLORS.text3, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 6 },
-  songLyricText: { color: COLORS.text, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
-  songContextBadge: { backgroundColor: COLORS.blue + '15', borderRadius: RADIUS.sm, paddingHorizontal: 10, paddingVertical: 6, alignSelf: 'flex-start', marginBottom: SPACING.md },
-  songContextText: { color: COLORS.blue, fontSize: 11, fontFamily: 'DMSans-Medium' },
+  songTitle: { color: C.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
+  songArtist: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  songThemeBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
+  songThemeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  songExpanded: { padding: SPACING.md, borderTopWidth: 1, borderTopColor: C.border },
+  songWhyCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderLeftWidth: 3, borderLeftColor: C.gold },
+  songWhyLabel: { color: C.text3, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 6 },
+  songWhyText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  songLyricCard: { backgroundColor: C.bg3, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm },
+  songLyricLabel: { color: C.text3, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 6 },
+  songLyricText: { color: C.text, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
+  songContextBadge: { backgroundColor: C.blue + '15', borderRadius: RADIUS.sm, paddingHorizontal: 10, paddingVertical: 6, alignSelf: 'flex-start', marginBottom: SPACING.md },
+  songContextText: { color: C.blue, fontSize: 11, fontFamily: 'DMSans-Medium' },
   songLinks: { flexDirection: 'row', gap: 10 },
   songLinkBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 10, borderRadius: RADIUS.md },
-  songLinkIcon: { color: COLORS.white, fontSize: 14 },
-  songLinkText: { color: COLORS.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
-  tipCard: { margin: SPACING.lg, backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, borderWidth: 1, borderColor: COLORS.border },
-  tipTitle: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  tipText: { color: COLORS.text2, fontSize: 13, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: 12 },
-  tipVerse: { color: COLORS.gold, fontSize: 12, fontFamily: 'Lora-Italic', lineHeight: 18 },
+  songLinkIcon: { color: C.white, fontSize: 14 },
+  songLinkText: { color: C.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
+  tipCard: { margin: SPACING.lg, backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, borderWidth: 1, borderColor: C.border },
+  tipTitle: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  tipText: { color: C.text2, fontSize: 13, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: 12 },
+  tipVerse: { color: C.gold, fontSize: 12, fontFamily: 'Lora-Italic', lineHeight: 18 },
 });

@@ -6,13 +6,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { awardXP } from '../utils/xp';
 import { PRAYER_CATEGORIES } from '../constants/data';
 
 // ── DISCIPLINES ────────────────────────────────────────────
 export function DisciplinesScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [activeFast, setActiveFast] = useState<any>(null);
   const [completedDisciplines, setCompletedDisciplines] = useState<string[]>([]);
@@ -104,10 +106,10 @@ export function DisciplinesScreen() {
   const silenceDone = completedDisciplines.includes(`silence_${today}`);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Spiritual Disciplines</Text>
         <View style={{ width: 24 }} />
@@ -196,6 +198,8 @@ export function DisciplinesScreen() {
 
 // ── PRAYER BUILDER ─────────────────────────────────────────
 export function PrayerBuilderScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [step, setStep] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
@@ -232,10 +236,10 @@ export function PrayerBuilderScreen() {
 
   if (done) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={styles.navBar}>
+      <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+        <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+            <Ionicons name="chevron-back" size={24} color={C.text} />
           </TouchableOpacity>
           <Text style={styles.navTitle}>Prayer Complete</Text>
           <View style={{ width: 24 }} />
@@ -256,8 +260,8 @@ export function PrayerBuilderScreen() {
           <TouchableOpacity style={styles.startBtn} onPress={reset}>
             <Text style={styles.startBtnText}>Pray Again</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.startBtn, { backgroundColor: COLORS.bg3, marginTop: 10 }]} onPress={() => navigation.goBack()}>
-            <Text style={[styles.startBtnText, { color: COLORS.text }]}>Back</Text>
+          <TouchableOpacity style={[styles.startBtn, { backgroundColor: C.bg3, marginTop: 10 }]} onPress={() => navigation.goBack()}>
+            <Text style={[styles.startBtnText, { color: C.text }]}>Back</Text>
           </TouchableOpacity>
           <View style={{ height: 32 }} />
         </ScrollView>
@@ -266,10 +270,10 @@ export function PrayerBuilderScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Prayer Builder</Text>
         <Text style={styles.stepCount}>{step + 1}/4</Text>
@@ -295,7 +299,7 @@ export function PrayerBuilderScreen() {
             multiline
             numberOfLines={6}
             placeholder="Be specific. Be honest. Be bold."
-            placeholderTextColor={COLORS.text3}
+            placeholderTextColor={C.text3}
             textAlignVertical="top"
           />
           <TouchableOpacity style={[styles.startBtn, { backgroundColor: cat.color }]} onPress={handleNext}>
@@ -309,48 +313,48 @@ export function PrayerBuilderScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
-  stepCount: { color: COLORS.gold, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
-  progressBar: { height: 3, backgroundColor: COLORS.border, marginHorizontal: SPACING.lg, borderRadius: 2, overflow: 'hidden' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  stepCount: { color: C.gold, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
+  progressBar: { height: 3, backgroundColor: C.border, marginHorizontal: SPACING.lg, borderRadius: 2, overflow: 'hidden' },
   progressFill: { height: '100%', borderRadius: 2 },
   content: { padding: SPACING.lg },
-  introCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  introText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
-  disciplineCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
+  introCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  introText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  disciplineCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: C.border },
   disciplineHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: SPACING.md },
   disciplineEmoji: { fontSize: 32 },
   disciplineHeaderInfo: { flex: 1 },
-  disciplineTitle: { color: COLORS.text, fontSize: 17, fontFamily: 'DMSans-SemiBold' },
-  disciplineXP: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  disciplineDesc: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.sm },
-  scriptureRef: { color: COLORS.gold, fontSize: 12, fontFamily: 'Lora-Italic', lineHeight: 18, marginBottom: SPACING.md },
-  activeBadge: { backgroundColor: COLORS.green + '20', paddingHorizontal: 8, paddingVertical: 4, borderRadius: RADIUS.full },
-  activeBadgeText: { color: COLORS.green, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  doneBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 4, borderRadius: RADIUS.full },
-  doneBadgeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  startBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 13, alignItems: 'center' },
-  startBtnDone: { backgroundColor: COLORS.border },
-  startBtnText: { color: COLORS.white, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
-  completeBtn: { backgroundColor: COLORS.green, borderRadius: RADIUS.full, paddingVertical: 12, alignItems: 'center', marginTop: SPACING.sm },
-  completeBtnText: { color: COLORS.white, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
+  disciplineTitle: { color: C.text, fontSize: 17, fontFamily: 'DMSans-SemiBold' },
+  disciplineXP: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  disciplineDesc: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.sm },
+  scriptureRef: { color: C.gold, fontSize: 12, fontFamily: 'Lora-Italic', lineHeight: 18, marginBottom: SPACING.md },
+  activeBadge: { backgroundColor: C.green + '20', paddingHorizontal: 8, paddingVertical: 4, borderRadius: RADIUS.full },
+  activeBadgeText: { color: C.green, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  doneBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 4, borderRadius: RADIUS.full },
+  doneBadgeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  startBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 13, alignItems: 'center' },
+  startBtnDone: { backgroundColor: C.border },
+  startBtnText: { color: C.white, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
+  completeBtn: { backgroundColor: C.green, borderRadius: RADIUS.full, paddingVertical: 12, alignItems: 'center', marginTop: SPACING.sm },
+  completeBtnText: { color: C.white, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
   fastActiveInfo: { marginTop: SPACING.sm },
-  fastStarted: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: 8 },
+  fastStarted: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: 8 },
   // Prayer builder
   catCard: { borderWidth: 2, borderRadius: RADIUS.lg, padding: SPACING.lg, alignItems: 'center', marginBottom: SPACING.lg },
   catEmoji: { fontSize: 44, marginBottom: 8 },
   catLabel: { fontSize: 22, fontFamily: 'Lora-SemiBold', marginBottom: 12 },
-  catPrompt: { color: COLORS.text2, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
-  formLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  prayerInput: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 160, textAlignVertical: 'top', marginBottom: SPACING.lg },
+  catPrompt: { color: C.text2, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  formLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  prayerInput: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 160, textAlignVertical: 'top', marginBottom: SPACING.lg },
   prayerDoneEmoji: { fontSize: 56, textAlign: 'center', marginBottom: 16 },
-  prayerDoneTitle: { color: COLORS.text, fontSize: 28, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
-  prayerDoneSubtitle: { color: COLORS.text3, fontSize: 14, textAlign: 'center', fontFamily: 'DMSans-Regular', marginBottom: SPACING.xl },
-  prayerSummary: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  prayerDoneTitle: { color: C.text, fontSize: 28, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
+  prayerDoneSubtitle: { color: C.text3, fontSize: 14, textAlign: 'center', fontFamily: 'DMSans-Regular', marginBottom: SPACING.xl },
+  prayerSummary: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
   prayerSummaryHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, borderLeftWidth: 3, paddingLeft: 10, marginBottom: 8 },
   prayerSummaryIcon: { fontSize: 18 },
   prayerSummaryLabel: { fontSize: 14, fontFamily: 'DMSans-SemiBold' },
-  prayerSummaryText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  prayerSummaryText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
 });

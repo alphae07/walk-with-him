@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { getDailyDevotional, GOD_ATTRIBUTES } from '../services/api';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { awardXP } from '../utils/xp';
@@ -16,6 +16,8 @@ import { format } from 'date-fns';
 const { width } = Dimensions.get('window');
 
 export default function DevotionalScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [tab, setTab] = useState<'today' | 'attribute' | 'history'>('today');
   const [devotionalResponse, setDevotionalResponse] = useState('');
@@ -61,10 +63,10 @@ export default function DevotionalScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Daily Devotional</Text>
         <View style={{ width: 24 }} />
@@ -85,7 +87,7 @@ export default function DevotionalScreen() {
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
             {completed && (
               <View style={styles.completedBanner}>
-                <Ionicons name="checkmark-circle" size={18} color={COLORS.green} />
+                <Ionicons name="checkmark-circle" size={18} color={C.green} />
                 <Text style={styles.completedText}>Completed today. See you tomorrow.</Text>
               </View>
             )}
@@ -125,7 +127,7 @@ export default function DevotionalScreen() {
                   value={devotionalResponse}
                   onChangeText={setDevotionalResponse}
                   placeholder="What did this stir in you? What do you want to say to Him?"
-                  placeholderTextColor={COLORS.text3}
+                  placeholderTextColor={C.text3}
                   textAlignVertical="top"
                 />
                 <TouchableOpacity
@@ -164,7 +166,7 @@ export default function DevotionalScreen() {
               onPress={() => setAttrIndex(i => Math.max(0, i - 1))}
               disabled={attrIndex === 0}
             >
-              <Ionicons name="chevron-back" size={20} color={attrIndex === 0 ? COLORS.text3 : COLORS.gold} />
+              <Ionicons name="chevron-back" size={20} color={attrIndex === 0 ? C.text3 : C.gold} />
             </TouchableOpacity>
             <Text style={styles.attrNavLabel}>{attrIndex + 1} / {GOD_ATTRIBUTES.length}</Text>
             <TouchableOpacity
@@ -172,7 +174,7 @@ export default function DevotionalScreen() {
               onPress={() => setAttrIndex(i => Math.min(GOD_ATTRIBUTES.length - 1, i + 1))}
               disabled={attrIndex === GOD_ATTRIBUTES.length - 1}
             >
-              <Ionicons name="chevron-forward" size={20} color={attrIndex === GOD_ATTRIBUTES.length - 1 ? COLORS.text3 : COLORS.gold} />
+              <Ionicons name="chevron-forward" size={20} color={attrIndex === GOD_ATTRIBUTES.length - 1 ? C.text3 : C.gold} />
             </TouchableOpacity>
           </View>
 
@@ -196,7 +198,7 @@ export default function DevotionalScreen() {
             multiline
             numberOfLines={4}
             placeholder="Write your answer..."
-            placeholderTextColor={COLORS.text3}
+            placeholderTextColor={C.text3}
             textAlignVertical="top"
           />
 
@@ -249,58 +251,58 @@ export default function DevotionalScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: C.surface, alignItems: 'center', borderWidth: 1, borderColor: C.border },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   content: { padding: SPACING.lg },
-  completedBanner: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: COLORS.green + '15', borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.md },
-  completedText: { color: COLORS.green, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  completedBanner: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: C.green + '15', borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.md },
+  completedText: { color: C.green, fontSize: 13, fontFamily: 'DMSans-Medium' },
   verseHero: { borderRadius: RADIUS.lg, padding: SPACING.xl, marginBottom: SPACING.lg, alignItems: 'center' },
-  verseHeroLabel: { color: COLORS.gold, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 12 },
-  verseHeroText: { color: COLORS.white, fontSize: 18, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 30, marginBottom: 12 },
+  verseHeroLabel: { color: C.gold, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 12 },
+  verseHeroText: { color: C.white, fontSize: 18, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 30, marginBottom: 12 },
   verseHeroRef: { color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: 'DMSans-SemiBold' },
-  devotionalTitle: { color: COLORS.text, fontSize: 22, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
-  devotionalDate: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
+  devotionalTitle: { color: C.text, fontSize: 22, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
+  devotionalDate: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
   devotionalBody: { marginBottom: SPACING.lg },
-  devotionalPara: { color: COLORS.text2, fontSize: 15, lineHeight: 26, fontFamily: 'DMSans-Regular', marginBottom: 16 },
-  prayerBlock: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.lg, borderLeftWidth: 4, borderLeftColor: COLORS.gold },
-  prayerLabel: { color: COLORS.gold, fontSize: 11, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 10 },
-  prayerText: { color: COLORS.text2, fontSize: 14, lineHeight: 24, fontFamily: 'Lora-Italic' },
-  responseLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  responseInput: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 130, textAlignVertical: 'top', marginBottom: SPACING.md },
-  completeBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
+  devotionalPara: { color: C.text2, fontSize: 15, lineHeight: 26, fontFamily: 'DMSans-Regular', marginBottom: 16 },
+  prayerBlock: { backgroundColor: C.bg2, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.lg, borderLeftWidth: 4, borderLeftColor: C.gold },
+  prayerLabel: { color: C.gold, fontSize: 11, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 10 },
+  prayerText: { color: C.text2, fontSize: 14, lineHeight: 24, fontFamily: 'Lora-Italic' },
+  responseLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  responseInput: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 130, textAlignVertical: 'top', marginBottom: SPACING.md },
+  completeBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
   completeBtnDisabled: { opacity: 0.4 },
-  completeBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
-  completedCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.lg, alignItems: 'center' },
-  completedCardText: { color: COLORS.gold, fontSize: 14, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 22 },
+  completeBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  completedCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.lg, alignItems: 'center' },
+  completedCardText: { color: C.gold, fontSize: 14, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 22 },
   // Attribute tab
-  attrIntro: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
+  attrIntro: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
   attrNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: SPACING.md },
-  attrNavBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: COLORS.surface, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: COLORS.border },
+  attrNavBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: C.border },
   attrNavBtnDisabled: { opacity: 0.3 },
-  attrNavLabel: { color: COLORS.text3, fontSize: 13, fontFamily: 'DMSans-Regular' },
+  attrNavLabel: { color: C.text3, fontSize: 13, fontFamily: 'DMSans-Regular' },
   attrHero: { borderRadius: RADIUS.lg, padding: SPACING.xl, marginBottom: SPACING.lg, alignItems: 'center' },
-  attrName: { color: COLORS.gold, fontSize: 26, fontFamily: 'Lora-SemiBold', marginBottom: 16 },
-  attrVerse: { color: COLORS.white, fontSize: 15, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 26, marginBottom: 10 },
+  attrName: { color: C.gold, fontSize: 26, fontFamily: 'Lora-SemiBold', marginBottom: 16 },
+  attrVerse: { color: C.white, fontSize: 15, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 26, marginBottom: 10 },
   attrVerseRef: { color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'DMSans-SemiBold' },
-  attrReflection: { color: COLORS.text2, fontSize: 15, lineHeight: 26, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
-  attrQuestionCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.md, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  attrQuestionLabel: { color: COLORS.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  attrQuestion: { color: COLORS.text, fontSize: 15, fontFamily: 'Lora-Italic', lineHeight: 24 },
-  attrInput: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 110, textAlignVertical: 'top', marginBottom: SPACING.md },
+  attrReflection: { color: C.text2, fontSize: 15, lineHeight: 26, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
+  attrQuestionCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.md, borderLeftWidth: 3, borderLeftColor: C.gold },
+  attrQuestionLabel: { color: C.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  attrQuestion: { color: C.text, fontSize: 15, fontFamily: 'Lora-Italic', lineHeight: 24 },
+  attrInput: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 110, textAlignVertical: 'top', marginBottom: SPACING.md },
   // History
   emptyState: { alignItems: 'center', paddingTop: 60 },
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  emptyText: { color: COLORS.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
-  historyCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
-  historyDate: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular', marginBottom: 4 },
-  historyTitle: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  historyResponse: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  emptyTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  emptyText: { color: C.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  historyCard: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
+  historyDate: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular', marginBottom: 4 },
+  historyTitle: { color: C.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  historyResponse: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
 });

@@ -3,13 +3,15 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { SERMONS } from '../constants/data';
 
 const CATEGORIES = ['All', 'Intimacy', 'Prayer', 'Holy Spirit', 'Faith', 'Kingdom', 'Grace', 'Identity', 'Purpose', 'Wisdom', 'Revival', 'Discipleship', 'Healing', 'Devotional', 'Prophetic'];
 const PREACHERS = ['All', 'Apostle Joshua Selman', 'Pastor E.A. Adeboye', 'Pastor Chris Oyakhilome', 'Pastor David Ibiyeomie', 'Sam Adeyemi', 'Femi Lazarus', 'Pastor Tobi Adegboyega', 'Touré Roberts', 'Steven Furtick', 'Francis Chan'];
 
 export default function SermonsScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedPreacher, setSelectedPreacher] = useState('All');
@@ -21,10 +23,10 @@ export default function SermonsScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Sermons</Text>
         <View style={{ width: 24 }} />
@@ -78,7 +80,7 @@ export default function SermonsScreen() {
               </View>
             </View>
             <View style={styles.playBtn}>
-              <Ionicons name="play" size={16} color={COLORS.gold} />
+              <Ionicons name="play" size={16} color={C.gold} />
             </View>
           </TouchableOpacity>
         ))}
@@ -100,32 +102,32 @@ export default function SermonsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   filterRow: { maxHeight: 50 },
   filterContent: { paddingHorizontal: SPACING.lg, gap: 8, paddingBottom: 8 },
-  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border },
   chipSmall: { paddingHorizontal: 10, paddingVertical: 6 },
-  chipActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  chipText: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  chipActive: { backgroundColor: C.gold, borderColor: C.gold },
+  chipText: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
   chipTextSmall: { fontSize: 11 },
-  chipTextActive: { color: COLORS.white },
+  chipTextActive: { color: C.white },
   list: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.md },
-  resultsCount: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
-  sermonCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
-  sermonLeft: { width: 48, height: 48, borderRadius: RADIUS.md, backgroundColor: COLORS.bg3, alignItems: 'center', justifyContent: 'center' },
+  resultsCount: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
+  sermonCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
+  sermonLeft: { width: 48, height: 48, borderRadius: RADIUS.md, backgroundColor: C.bg3, alignItems: 'center', justifyContent: 'center' },
   sermonEmoji: { fontSize: 24 },
   sermonInfo: { flex: 1 },
-  sermonTitle: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
-  sermonPreacher: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: 6 },
-  categoryBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full, alignSelf: 'flex-start' },
-  categoryBadgeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  playBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.gold + '20', alignItems: 'center', justifyContent: 'center' },
-  discoverCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginTop: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
-  discoverTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  discoverText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
-  discoverBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 10, paddingHorizontal: 20, alignSelf: 'flex-start' },
-  discoverBtnText: { color: COLORS.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
+  sermonTitle: { color: C.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
+  sermonPreacher: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', marginBottom: 6 },
+  categoryBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full, alignSelf: 'flex-start' },
+  categoryBadgeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  playBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: C.gold + '20', alignItems: 'center', justifyContent: 'center' },
+  discoverCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginTop: SPACING.md, borderWidth: 1, borderColor: C.border },
+  discoverTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  discoverText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
+  discoverBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 10, paddingHorizontal: 20, alignSelf: 'flex-start' },
+  discoverBtnText: { color: C.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
 });

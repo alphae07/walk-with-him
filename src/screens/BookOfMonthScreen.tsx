@@ -7,13 +7,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { BOOKS_OF_MONTH } from '../constants/data';
 import { awardXP } from '../utils/xp';
 import { format } from 'date-fns';
 
 export default function BookOfMonthScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [tab, setTab] = useState<'current' | 'archive' | 'submit'>('current');
   const [summary, setSummary] = useState('');
@@ -51,10 +53,10 @@ export default function BookOfMonthScreen() {
     .sort(([a], [b]) => b.localeCompare(a));
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Book of the Month</Text>
         <View style={{ width: 24 }} />
@@ -87,7 +89,7 @@ export default function BookOfMonthScreen() {
           </View>
           {alreadySubmitted ? (
             <View style={styles.submittedBadge}>
-              <Ionicons name="checkmark-circle" size={20} color={COLORS.green} />
+              <Ionicons name="checkmark-circle" size={20} color={C.green} />
               <Text style={styles.submittedText}>Summary submitted this month! +30 XP earned.</Text>
             </View>
           ) : (
@@ -145,7 +147,7 @@ export default function BookOfMonthScreen() {
                   multiline
                   numberOfLines={8}
                   placeholder="Write what you took away from the book. Answer the reflection prompt. Be honest — this is for you and God, not a book report."
-                  placeholderTextColor={COLORS.text3}
+                  placeholderTextColor={C.text3}
                   textAlignVertical="top"
                 />
                 <Text style={styles.charCount}>{summary.length} / 100 min</Text>
@@ -166,47 +168,47 @@ export default function BookOfMonthScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: C.surface, alignItems: 'center', borderWidth: 1, borderColor: C.border },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   content: { padding: SPACING.lg },
   bookHero: { borderRadius: RADIUS.lg, padding: SPACING.xl, marginBottom: SPACING.md, alignItems: 'center' },
-  monthLabel: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold', letterSpacing: 1, marginBottom: 12 },
-  bookTitle: { color: COLORS.white, fontSize: 24, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
+  monthLabel: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold', letterSpacing: 1, marginBottom: 12 },
+  bookTitle: { color: C.white, fontSize: 24, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
   bookAuthor: { color: 'rgba(255,255,255,0.6)', fontSize: 14, fontFamily: 'DMSans-Regular' },
-  bookDescCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
-  bookDescTitle: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  bookDescText: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
-  promptCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  promptLabel: { color: COLORS.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  promptText: { color: COLORS.text2, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22 },
-  submittedBadge: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: COLORS.green + '15', borderRadius: RADIUS.md, padding: SPACING.md },
-  submittedText: { color: COLORS.green, fontSize: 14, fontFamily: 'DMSans-Medium', flex: 1 },
-  submitBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
+  bookDescCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: C.border },
+  bookDescTitle: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  bookDescText: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  promptCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  promptLabel: { color: C.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  promptText: { color: C.text2, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22 },
+  submittedBadge: { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: C.green + '15', borderRadius: RADIUS.md, padding: SPACING.md },
+  submittedText: { color: C.green, fontSize: 14, fontFamily: 'DMSans-Medium', flex: 1 },
+  submitBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
   submitBtnDisabled: { opacity: 0.4 },
-  submitBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
-  archiveIntro: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Regular', lineHeight: 20, marginBottom: SPACING.lg },
-  archiveCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
-  archiveCardCurrent: { borderColor: COLORS.gold },
+  submitBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  archiveIntro: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Regular', lineHeight: 20, marginBottom: SPACING.lg },
+  archiveCard: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
+  archiveCardCurrent: { borderColor: C.gold },
   archiveCardHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  archiveMonth: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', flex: 1 },
-  readBadge: { backgroundColor: COLORS.green + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
-  readBadgeText: { color: COLORS.green, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  currentBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
-  currentBadgeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  archiveTitle: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
-  archiveAuthor: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
-  formLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  textArea: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 200, textAlignVertical: 'top', marginBottom: 8 },
-  charCount: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', textAlign: 'right', marginBottom: SPACING.md },
+  archiveMonth: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', flex: 1 },
+  readBadge: { backgroundColor: C.green + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
+  readBadgeText: { color: C.green, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  currentBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
+  currentBadgeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  archiveTitle: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
+  archiveAuthor: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  formLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  textArea: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 200, textAlignVertical: 'top', marginBottom: 8 },
+  charCount: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', textAlign: 'right', marginBottom: SPACING.md },
   alreadySubmitted: { alignItems: 'center', paddingTop: 60 },
   alreadySubmittedEmoji: { fontSize: 56, marginBottom: 16 },
-  alreadySubmittedTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  alreadySubmittedText: { color: COLORS.text3, fontSize: 14, fontFamily: 'DMSans-Regular', textAlign: 'center' },
+  alreadySubmittedTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  alreadySubmittedText: { color: C.text3, fontSize: 14, fontFamily: 'DMSans-Regular', textAlign: 'center' },
 });

@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { COLORS, SPACING, RADIUS, SHADOW } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, SHADOW, useThemeColors } from '../constants/theme';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { getLevelInfo, getXPProgress, MILESTONE_REWARDS } from '../utils/xp';
 import { VERSE_OF_DAY, MORNING_PROMPTS, MIDDAY_PROMPTS, EVENING_PROMPTS } from '../constants/data';
@@ -28,6 +28,8 @@ function getTodayVerse() {
 }
 
 export default function HomeScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [refreshing, setRefreshing] = useState(false);
@@ -89,13 +91,13 @@ export default function HomeScreen() {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: C.bg}]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.gold} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={C.gold} />}
       >
         {/* Header */}
-        <LinearGradient colors={[COLORS.bg, COLORS.bg2]} style={styles.header}>
+        <LinearGradient colors={[C.bg, C.bg2]} style={styles.header}>
           <SafeAreaView edges={['top']}>
             <View style={styles.headerTop}>
               <View>
@@ -164,7 +166,7 @@ export default function HomeScreen() {
                 <Text style={styles.verseCardLabel}>✨ Verse of the Day</Text>
                 {verseCollected ? (
                   <View style={styles.collectedBadge}>
-                    <Ionicons name="checkmark" size={12} color={COLORS.green} />
+                    <Ionicons name="checkmark" size={12} color={C.green} />
                     <Text style={styles.collectedText}>+5 XP</Text>
                   </View>
                 ) : (
@@ -236,7 +238,7 @@ function DisciplineCheck({ label, storageKey }: { label: string; storageKey: str
   return (
     <View style={styles.disciplineRow}>
       <View style={[styles.disciplineCheck, done && styles.disciplineCheckDone]}>
-        {done && <Ionicons name="checkmark" size={12} color={COLORS.white} />}
+        {done && <Ionicons name="checkmark" size={12} color={C.white} />}
       </View>
       <Text style={[styles.disciplineLabel, done && styles.disciplineLabelDone]}>{label}</Text>
     </View>
@@ -267,94 +269,94 @@ function RewardOverlay({ data, onClose }: { data: any; onClose: () => void }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.lg },
   headerTop: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'flex-start', marginBottom: SPACING.md, paddingTop: SPACING.sm,
   },
-  greeting: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Regular' },
-  userName: { color: COLORS.text, fontSize: 22, fontFamily: 'Lora-SemiBold' },
+  greeting: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Regular' },
+  userName: { color: C.text, fontSize: 22, fontFamily: 'Lora-SemiBold' },
   profileBtn: {
     width: 44, height: 44, borderRadius: 22,
-    backgroundColor: COLORS.surface, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: C.border,
   },
   levelBadge: { fontSize: 22 },
   xpSection: { marginBottom: SPACING.md },
   xpLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
-  levelName: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
-  xpText: { color: COLORS.text2, fontSize: 12, fontFamily: 'DMSans-Regular' },
-  xpBarBg: { height: 6, backgroundColor: COLORS.border, borderRadius: 3 },
-  xpBarFill: { height: '100%', backgroundColor: COLORS.gold, borderRadius: 3 },
-  xpNext: { color: COLORS.text3, fontSize: 11, marginTop: 4, fontFamily: 'DMSans-Regular' },
+  levelName: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  xpText: { color: C.text2, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  xpBarBg: { height: 6, backgroundColor: C.border, borderRadius: 3 },
+  xpBarFill: { height: '100%', backgroundColor: C.gold, borderRadius: 3 },
+  xpNext: { color: C.text3, fontSize: 11, marginTop: 4, fontFamily: 'DMSans-Regular' },
   statsRow: {
-    flexDirection: 'row', backgroundColor: COLORS.surface,
+    flexDirection: 'row', backgroundColor: C.surface,
     borderRadius: RADIUS.md, padding: SPACING.md, alignItems: 'center',
   },
   statItem: { flex: 1, alignItems: 'center' },
   statEmoji: { fontSize: 18, marginBottom: 4 },
-  statValue: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold' },
-  statLabel: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular', textAlign: 'center' },
-  statDivider: { width: 1, height: 40, backgroundColor: COLORS.border },
+  statValue: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold' },
+  statLabel: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular', textAlign: 'center' },
+  statDivider: { width: 1, height: 40, backgroundColor: C.border },
   content: { paddingHorizontal: SPACING.md, paddingTop: SPACING.md },
   verseCard: { borderRadius: RADIUS.lg, overflow: 'hidden', marginBottom: SPACING.md, ...SHADOW.gold },
   verseCardInner: { padding: SPACING.lg },
   verseCardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  verseCardLabel: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold', letterSpacing: 0.5 },
+  verseCardLabel: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold', letterSpacing: 0.5 },
   collectedBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  collectedText: { color: COLORS.green, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  tapToCollect: { color: COLORS.goldLight, fontSize: 11, fontFamily: 'DMSans-Regular', opacity: 0.7 },
-  verseText: { color: COLORS.text, fontSize: 16, fontFamily: 'Lora-Italic', lineHeight: 26, marginBottom: 10 },
-  verseRef: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
+  collectedText: { color: C.green, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  tapToCollect: { color: C.goldLight, fontSize: 11, fontFamily: 'DMSans-Regular', opacity: 0.7 },
+  verseText: { color: C.text, fontSize: 16, fontFamily: 'Lora-Italic', lineHeight: 26, marginBottom: 10 },
+  verseRef: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
   promptCard: {
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.lg,
+    backgroundColor: C.surface, borderRadius: RADIUS.lg,
     padding: SPACING.lg, marginBottom: SPACING.md,
-    borderWidth: 1, borderColor: COLORS.border,
+    borderWidth: 1, borderColor: C.border,
   },
-  promptLabel: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Medium', marginBottom: 10 },
-  promptText: { color: COLORS.text, fontSize: 15, lineHeight: 24, fontFamily: 'Lora-Italic', marginBottom: 16 },
+  promptLabel: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Medium', marginBottom: 10 },
+  promptText: { color: C.text, fontSize: 15, lineHeight: 24, fontFamily: 'Lora-Italic', marginBottom: 16 },
   respondBtn: { alignSelf: 'flex-start' },
-  respondBtnText: { color: COLORS.gold, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
-  sectionTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'Lora-SemiBold', marginBottom: SPACING.sm },
+  respondBtnText: { color: C.gold, fontSize: 14, fontFamily: 'DMSans-SemiBold' },
+  sectionTitle: { color: C.text, fontSize: 16, fontFamily: 'Lora-SemiBold', marginBottom: SPACING.sm },
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: SPACING.lg },
   quickItem: {
     width: (width - 32 - 20) / 3,
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.md,
-    padding: SPACING.md, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border,
+    backgroundColor: C.surface, borderRadius: RADIUS.md,
+    padding: SPACING.md, alignItems: 'center', borderWidth: 1, borderColor: C.border,
   },
   quickEmoji: { fontSize: 24, marginBottom: 6 },
-  quickLabel: { color: COLORS.text2, fontSize: 11, fontFamily: 'DMSans-Medium', textAlign: 'center' },
+  quickLabel: { color: C.text2, fontSize: 11, fontFamily: 'DMSans-Medium', textAlign: 'center' },
   missionCard: {
-    backgroundColor: COLORS.surface, borderRadius: RADIUS.lg,
-    padding: SPACING.lg, borderWidth: 1, borderColor: COLORS.border, marginBottom: SPACING.md,
+    backgroundColor: C.surface, borderRadius: RADIUS.lg,
+    padding: SPACING.lg, borderWidth: 1, borderColor: C.border, marginBottom: SPACING.md,
   },
-  missionTitle: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: SPACING.md },
+  missionTitle: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: SPACING.md },
   disciplineRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 12 },
   disciplineCheck: {
     width: 20, height: 20, borderRadius: 10,
-    borderWidth: 2, borderColor: COLORS.border,
+    borderWidth: 2, borderColor: C.border,
     alignItems: 'center', justifyContent: 'center',
   },
-  disciplineCheckDone: { backgroundColor: COLORS.green, borderColor: COLORS.green },
-  disciplineLabel: { color: COLORS.text2, fontSize: 14, fontFamily: 'DMSans-Regular', flex: 1 },
-  disciplineLabelDone: { color: COLORS.text3, textDecorationLine: 'line-through' },
+  disciplineCheckDone: { backgroundColor: C.green, borderColor: C.green },
+  disciplineLabel: { color: C.text2, fontSize: 14, fontFamily: 'DMSans-Regular', flex: 1 },
+  disciplineLabelDone: { color: C.text3, textDecorationLine: 'line-through' },
   // Reward overlay
   rewardOverlay: { ...StyleSheet.absoluteFillObject, zIndex: 9999, alignItems: 'center', justifyContent: 'center' },
   rewardBackdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.75)' },
   rewardCard: {
-    width: width - 48, backgroundColor: COLORS.surface,
+    width: width - 48, backgroundColor: C.surface,
     borderRadius: 24, padding: SPACING.xl, alignItems: 'center', zIndex: 1,
-    borderWidth: 1, borderColor: COLORS.border,
+    borderWidth: 1, borderColor: C.border,
   },
   rewardEmoji: { fontSize: 64, marginBottom: SPACING.md },
-  rewardTitle: { color: COLORS.text, fontSize: 22, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
-  rewardSubtitle: { color: COLORS.text2, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
-  rewardVerses: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, width: '100%', marginBottom: SPACING.lg },
+  rewardTitle: { color: C.text, fontSize: 22, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 8 },
+  rewardSubtitle: { color: C.text2, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
+  rewardVerses: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, width: '100%', marginBottom: SPACING.lg },
   rewardVerseItem: { marginBottom: 12 },
-  rewardVerseText: { color: COLORS.text, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 4 },
-  rewardVerseRef: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold' },
-  rewardCloseBtn: { width: '100%', backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
-  rewardCloseBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  rewardVerseText: { color: C.text, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 4 },
+  rewardVerseRef: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold' },
+  rewardCloseBtn: { width: '100%', backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
+  rewardCloseBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
 });

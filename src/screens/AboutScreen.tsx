@@ -4,16 +4,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 
 export default function AboutScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>About</Text>
         <View style={{ width: 24 }} />
@@ -91,10 +93,10 @@ export default function AboutScreen() {
             <Text style={styles.sectionTitle}>The Builder</Text>
             <View style={styles.builderCard}>
               <Text style={styles.builderEmoji}>🙏</Text>
-              <Text style={styles.builderName}>Ayomide Emmanuel Alao</Text>
+              <Text style={styles.builderName}>Alphae X</Text>
               <Text style={styles.builderDesc}>A lover of Christ. A friend of the Holy Spirit. A son of God.</Text>
               <Text style={styles.builderDesc}>
-                Frontend Developer · Founder · Believer. Built this because he needed it — and believed others did too.
+                Creator of Walk With Him. A lover of Christ, friend of the Holy Spirit, son of God.
               </Text>
             </View>
           </View>
@@ -121,35 +123,35 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   hero: { alignItems: 'center', paddingVertical: 40, paddingHorizontal: SPACING.lg },
   heroEmoji: { fontSize: 56, marginBottom: 12 },
-  heroTitle: { color: COLORS.white, fontSize: 28, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
-  heroTagline: { color: COLORS.gold, fontSize: 15, fontFamily: 'Lora-Italic', marginBottom: 8 },
+  heroTitle: { color: C.white, fontSize: 28, fontFamily: 'Lora-SemiBold', marginBottom: 6 },
+  heroTagline: { color: C.gold, fontSize: 15, fontFamily: 'Lora-Italic', marginBottom: 8 },
   heroVersion: { color: 'rgba(255,255,255,0.3)', fontSize: 12, fontFamily: 'DMSans-Regular' },
   content: { padding: SPACING.lg },
   section: { marginBottom: SPACING.xl },
-  sectionTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: SPACING.md },
-  bodyText: { color: COLORS.text2, fontSize: 14, lineHeight: 24, fontFamily: 'DMSans-Regular', marginBottom: 12 },
+  sectionTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: SPACING.md },
+  bodyText: { color: C.text2, fontSize: 14, lineHeight: 24, fontFamily: 'DMSans-Regular', marginBottom: 12 },
   italic: { fontFamily: 'Lora-Italic' },
-  bold: { fontFamily: 'DMSans-SemiBold', color: COLORS.text },
+  bold: { fontFamily: 'DMSans-SemiBold', color: C.text },
   featureRow: { flexDirection: 'row', gap: 14, marginBottom: SPACING.md },
   featureEmoji: { fontSize: 24, width: 36, marginTop: 2, textAlign: 'center' },
   featureInfo: { flex: 1 },
-  featureTitle: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
-  featureDesc: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
-  verseCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, borderLeftWidth: 3, borderLeftColor: COLORS.gold, marginTop: SPACING.sm },
-  verseText: { color: COLORS.gold, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22, marginBottom: 6 },
-  verseRef: { color: COLORS.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold' },
-  builderCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.xl, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
+  featureTitle: { color: C.text, fontSize: 14, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
+  featureDesc: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  verseCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, borderLeftWidth: 3, borderLeftColor: C.gold, marginTop: SPACING.sm },
+  verseText: { color: C.gold, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22, marginBottom: 6 },
+  verseRef: { color: C.gold, fontSize: 12, fontFamily: 'DMSans-SemiBold' },
+  builderCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.xl, alignItems: 'center', borderWidth: 1, borderColor: C.border },
   builderEmoji: { fontSize: 44, marginBottom: 12 },
-  builderName: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  builderDesc: { color: COLORS.text2, fontSize: 13, textAlign: 'center', lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: 8 },
-  socialBtn: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
+  builderName: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  builderDesc: { color: C.text2, fontSize: 13, textAlign: 'center', lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: 8 },
+  socialBtn: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, borderWidth: 1, borderColor: C.border },
   socialBtnEmoji: { fontSize: 20 },
-  socialBtnText: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-Medium' },
-  license: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular', textAlign: 'center', lineHeight: 20 },
+  socialBtnText: { color: C.text, fontSize: 14, fontFamily: 'DMSans-Medium' },
+  license: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular', textAlign: 'center', lineHeight: 20 },
 });

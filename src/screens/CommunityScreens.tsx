@@ -6,15 +6,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 
-const BUILDER_EMAIL = 'ayomidealao017@gmail.com';
+const BUILDER_EMAIL = 'support@alphae-x.app';
 const BUILDER_PHONE = '+2349113216637';
 
 function NavBar({ title, onBack }: { title: string; onBack: () => void }) {
   return (
-    <View style={styles.navBar}>
-      <TouchableOpacity onPress={onBack}><Ionicons name="chevron-back" size={24} color={COLORS.text} /></TouchableOpacity>
+    <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
+      <TouchableOpacity onPress={onBack}><Ionicons name="chevron-back" size={24} color={C.text} /></TouchableOpacity>
       <Text style={styles.navTitle}>{title}</Text>
       <View style={{ width: 24 }} />
     </View>
@@ -23,6 +23,8 @@ function NavBar({ title, onBack }: { title: string; onBack: () => void }) {
 
 // ── SUGGESTIONS ────────────────────────────────────────────
 export function SuggestionsScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [name, setName] = useState('');
   const [suggestion, setSuggestion] = useState('');
@@ -47,7 +49,7 @@ export function SuggestionsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="Suggestions" onBack={() => navigation.goBack()} />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.content}>
@@ -69,13 +71,13 @@ export function SuggestionsScreen() {
           </ScrollView>
 
           <Text style={styles.label}>Your Name (optional)</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Anonymous if blank" placeholderTextColor={COLORS.text3} />
+          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Anonymous if blank" placeholderTextColor={C.text3} />
 
           <Text style={styles.label}>Your Suggestion</Text>
           <TextInput
             style={[styles.input, styles.textArea]} value={suggestion} onChangeText={setSuggestion}
             placeholder="Describe your idea in as much detail as you can. What problem does it solve? What would it look like?"
-            placeholderTextColor={COLORS.text3} multiline numberOfLines={7} textAlignVertical="top"
+            placeholderTextColor={C.text3} multiline numberOfLines={7} textAlignVertical="top"
           />
 
           <TouchableOpacity style={[styles.submitBtn, sending && styles.submitBtnDisabled]} onPress={submit} disabled={sending}>
@@ -92,6 +94,8 @@ export function SuggestionsScreen() {
 
 // ── TESTIMONY ──────────────────────────────────────────────
 export function TestimonyScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [name, setName] = useState('');
   const [testimony, setTestimony] = useState('');
@@ -120,7 +124,7 @@ export function TestimonyScreen() {
 
   if (submitted) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
+      <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
         <NavBar title="Testimony" onBack={() => navigation.goBack()} />
         <View style={styles.successContainer}>
           <Text style={styles.successEmoji}>🙌</Text>
@@ -140,7 +144,7 @@ export function TestimonyScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="Give a Testimony" onBack={() => navigation.goBack()} />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView contentContainerStyle={styles.content}>
@@ -167,13 +171,13 @@ export function TestimonyScreen() {
           </ScrollView>
 
           <Text style={styles.label}>Your Name (optional)</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Anonymous if blank" placeholderTextColor={COLORS.text3} />
+          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Anonymous if blank" placeholderTextColor={C.text3} />
 
           <Text style={styles.label}>Your Testimony</Text>
           <TextInput
             style={[styles.input, styles.textArea]} value={testimony} onChangeText={setTestimony}
             placeholder="What happened? How did God show up? Be specific — the more real the better."
-            placeholderTextColor={COLORS.text3} multiline numberOfLines={8} textAlignVertical="top"
+            placeholderTextColor={C.text3} multiline numberOfLines={8} textAlignVertical="top"
           />
 
           <TouchableOpacity style={[styles.submitBtn, sending && styles.submitBtnDisabled]} onPress={submit} disabled={sending}>
@@ -189,6 +193,8 @@ export function TestimonyScreen() {
 
 // ── CONTACT ────────────────────────────────────────────────
 export function ContactScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
 
   const contacts = [
@@ -198,7 +204,7 @@ export function ContactScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="Contact" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.headerCard}>
@@ -209,7 +215,7 @@ export function ContactScreen() {
           </Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Ayomide Emmanuel Alao</Text>
+        <Text style={styles.sectionTitle}>Alphae X</Text>
         <Text style={styles.sectionSubtitle}>Builder · Believer · Available</Text>
 
         {contacts.map(c => (
@@ -219,7 +225,7 @@ export function ContactScreen() {
               <Text style={styles.contactLabel}>{c.label}</Text>
               <Text style={styles.contactValue}>{c.value}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={COLORS.gold} />
+            <Ionicons name="chevron-forward" size={18} color={C.gold} />
           </TouchableOpacity>
         ))}
 
@@ -244,46 +250,46 @@ export function ContactScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   content: { padding: SPACING.lg },
-  headerCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.lg, padding: SPACING.xl, alignItems: 'center', marginBottom: SPACING.xl, borderWidth: 1, borderColor: COLORS.border },
+  headerCard: { backgroundColor: C.bg2, borderRadius: RADIUS.lg, padding: SPACING.xl, alignItems: 'center', marginBottom: SPACING.xl, borderWidth: 1, borderColor: C.border },
   headerEmoji: { fontSize: 52, marginBottom: 12 },
-  headerTitle: { color: COLORS.text, fontSize: 20, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 10 },
-  headerSubtitle: { color: COLORS.text2, fontSize: 14, lineHeight: 22, textAlign: 'center', fontFamily: 'DMSans-Regular' },
-  label: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8, marginTop: 4 },
-  input: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
+  headerTitle: { color: C.text, fontSize: 20, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 10 },
+  headerSubtitle: { color: C.text2, fontSize: 14, lineHeight: 22, textAlign: 'center', fontFamily: 'DMSans-Regular' },
+  label: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8, marginTop: 4 },
+  input: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
   textArea: { minHeight: 160, textAlignVertical: 'top' },
   categoryRow: { maxHeight: 48, marginBottom: SPACING.md },
-  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
-  chipActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  chipText: { color: COLORS.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  chipTextActive: { color: COLORS.white },
-  submitBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 15, alignItems: 'center' },
+  chip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border },
+  chipActive: { backgroundColor: C.gold, borderColor: C.gold },
+  chipText: { color: C.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  chipTextActive: { color: C.white },
+  submitBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 15, alignItems: 'center' },
   submitBtnDisabled: { opacity: 0.5 },
-  submitBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
-  note: { color: COLORS.text3, fontSize: 12, textAlign: 'center', marginTop: 10, fontFamily: 'DMSans-Regular' },
-  verseCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  verseText: { color: COLORS.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 6 },
-  verseRef: { color: COLORS.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
+  submitBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  note: { color: C.text3, fontSize: 12, textAlign: 'center', marginTop: 10, fontFamily: 'DMSans-Regular' },
+  verseCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  verseText: { color: C.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 6 },
+  verseRef: { color: C.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
   successContainer: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 32 },
   successEmoji: { fontSize: 64, marginBottom: 20 },
-  successTitle: { color: COLORS.text, fontSize: 28, fontFamily: 'Lora-SemiBold', marginBottom: 12 },
-  successText: { color: COLORS.text2, fontSize: 15, textAlign: 'center', lineHeight: 24, fontFamily: 'DMSans-Regular', marginBottom: 20 },
-  successVerse: { color: COLORS.gold, fontSize: 13, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 22, marginBottom: 40 },
-  sectionTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 4 },
-  sectionSubtitle: { color: COLORS.text3, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
-  contactCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  successTitle: { color: C.text, fontSize: 28, fontFamily: 'Lora-SemiBold', marginBottom: 12 },
+  successText: { color: C.text2, fontSize: 15, textAlign: 'center', lineHeight: 24, fontFamily: 'DMSans-Regular', marginBottom: 20 },
+  successVerse: { color: C.gold, fontSize: 13, fontFamily: 'Lora-Italic', textAlign: 'center', lineHeight: 22, marginBottom: 40 },
+  sectionTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 4 },
+  sectionSubtitle: { color: C.text3, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: SPACING.lg },
+  contactCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
   contactIcon: { fontSize: 28, width: 40, textAlign: 'center' },
   contactInfo: { flex: 1 },
-  contactLabel: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Medium', marginBottom: 3 },
-  contactValue: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-Medium' },
-  infoCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
-  infoTitle: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 10 },
-  infoText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  contactLabel: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Medium', marginBottom: 3 },
+  contactValue: { color: C.text, fontSize: 14, fontFamily: 'DMSans-Medium' },
+  infoCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: C.border },
+  infoTitle: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 10 },
+  infoText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
   bulletRow: { flexDirection: 'row', gap: 8, marginBottom: 8 },
-  bullet: { color: COLORS.gold, fontSize: 14 },
-  bulletText: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Regular', flex: 1, lineHeight: 20 },
+  bullet: { color: C.gold, fontSize: 14 },
+  bulletText: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Regular', flex: 1, lineHeight: 20 },
 });

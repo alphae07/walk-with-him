@@ -6,13 +6,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { Storage, UserProfile, BibleLog, GodSighting, PurposeEntry, defaultProfile, PURPOSE_SECTIONS } from '../utils/storage';
 import { awardXP } from '../utils/xp';
 import { format } from 'date-fns';
 
 // ── BIBLE LOG ──────────────────────────────────────────────
 export function BibleLogScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [logs, setLogs] = useState<BibleLog[]>([]);
   const [book, setBook] = useState('');
@@ -57,7 +59,7 @@ export function BibleLogScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="Bible Reading Log" onBack={() => navigation.goBack()} />
       <View style={styles.tabs}>
         {(['log', 'history'] as const).map(t => (
@@ -73,13 +75,13 @@ export function BibleLogScreen() {
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView contentContainerStyle={styles.formContent}>
             <Text style={styles.formLabel}>Book of the Bible</Text>
-            <TextInput style={styles.input} value={book} onChangeText={setBook} placeholder="e.g. John, Romans, Psalms..." placeholderTextColor={COLORS.text3} />
+            <TextInput style={styles.input} value={book} onChangeText={setBook} placeholder="e.g. John, Romans, Psalms..." placeholderTextColor={C.text3} />
             <Text style={styles.formLabel}>Chapter Number</Text>
-            <TextInput style={styles.input} value={chapter} onChangeText={setChapter} placeholder="e.g. 3" placeholderTextColor={COLORS.text3} keyboardType="numeric" />
+            <TextInput style={styles.input} value={chapter} onChangeText={setChapter} placeholder="e.g. 3" placeholderTextColor={C.text3} keyboardType="numeric" />
             <Text style={styles.formLabel}>What did you notice about God in this chapter?</Text>
             <TextInput
               style={[styles.input, styles.textArea]} value={observation} onChangeText={setObservation}
-              placeholder="One thing you saw about God's character, ways, or heart..." placeholderTextColor={COLORS.text3} multiline numberOfLines={4} textAlignVertical="top"
+              placeholder="One thing you saw about God's character, ways, or heart..." placeholderTextColor={C.text3} multiline numberOfLines={4} textAlignVertical="top"
             />
             <TouchableOpacity style={styles.saveBtn} onPress={save}>
               <Text style={styles.saveBtnText}>Log Chapter (+10 XP)</Text>
@@ -111,6 +113,8 @@ export function BibleLogScreen() {
 
 // ── GOD SIGHTINGS ──────────────────────────────────────────
 export function GodSightingsScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [sightings, setSightings] = useState<GodSighting[]>([]);
   const [content, setContent] = useState('');
@@ -148,7 +152,7 @@ export function GodSightingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="I Saw God Today" onBack={() => navigation.goBack()} />
       <View style={styles.tabs}>
         {(['log', 'history'] as const).map(t => (
@@ -177,7 +181,7 @@ export function GodSightingsScreen() {
             <Text style={styles.formLabel}>What happened?</Text>
             <TextInput
               style={[styles.input, styles.textArea]} value={content} onChangeText={setContent}
-              placeholder="Describe the moment. Be specific..." placeholderTextColor={COLORS.text3} multiline numberOfLines={5} textAlignVertical="top"
+              placeholder="Describe the moment. Be specific..." placeholderTextColor={C.text3} multiline numberOfLines={5} textAlignVertical="top"
             />
             <TouchableOpacity style={[styles.saveBtn, !content.trim() && styles.saveBtnDisabled]} onPress={save} disabled={!content.trim()}>
               <Text style={styles.saveBtnText}>Log Sighting (+10 XP)</Text>
@@ -207,6 +211,8 @@ export function GodSightingsScreen() {
 
 // ── PURPOSE JOURNAL ────────────────────────────────────────
 export function PurposeScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [entries, setEntries] = useState<Record<string, string>>({});
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -238,7 +244,7 @@ export function PurposeScreen() {
   if (activeSection) {
     const section = PURPOSE_SECTIONS.find(s => s.key === activeSection)!;
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
+      <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
         <NavBar title={section.label} onBack={() => setActiveSection(null)} rightAction={{ label: 'Save', onPress: save }} />
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <ScrollView contentContainerStyle={styles.formContent}>
@@ -249,7 +255,7 @@ export function PurposeScreen() {
             <TextInput
               style={[styles.input, styles.textAreaLarge]} value={draft} onChangeText={setDraft}
               placeholder="Write what you hear, feel, or think God is saying about this area of your life..."
-              placeholderTextColor={COLORS.text3} multiline textAlignVertical="top"
+              placeholderTextColor={C.text3} multiline textAlignVertical="top"
             />
           </ScrollView>
         </KeyboardAvoidingView>
@@ -258,7 +264,7 @@ export function PurposeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <NavBar title="Purpose Journal" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.listContent}>
         <View style={styles.infoCard}>
@@ -273,7 +279,7 @@ export function PurposeScreen() {
                 {entries[section.key] ? entries[section.key] : 'Not started yet...'}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={COLORS.text3} />
+            <Ionicons name="chevron-forward" size={18} color={C.text3} />
           </TouchableOpacity>
         ))}
         <View style={{ height: 24 }} />
@@ -285,9 +291,9 @@ export function PurposeScreen() {
 // ── Shared Components ──────────────────────────────────────
 function NavBar({ title, onBack, rightAction }: { title: string; onBack: () => void; rightAction?: { label: string; onPress: () => void } }) {
   return (
-    <View style={styles.navBar}>
+    <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
       <TouchableOpacity onPress={onBack}>
-        <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+        <Ionicons name="chevron-back" size={24} color={C.text} />
       </TouchableOpacity>
       <Text style={styles.navTitle}>{title}</Text>
       {rightAction ? (
@@ -309,51 +315,51 @@ function EmptyState({ emoji, title, subtitle }: { emoji: string; title: string; 
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
-  navRightBtn: { backgroundColor: COLORS.gold, paddingHorizontal: 16, paddingVertical: 8, borderRadius: RADIUS.full },
-  navRightBtnText: { color: COLORS.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navRightBtn: { backgroundColor: C.gold, paddingHorizontal: 16, paddingVertical: 8, borderRadius: RADIUS.full },
+  navRightBtnText: { color: C.white, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: C.surface, alignItems: 'center', borderWidth: 1, borderColor: C.border },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   formContent: { padding: SPACING.lg },
   listContent: { padding: SPACING.lg },
-  formLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  input: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
+  formLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  input: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', marginBottom: SPACING.md },
   textArea: { minHeight: 100, textAlignVertical: 'top' },
   textAreaLarge: { minHeight: 260, textAlignVertical: 'top' },
-  saveBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
+  saveBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
   saveBtnDisabled: { opacity: 0.4 },
-  saveBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
-  logCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  saveBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  logCard: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
   logCardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  logBook: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
-  logDate: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
-  logObservation: { color: COLORS.text2, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
-  infoCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  infoText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
-  categoryChip: { backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border, borderRadius: RADIUS.full, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 },
-  categoryChipActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  categoryChipText: { color: COLORS.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  categoryChipTextActive: { color: COLORS.white },
-  sightingCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
-  sightingCategoryBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
-  sightingCategoryText: { color: COLORS.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
-  sightingContent: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginTop: 6 },
-  purposeSectionCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  logBook: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  logDate: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  logObservation: { color: C.text2, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
+  infoCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  infoText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  categoryChip: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.border, borderRadius: RADIUS.full, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 },
+  categoryChipActive: { backgroundColor: C.gold, borderColor: C.gold },
+  categoryChipText: { color: C.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  categoryChipTextActive: { color: C.white },
+  sightingCard: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
+  sightingCategoryBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
+  sightingCategoryText: { color: C.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
+  sightingContent: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginTop: 6 },
+  purposeSectionCard: { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
   purposeSectionIcon: { fontSize: 28, width: 40, textAlign: 'center' },
   purposeSectionInfo: { flex: 1 },
-  purposeSectionLabel: { color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
-  purposeSectionPreview: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
-  purposePromptCard: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  purposePromptLabel: { color: COLORS.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
-  purposePromptText: { color: COLORS.text2, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22 },
+  purposeSectionLabel: { color: C.text, fontSize: 15, fontFamily: 'DMSans-SemiBold', marginBottom: 3 },
+  purposeSectionPreview: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  purposePromptCard: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  purposePromptLabel: { color: C.text3, fontSize: 10, letterSpacing: 2, fontFamily: 'DMSans-SemiBold', marginBottom: 8 },
+  purposePromptText: { color: C.text2, fontSize: 14, fontFamily: 'Lora-Italic', lineHeight: 22 },
   emptyState: { alignItems: 'center', paddingTop: 60 },
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  emptySubtitle: { color: COLORS.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  emptyTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  emptySubtitle: { color: C.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
 });

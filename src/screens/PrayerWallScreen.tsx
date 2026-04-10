@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { Storage } from '../utils/storage';
 import { format, differenceInDays } from 'date-fns';
 
@@ -24,6 +24,8 @@ interface PrayerRequest {
 const PRAYER_CATEGORIES = ['Personal', 'Family', 'Career', 'Health', 'Relationships', 'Finances', 'Guidance', 'Others', 'Nation', 'Church'];
 
 export default function PrayerWallScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
   const [tab, setTab] = useState<'active' | 'answered' | 'add'>('active');
@@ -92,14 +94,14 @@ export default function PrayerWallScreen() {
   const answered = prayers.filter(p => p.answered);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Prayer Wall</Text>
         <TouchableOpacity onPress={() => setTab('add')}>
-          <Ionicons name="add" size={26} color={COLORS.gold} />
+          <Ionicons name="add" size={26} color={C.gold} />
         </TouchableOpacity>
       </View>
 
@@ -111,7 +113,7 @@ export default function PrayerWallScreen() {
         </View>
         <View style={styles.statDivider} />
         <View style={styles.statBox}>
-          <Text style={[styles.statNum, { color: COLORS.green }]}>{answered.length}</Text>
+          <Text style={[styles.statNum, { color: C.green }]}>{answered.length}</Text>
           <Text style={styles.statLabel}>Answered</Text>
         </View>
         <View style={styles.statDivider} />
@@ -154,11 +156,11 @@ export default function PrayerWallScreen() {
                 <Text style={styles.prayerDate}>Added {format(new Date(p.dateAdded), 'MMM d, yyyy')}</Text>
                 <View style={styles.prayerActions}>
                   <TouchableOpacity style={styles.answeredBtn} onPress={() => markAnswered(p.id)}>
-                    <Ionicons name="checkmark-circle-outline" size={16} color={COLORS.green} />
+                    <Ionicons name="checkmark-circle-outline" size={16} color={C.green} />
                     <Text style={styles.answeredBtnText}>Mark Answered</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => deletePrayer(p.id)}>
-                    <Ionicons name="trash-outline" size={18} color={COLORS.text3} />
+                    <Ionicons name="trash-outline" size={18} color={C.text3} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -185,8 +187,8 @@ export default function PrayerWallScreen() {
               {answered.map(p => (
                 <View key={p.id} style={[styles.prayerCard, styles.prayerCardAnswered]}>
                   <View style={styles.prayerTop}>
-                    <View style={[styles.catBadge, { backgroundColor: COLORS.green + '20' }]}>
-                      <Text style={[styles.catBadgeText, { color: COLORS.green }]}>✓ {p.category}</Text>
+                    <View style={[styles.catBadge, { backgroundColor: C.green + '20' }]}>
+                      <Text style={[styles.catBadgeText, { color: C.green }]}>✓ {p.category}</Text>
                     </View>
                     {p.dateAnswered && (
                       <Text style={styles.daysWaiting}>
@@ -242,7 +244,7 @@ export default function PrayerWallScreen() {
               multiline
               numberOfLines={6}
               placeholder="Be specific. God can handle specific. 'God, please help me' is a start — but 'God, I need wisdom about this specific decision by Friday' is a conversation."
-              placeholderTextColor={COLORS.text3}
+              placeholderTextColor={C.text3}
               textAlignVertical="top"
             />
 
@@ -262,52 +264,52 @@ export default function PrayerWallScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
-  statsRow: { flexDirection: 'row', paddingHorizontal: SPACING.lg, marginBottom: SPACING.md, backgroundColor: COLORS.surface, marginHorizontal: SPACING.lg, borderRadius: RADIUS.md, borderWidth: 1, borderColor: COLORS.border },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  statsRow: { flexDirection: 'row', paddingHorizontal: SPACING.lg, marginBottom: SPACING.md, backgroundColor: C.surface, marginHorizontal: SPACING.lg, borderRadius: RADIUS.md, borderWidth: 1, borderColor: C.border },
   statBox: { flex: 1, alignItems: 'center', paddingVertical: SPACING.md },
-  statNum: { color: COLORS.text, fontSize: 22, fontFamily: 'Lora-SemiBold' },
-  statLabel: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
-  statDivider: { width: 1, backgroundColor: COLORS.border, marginVertical: 10 },
+  statNum: { color: C.text, fontSize: 22, fontFamily: 'Lora-SemiBold' },
+  statLabel: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
+  statDivider: { width: 1, backgroundColor: C.border, marginVertical: 10 },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: C.surface, alignItems: 'center', borderWidth: 1, borderColor: C.border },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 11, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   list: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm },
   empty: { alignItems: 'center', paddingTop: 50 },
   emptyEmoji: { fontSize: 48, marginBottom: 12 },
-  emptyTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  emptyText: { color: COLORS.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
-  prayerCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
-  prayerCardAnswered: { borderColor: COLORS.green + '40' },
+  emptyTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  emptyText: { color: C.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  prayerCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
+  prayerCardAnswered: { borderColor: C.green + '40' },
   prayerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
-  catBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
-  catBadgeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  daysWaiting: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
-  prayerText: { color: COLORS.text, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: 8 },
-  prayerDate: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular', marginBottom: 10 },
+  catBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full },
+  catBadgeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  daysWaiting: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
+  prayerText: { color: C.text, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular', marginBottom: 8 },
+  prayerDate: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular', marginBottom: 10 },
   prayerActions: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   answeredBtn: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  answeredBtnText: { color: COLORS.green, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  answeredBtnText: { color: C.green, fontSize: 12, fontFamily: 'DMSans-Medium' },
   answeredHero: { borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, alignItems: 'center' },
-  answeredHeroText: { color: COLORS.white, fontSize: 16, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 6 },
+  answeredHeroText: { color: C.white, fontSize: 16, fontFamily: 'Lora-SemiBold', textAlign: 'center', marginBottom: 6 },
   answeredHeroSub: { color: 'rgba(255,255,255,0.5)', fontSize: 13, fontFamily: 'Lora-Italic', textAlign: 'center' },
-  answeredNote: { backgroundColor: COLORS.green + '10', borderRadius: RADIUS.sm, padding: SPACING.sm, marginBottom: 8, borderLeftWidth: 2, borderLeftColor: COLORS.green },
-  answeredNoteLabel: { color: COLORS.green, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 4 },
-  answeredNoteText: { color: COLORS.text2, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
-  addIntro: { backgroundColor: COLORS.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: COLORS.gold },
-  addIntroText: { color: COLORS.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
-  fieldLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8, marginTop: 4 },
+  answeredNote: { backgroundColor: C.green + '10', borderRadius: RADIUS.sm, padding: SPACING.sm, marginBottom: 8, borderLeftWidth: 2, borderLeftColor: C.green },
+  answeredNoteLabel: { color: C.green, fontSize: 9, letterSpacing: 1.5, fontFamily: 'DMSans-SemiBold', marginBottom: 4 },
+  answeredNoteText: { color: C.text2, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
+  addIntro: { backgroundColor: C.bg2, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: SPACING.lg, borderLeftWidth: 3, borderLeftColor: C.gold },
+  addIntroText: { color: C.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20 },
+  fieldLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8, marginTop: 4 },
   catRow: { maxHeight: 50, marginBottom: SPACING.md },
-  catChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.border },
-  catChipActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  catChipText: { color: COLORS.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
-  catChipTextActive: { color: COLORS.white },
-  textarea: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 150, textAlignVertical: 'top', marginBottom: SPACING.md },
-  addBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
+  catChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: RADIUS.full, backgroundColor: C.surface, borderWidth: 1, borderColor: C.border },
+  catChipActive: { backgroundColor: C.gold, borderColor: C.gold },
+  catChipText: { color: C.text2, fontSize: 12, fontFamily: 'DMSans-Medium' },
+  catChipTextActive: { color: C.white },
+  textarea: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 150, textAlignVertical: 'top', marginBottom: SPACING.md },
+  addBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 14, alignItems: 'center' },
   addBtnDisabled: { opacity: 0.4 },
-  addBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  addBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
 });

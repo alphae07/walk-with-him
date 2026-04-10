@@ -2,11 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { SERMONS, BOOKS_OF_MONTH } from '../constants/data';
 import { format } from 'date-fns';
 
 export default function GrowScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const currentMonth = format(new Date(), 'yyyy-MM');
   const book = BOOKS_OF_MONTH[currentMonth];
@@ -25,7 +27,7 @@ export default function GrowScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.title}>Grow</Text>
@@ -96,7 +98,7 @@ export default function GrowScreen() {
                 <Text style={styles.sermonRowTitle}>{s.title}</Text>
                 <Text style={styles.sermonRowPreacher}>{s.preacher}</Text>
               </View>
-              <Text style={{ color: COLORS.gold, fontSize: 14 }}>▶</Text>
+              <Text style={{ color: C.gold, fontSize: 14 }}>▶</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -107,38 +109,38 @@ export default function GrowScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   header: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.sm, paddingBottom: SPACING.md },
-  title: { color: COLORS.text, fontSize: 24, fontFamily: 'Lora-SemiBold' },
-  subtitle: { color: COLORS.text3, fontSize: 13, fontFamily: 'Lora-Italic', marginTop: 2 },
-  bookCard: { marginHorizontal: SPACING.lg, marginBottom: SPACING.lg, backgroundColor: '#1A2E4A', borderRadius: 20, padding: SPACING.lg, borderWidth: 1, borderColor: COLORS.gold + '40' },
+  title: { color: C.text, fontSize: 24, fontFamily: 'Lora-SemiBold' },
+  subtitle: { color: C.text3, fontSize: 13, fontFamily: 'Lora-Italic', marginTop: 2 },
+  bookCard: { marginHorizontal: SPACING.lg, marginBottom: SPACING.lg, backgroundColor: '#1A2E4A', borderRadius: 20, padding: SPACING.lg, borderWidth: 1, borderColor: C.gold + '40' },
   bookCardTop: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 },
   bookEmoji: { fontSize: 28 },
-  bookBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
-  bookBadgeText: { color: COLORS.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
-  bookTitle: { color: COLORS.white, fontSize: 20, fontFamily: 'Lora-SemiBold', marginBottom: 4 },
-  bookAuthor: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: 10 },
-  bookDesc: { color: COLORS.text2, fontSize: 14, lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: 12 },
-  bookCta: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
+  bookBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
+  bookBadgeText: { color: C.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold' },
+  bookTitle: { color: C.white, fontSize: 20, fontFamily: 'Lora-SemiBold', marginBottom: 4 },
+  bookAuthor: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Regular', marginBottom: 10 },
+  bookDesc: { color: C.text2, fontSize: 14, lineHeight: 20, fontFamily: 'DMSans-Regular', marginBottom: 12 },
+  bookCta: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-SemiBold' },
   section: { marginBottom: SPACING.lg, paddingHorizontal: SPACING.lg },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.md },
-  sectionTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
-  seeAll: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  sectionTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  seeAll: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
   featureGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  featureCard: { width: '47%', backgroundColor: COLORS.surface, borderRadius: 16, padding: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
+  featureCard: { width: '47%', backgroundColor: C.surface, borderRadius: 16, padding: SPACING.md, borderWidth: 1, borderColor: C.border },
   featureIconWrap: { width: 48, height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginBottom: SPACING.sm },
   featureEmoji: { fontSize: 24 },
-  featureTitle: { color: COLORS.text, fontSize: 13, fontFamily: 'DMSans-SemiBold', marginBottom: 4 },
-  featureSubtitle: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular', lineHeight: 16 },
-  sermonCard: { width: 160, backgroundColor: COLORS.surface, borderRadius: 16, padding: SPACING.md, marginRight: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
+  featureTitle: { color: C.text, fontSize: 13, fontFamily: 'DMSans-SemiBold', marginBottom: 4 },
+  featureSubtitle: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular', lineHeight: 16 },
+  sermonCard: { width: 160, backgroundColor: C.surface, borderRadius: 16, padding: SPACING.md, marginRight: SPACING.md, borderWidth: 1, borderColor: C.border },
   sermonEmoji: { fontSize: 28, marginBottom: 8 },
-  sermonTitle: { color: COLORS.text, fontSize: 13, fontFamily: 'DMSans-Medium', lineHeight: 18, marginBottom: 8 },
-  sermonBadge: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999, alignSelf: 'flex-start' },
-  sermonBadgeText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  sermonRow: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: COLORS.surface, borderRadius: 14, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: COLORS.border },
+  sermonTitle: { color: C.text, fontSize: 13, fontFamily: 'DMSans-Medium', lineHeight: 18, marginBottom: 8 },
+  sermonBadge: { backgroundColor: C.gold + '20', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 999, alignSelf: 'flex-start' },
+  sermonBadgeText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  sermonRow: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: C.surface, borderRadius: 14, padding: SPACING.md, marginBottom: SPACING.sm, borderWidth: 1, borderColor: C.border },
   sermonRowEmoji: { fontSize: 24, width: 36, textAlign: 'center' },
   sermonRowInfo: { flex: 1 },
-  sermonRowTitle: { color: COLORS.text, fontSize: 14, fontFamily: 'DMSans-Medium', marginBottom: 3 },
-  sermonRowPreacher: { color: COLORS.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
+  sermonRowTitle: { color: C.text, fontSize: 14, fontFamily: 'DMSans-Medium', marginBottom: 3 },
+  sermonRowPreacher: { color: C.text3, fontSize: 12, fontFamily: 'DMSans-Regular' },
 });

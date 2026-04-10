@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
+import { COLORS, SPACING, RADIUS, useThemeColors } from '../constants/theme';
 import { DEEP_REFLECTION_QUESTIONS } from '../services/api';
 import { Storage, UserProfile, defaultProfile } from '../utils/storage';
 import { awardXP } from '../utils/xp';
@@ -16,6 +16,8 @@ import { format } from 'date-fns';
 const { width } = Dimensions.get('window');
 
 export default function ReflectionScreen() {
+  const C = useThemeColors();
+  const styles = getStyles(C);
   const navigation = useNavigation<any>();
   const [currentQ, setCurrentQ] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -65,10 +67,10 @@ export default function ReflectionScreen() {
   const displayQuestions = showAll ? DEEP_REFLECTION_QUESTIONS : DEEP_REFLECTION_QUESTIONS.slice(0, 5);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.navBar}>
+    <SafeAreaView style={[styles.container, {backgroundColor: C.bg}]} edges={['top']}>
+      <View style={[styles.navBar, {backgroundColor: C.bg, borderBottomColor: C.border + "60"}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color={COLORS.text} />
+          <Ionicons name="chevron-back" size={24} color={C.text} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>Deep Reflection</Text>
         <View style={{ width: 24 }} />
@@ -110,7 +112,7 @@ export default function ReflectionScreen() {
               onPress={() => setShowAll(s => !s)}
             >
               <Text style={styles.allQuestionsText}>{showAll ? 'Hide' : 'Browse all questions'}</Text>
-              <Ionicons name={showAll ? 'chevron-up' : 'chevron-down'} size={14} color={COLORS.gold} />
+              <Ionicons name={showAll ? 'chevron-up' : 'chevron-down'} size={14} color={C.gold} />
             </TouchableOpacity>
 
             {showAll && (
@@ -138,7 +140,7 @@ export default function ReflectionScreen() {
               value={answer}
               onChangeText={setAnswer}
               placeholder="Be completely honest. This is between you and God. No performance needed here."
-              placeholderTextColor={COLORS.text3}
+              placeholderTextColor={C.text3}
               textAlignVertical="top"
             />
 
@@ -186,46 +188,46 @@ export default function ReflectionScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+const getStyles = (C: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: C.bg },
   navBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: SPACING.lg, paddingVertical: SPACING.md },
-  navTitle: { color: COLORS.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
+  navTitle: { color: C.text, fontSize: 16, fontFamily: 'DMSans-SemiBold' },
   tabs: { flexDirection: 'row', paddingHorizontal: SPACING.lg, gap: 8, marginBottom: SPACING.md },
-  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: COLORS.surface, alignItems: 'center', borderWidth: 1, borderColor: COLORS.border },
-  tabActive: { backgroundColor: COLORS.gold, borderColor: COLORS.gold },
-  tabText: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
-  tabTextActive: { color: COLORS.white },
+  tab: { flex: 1, paddingVertical: 10, borderRadius: RADIUS.md, backgroundColor: C.surface, alignItems: 'center', borderWidth: 1, borderColor: C.border },
+  tabActive: { backgroundColor: C.gold, borderColor: C.gold },
+  tabText: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  tabTextActive: { color: C.white },
   content: { padding: SPACING.lg },
   questionHero: { borderRadius: RADIUS.xl, padding: SPACING.xl, marginBottom: SPACING.md },
-  categoryBadge: { backgroundColor: COLORS.gold + '25', paddingHorizontal: 12, paddingVertical: 5, borderRadius: RADIUS.full, alignSelf: 'flex-start', marginBottom: 16 },
-  categoryBadgeText: { color: COLORS.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold', letterSpacing: 0.5 },
-  questionText: { color: COLORS.white, fontSize: 20, fontFamily: 'Lora-SemiBold', lineHeight: 32, marginBottom: 16 },
+  categoryBadge: { backgroundColor: C.gold + '25', paddingHorizontal: 12, paddingVertical: 5, borderRadius: RADIUS.full, alignSelf: 'flex-start', marginBottom: 16 },
+  categoryBadgeText: { color: C.gold, fontSize: 11, fontFamily: 'DMSans-SemiBold', letterSpacing: 0.5 },
+  questionText: { color: C.white, fontSize: 20, fontFamily: 'Lora-SemiBold', lineHeight: 32, marginBottom: 16 },
   questionHint: { color: 'rgba(255,255,255,0.4)', fontSize: 12, fontFamily: 'Lora-Italic' },
   questionNav: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: SPACING.md },
   skipBtn: { paddingVertical: 8, paddingHorizontal: 12 },
-  skipBtnText: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  skipBtnText: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
   allQuestionsToggle: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: SPACING.sm },
-  allQuestionsText: { color: COLORS.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
+  allQuestionsText: { color: C.gold, fontSize: 13, fontFamily: 'DMSans-Medium' },
   allQuestionsList: { marginBottom: SPACING.lg },
-  allQItem: { backgroundColor: COLORS.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: 6, borderWidth: 1, borderColor: COLORS.border },
-  allQItemActive: { borderColor: COLORS.gold, backgroundColor: COLORS.gold + '10' },
-  allQCatBadge: { alignSelf: 'flex-start', backgroundColor: COLORS.bg3, paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full, marginBottom: 6 },
-  allQCatText: { color: COLORS.text3, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  allQText: { color: COLORS.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
-  answerLabel: { color: COLORS.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
-  answerInput: { backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: RADIUS.md, padding: 14, color: COLORS.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 180, textAlignVertical: 'top', marginBottom: SPACING.md },
-  saveBtn: { backgroundColor: COLORS.gold, borderRadius: RADIUS.full, paddingVertical: 15, alignItems: 'center' },
+  allQItem: { backgroundColor: C.surface, borderRadius: RADIUS.md, padding: SPACING.md, marginBottom: 6, borderWidth: 1, borderColor: C.border },
+  allQItemActive: { borderColor: C.gold, backgroundColor: C.gold + '10' },
+  allQCatBadge: { alignSelf: 'flex-start', backgroundColor: C.bg3, paddingHorizontal: 8, paddingVertical: 3, borderRadius: RADIUS.full, marginBottom: 6 },
+  allQCatText: { color: C.text3, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  allQText: { color: C.text2, fontSize: 13, lineHeight: 20, fontFamily: 'DMSans-Regular' },
+  answerLabel: { color: C.text2, fontSize: 13, fontFamily: 'DMSans-Medium', marginBottom: 8 },
+  answerInput: { backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border, borderRadius: RADIUS.md, padding: 14, color: C.text, fontSize: 15, fontFamily: 'DMSans-Regular', minHeight: 180, textAlignVertical: 'top', marginBottom: SPACING.md },
+  saveBtn: { backgroundColor: C.gold, borderRadius: RADIUS.full, paddingVertical: 15, alignItems: 'center' },
   saveBtnDisabled: { opacity: 0.4 },
-  saveBtnText: { color: COLORS.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
+  saveBtnText: { color: C.white, fontSize: 15, fontFamily: 'DMSans-SemiBold' },
   emptyState: { alignItems: 'center', paddingTop: 60 },
   emptyEmoji: { fontSize: 48, marginBottom: 16 },
-  emptyTitle: { color: COLORS.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
-  emptyText: { color: COLORS.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
-  historyCard: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: COLORS.border },
+  emptyTitle: { color: C.text, fontSize: 18, fontFamily: 'Lora-SemiBold', marginBottom: 8 },
+  emptyText: { color: C.text3, fontSize: 14, textAlign: 'center', lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  historyCard: { backgroundColor: C.surface, borderRadius: RADIUS.lg, padding: SPACING.lg, marginBottom: SPACING.md, borderWidth: 1, borderColor: C.border },
   historyTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 },
-  categoryCapsule: { backgroundColor: COLORS.gold + '20', paddingHorizontal: 10, paddingVertical: 4, borderRadius: RADIUS.full },
-  categoryCapsuleText: { color: COLORS.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
-  historyDate: { color: COLORS.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
-  historyQuestion: { color: COLORS.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 10 },
-  historyAnswer: { color: COLORS.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
+  categoryCapsule: { backgroundColor: C.gold + '20', paddingHorizontal: 10, paddingVertical: 4, borderRadius: RADIUS.full },
+  categoryCapsuleText: { color: C.gold, fontSize: 10, fontFamily: 'DMSans-SemiBold' },
+  historyDate: { color: C.text3, fontSize: 11, fontFamily: 'DMSans-Regular' },
+  historyQuestion: { color: C.gold, fontSize: 13, fontFamily: 'Lora-Italic', lineHeight: 20, marginBottom: 10 },
+  historyAnswer: { color: C.text2, fontSize: 14, lineHeight: 22, fontFamily: 'DMSans-Regular' },
 });

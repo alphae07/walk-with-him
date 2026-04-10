@@ -11,24 +11,29 @@ interface VerseCardProps {
 
 export function VerseCard({ text, ref_, collected, onCollect, showCollect }: VerseCardProps) {
   const C = useThemeColors();
-  const Wrapper = onCollect ? TouchableOpacity : View;
-  return (
-    <Wrapper onPress={onCollect} activeOpacity={0.88} style={styles.container}>
-      <LinearGradient colors={C.isDark ? ['#1A2E4A','#0F1E38'] : ['#F0EDE6','#E8E4DC']} style={styles.inner}>
-        {showCollect && (
-          <View style={styles.header}>
-            <Text style={[styles.headerLabel, { color: C.gold }]}>✨ Verse of the Day</Text>
-            {collected
-              ? <Text style={[styles.badge, { color: C.green }]}>✓ +5 XP</Text>
-              : <Text style={[styles.tapHint, { color: C.text3 }]}>Tap to collect</Text>
-            }
-          </View>
-        )}
-        <Text style={[styles.verse, { color: C.text }]}>"{text}"</Text>
-        <Text style={[styles.ref, { color: C.gold }]}>— {ref_}</Text>
-      </LinearGradient>
-    </Wrapper>
+  const inner = (
+    <LinearGradient colors={C.isDark ? ['#1A2E4A','#0F1E38'] : ['#F0EDE6','#E8E4DC']} style={styles.inner}>
+      {showCollect && (
+        <View style={styles.header}>
+          <Text style={[styles.headerLabel, { color: C.gold }]}>✨ Verse of the Day</Text>
+          {collected
+            ? <Text style={[styles.badge, { color: C.green }]}>✓ +5 XP</Text>
+            : <Text style={[styles.tapHint, { color: C.text3 }]}>Tap to collect</Text>
+          }
+        </View>
+      )}
+      <Text style={[styles.verse, { color: C.text }]}>"{text}"</Text>
+      <Text style={[styles.ref, { color: C.gold }]}>— {ref_}</Text>
+    </LinearGradient>
   );
+  if (onCollect) {
+    return (
+      <TouchableOpacity onPress={onCollect} activeOpacity={0.88} style={styles.container}>
+        {inner}
+      </TouchableOpacity>
+    );
+  }
+  return <View style={styles.container}>{inner}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -41,3 +46,4 @@ const styles = StyleSheet.create({
   verse: { fontSize: 16, fontFamily: 'Lora-Italic', lineHeight: 26, marginBottom: 10 },
   ref: { fontSize: 13, fontFamily: 'DMSans-SemiBold' },
 });
+      
